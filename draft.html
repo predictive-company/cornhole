@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Draft Team - Cornhole Kings</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Add these new styles for the view-only mode */
+    .submitted-banner {
+      background-color: rgba(46, 204, 113, 0.2);
+      border: 2px solid var(--success);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: var(--success);
+      font-weight: bold;
+    }
+    
+    .view-team-btn {
+      background-color: var(--accent);
+      color: var(--dark);
+      border: none;
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+    
+    .view-team-btn:hover {
+      background-color: #f39c12;
+    }
+    
+    .submit-team.submitted {
+      background-color: var(--success);
+      opacity: 0.7;
+      cursor: default;
+    }
+    
+    #selectedPlayers.submitted {
+      border: 1px solid var(--success);
+    }
+    
+    .draft-btn.disabled {
+      background-color: #7f8c8d;
+      cursor: default;
+    }
+    
+    .player-card.view-only {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    
+    .view-only-label {
+      background-color: #7f8c8d;
+      color: white;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: bold;
+      position: absolute;
+      bottom: 0.75rem;
+      right: 0.75rem;
+    }
+    
+    .player-card.drafted .view-only-label {
+      background-color: var(--success);
+    }
+    
+    /* Player avatar styles */
+    .player-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      background-color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: white;
+    }
+    
+    .player-avatar-fallback {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+      color: white;
+    }
+    
+    .team-player-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 0.5rem;
+      background-color: var(--secondary);
+    }
+    
+    .team-player-info {
+      display: flex;
+      align-items: center;
+    }
+    
+    .team-player-avatar-fallback {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: white;
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">CK</div>
+        <h1>Cornhole Kings</h1>
+      </div>
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+      </nav>
+    </header>
+    
+    <div class="tournament-info" id="tournamentInfo">
+      <h2>Nashville Spring Showdown</h2>
+      <p>March 15-16, 2025 • $25,000 Prize Pool • Draft 4 Players</p>
+      <div class="chips-info">
+        <div class="chip-icon">$</div>
+        <span>Your Draft Chips: <strong id="userChips">10,000</strong></span>
+      </div>
+      <div class="timer" id="draftTimer">
+        <span>Draft Closes In:</span>
+        <span>23:45:12</span>
+      </div>
+    </div>
+    
+    <div class="draft-container">
+      <div class="players-pool">
+        <div class="section-header">
+          <h3>Available Players</h3>
+          <span id="playerCount">72 players</span>
+        </div>
+        
+        <div class="search-filter">
+          <input type="text" placeholder="Search players..." style="flex: 1;" id="playerSearch">
+          <select id="playerSort">
+            <option>Sort By: Rank</option>
+            <option>Sort By: Win Rate</option>
+            <option>Sort By: Price</option>
+          </select>
+        </div>
+        
+        <div class="player-list" id="playerList">
+          <!-- Players will be loaded dynamically -->
+          <p style="text-align: center; color: rgba(255,255,255,0.5);">Loading players...</p>
+        </div>
+      </div>
+      
+      <div class="your-team">
+        <div class="section-header">
+          <h3>Your Team</h3>
+          <span id="teamCount">0/4 Selected</span>
+        </div>
+        
+        <div class="team-list" id="selectedPlayers">
+          <!-- Empty state message -->
+          <p style="text-align: center; color: rgba(255,255,255,0.5);" id="emptyTeamMessage">
+            Select players from the available pool to build your team
+          </p>
+        </div>
+        
+        <div class="team-summary">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Total Players:</span>
+            <span id="totalPlayers">0/4</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Chips Spent:</span>
+            <span id="chipsSpent">0</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-weight: bold;">
+            <span>Remaining:</span>
+            <span id="chipsRemaining">10,000</span>
+          </div>
+        </div>
+        
+        <button class="submit-team" id="submitTeam" disabled>SUBMIT TEAM</button>
+        <p style="font-size: 0.8rem; text-align: center; color: rgba(255,255,255,0.7);">
+          You must draft exactly 4 players to submit your team
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast notification for errors and success messages -->
+  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    // Function to switch to view-only mode after team submission
+    function switchToViewOnlyMode(selectedPlayers) {
+      // Get the player IDs that are in the team
+      const playerIds = selectedPlayers.map(player => player.id);
+      
+      // Get all player cards and make them view-only
+      const playerCards = document.querySelectorAll('.player-card');
+      playerCards.forEach(card => {
+        const playerId = card.dataset.playerId;
+        const draftButton = card.querySelector('.draft-btn');
+        
+        // Add view-only class to all cards
+        card.classList.add('view-only');
+        
+        // Remove draft button from all cards
+        if (draftButton) {
+          draftButton.remove();
+        }
+        
+        // Add appropriate label based on whether player is drafted
+        const label = document.createElement('div');
+        label.className = 'view-only-label';
+        
+        if (playerIds.includes(playerId)) {
+          label.textContent = 'DRAFTED';
+          card.classList.add('drafted');
+        } else {
+          label.textContent = 'LOCKED';
+        }
+        
+        card.appendChild(label);
+      });
+      
+      // Update the submit button
+      const submitButton = document.getElementById('submitTeam');
+      submitButton.disabled = true;
+      submitButton.textContent = 'TEAM SUBMITTED';
+      submitButton.classList.add('submitted');
+      
+      // Add view team button next to submit button
+      const viewTeamButton = document.createElement('button');
+      viewTeamButton.className = 'view-team-btn';
+      viewTeamButton.textContent = 'VIEW YOUR PROFILE';
+      viewTeamButton.onclick = function() {
+        window.location.href = 'profile.html';
+      };
+      
+      // Insert the button after the submit button
+      submitButton.parentNode.insertBefore(viewTeamButton, submitButton.nextSibling);
+      
+      // Add a smaller, top banner indicating the team is submitted
+      const banner = document.createElement('div');
+      banner.className = 'submitted-banner';
+      banner.innerHTML = `
+        <div class="banner-content">
+          <strong>Team Submitted Successfully!</strong>
+        </div>
+      `;
+      
+      // Add the banner to the top of the page
+      const tournamentInfo = document.getElementById('tournamentInfo');
+      tournamentInfo.parentNode.insertBefore(banner, tournamentInfo.nextSibling);
+      
+      // Remove ability to remove players
+      const removeButtons = document.querySelectorAll('.remove-player');
+      removeButtons.forEach(button => {
+        button.remove();
+      });
+      
+      // Add submitted class to team list for styling
+      document.getElementById('selectedPlayers').classList.add('submitted');
+      
+      // Disable search and sorting functionality
+      document.getElementById('playerSearch').disabled = true;
+      document.getElementById('playerSort').disabled = true;
+    }
+    
+    // Helper function to get initials from name
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .map(part => part[0])
+        .join('')
+        .toUpperCase();
+    }
+    
+    // Function to create a player avatar (image or fallback)
+    function createPlayerAvatar(player, size = 'large') {
+      const initials = getInitials(player.name);
+      const defaultImageUrl = 'https://mysqlvm.blob.core.windows.net/pro-players/acl-pro-logo-default.svg';
+      const imageUrl = player.profile_picture || defaultImageUrl;
+      
+      // Determine CSS class based on size
+      const cssClass = size === 'large' ? 'player-avatar' : 'team-player-avatar';
+      const fallbackClass = size === 'large' ? 'player-avatar-fallback' : 'team-player-avatar-fallback';
+      
+      // Create image element with fallback
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.alt = player.name;
+      img.className = cssClass;
+      img.onerror = function() {
+        // Replace with fallback div showing initials
+        const parent = this.parentNode;
+        const fallback = document.createElement('div');
+        fallback.className = fallbackClass;
+        fallback.textContent = initials;
+        parent.replaceChild(fallback, this);
+      };
+      
+      return img;
+    }
+    
+    // Function to load existing team data
+    function loadExistingTeam(players) {
+      // Clear the empty message if it exists
+      const emptyMessage = document.getElementById('emptyTeamMessage');
+      if (emptyMessage) emptyMessage.remove();
+      
+      const teamList = document.getElementById('selectedPlayers');
+      
+      // Add each player to the team list
+      players.forEach(player => {
+        const teamPlayer = document.createElement('div');
+        teamPlayer.className = 'team-player';
+        teamPlayer.dataset.playerId = player.id;
+        teamPlayer.dataset.playerPrice = player.price;
+        
+        // Create player info with avatar
+        const playerInfo = document.createElement('div');
+        playerInfo.className = 'team-player-info';
+        
+        // Add avatar
+        const avatar = createPlayerAvatar(player, 'small');
+        playerInfo.appendChild(avatar);
+        
+        // Add name and price
+        const namePrice = document.createElement('div');
+        namePrice.innerHTML = `
+          <strong>${player.name}</strong>
+          <div>$${player.price.toLocaleString()}</div>
+        `;
+        playerInfo.appendChild(namePrice);
+        
+        teamPlayer.appendChild(playerInfo);
+        teamList.appendChild(teamPlayer);
+      });
+      
+      // Update the team summary
+      updateTeamSummary();
+    }
+    
+    // Function to submit a team
+    async function submitTeam(userId, tournamentId, players) {
+      try {
+        console.log('Submitting team:', {
+          userId,
+          tournamentId,
+          players
+        });
+        
+        // Calculate total spent
+        const totalSpent = players.reduce((sum, player) => sum + player.price, 0);
+        
+        // First create the team entry
+        const { data: team, error: teamError } = await supabase
+          .from('teams')
+          .insert([
+            { 
+              user_id: userId,
+              tournament_id: tournamentId,
+              total_spent: totalSpent,
+              created_at: new Date().toISOString()
+            }
+          ])
+          .select();
+          
+        if (teamError) {
+          console.error('Error creating team:', teamError);
+          return false;
+        }
+        
+        console.log('Team created:', team);
+        
+        // Then add the team players
+        const teamId = team[0].id;
+        const teamPlayers = players.map(player => ({
+          team_id: teamId,
+          player_id: player.id,
+          price: player.price
+        }));
+        
+        console.log('Adding team players:', teamPlayers);
+        
+        const { error: playersError } = await supabase
+          .from('team_players')
+          .insert(teamPlayers);
+          
+        if (playersError) {
+          console.error('Error adding team players:', playersError);
+          return false;
+        }
+        
+        console.log('Team players added successfully');
+        return true;
+      } catch (err) {
+        console.error('Unexpected error in submitTeam:', err);
+        return false;
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Debug: Log the page load and tournament ID
+      console.log('draft.html loaded');
+      const urlParams = new URLSearchParams(window.location.search);
+      const tournamentId = urlParams.get('tournamentId');
+      console.log('Tournament ID:', tournamentId);
+      
+      // Check if user is authenticated
+      const user = await checkAuth();
+      
+      if (user) {
+        console.log('User authenticated:', user.email);
+        
+        // Add user info to UI
+        const header = document.querySelector('header');
+        if (header && !document.querySelector('.user-menu')) {
+          const userMenu = document.createElement('div');
+          userMenu.className = 'user-menu';
+          userMenu.innerHTML = `
+            <a href="profile.html">${user.email}</a>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          `;
+          header.appendChild(userMenu);
+          
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.href = 'login.html';
+            }
+          });
+        }
+        
+        // Initialize the draft page with tournament data
+        if (tournamentId) {
+          try {
+            // Fetch tournament info
+            const { data: tournament, error } = await supabase
+              .from('tournaments')
+              .select('*')
+              .eq('id', tournamentId)
+              .single();
+              
+            if (error) {
+              console.error('Error fetching tournament:', error);
+              showToast('Error loading tournament data', 'error');
+              return;
+            }
+            
+            if (tournament) {
+              // Update tournament info on the page
+              document.querySelector('#tournamentInfo h2').textContent = tournament.name;
+              const tournamentDateString = `${formatDate(tournament.start_date)} • $${tournament.prize_pool.toLocaleString()} Prize Pool • Draft ${tournament.team_size} Players`;
+              document.querySelector('#tournamentInfo p').textContent = tournamentDateString;
+              
+              // Update timer
+              updateDraftTimer(tournament.draft_close_date);
+              
+              // Check if user already has a team for this tournament
+              const { data: existingTeam, error: teamError } = await supabase
+                .from('teams')
+                .select(`
+                  *,
+                  team_players(
+                    *,
+                    players(*)
+                  )
+                `)
+                .eq('user_id', user.id)
+                .eq('tournament_id', tournamentId)
+                .single();
+                
+              if (teamError && teamError.code !== 'PGRST116') { // PGRST116 means no rows returned
+                console.error('Error checking existing team:', teamError);
+              }
+              
+              if (existingTeam) {
+                showToast('You already have a team for this tournament', 'info');
+                
+                // Convert the existing team data to the format our function expects
+                const selectedPlayers = existingTeam.team_players.map(tp => ({
+                  id: tp.player_id,
+                  price: tp.price,
+                  name: tp.players.name,
+                  profile_picture: tp.players.profile_picture
+                }));
+                
+                // Load the players into the UI
+                loadExistingTeam(selectedPlayers);
+                
+                // Then switch to view-only mode
+                setTimeout(() => {
+                  switchToViewOnlyMode(selectedPlayers);
+                }, 500);
+              }
+            }
+            
+            // Fetch available players
+            const { data: players, error: playersError } = await supabase
+              .from('players')
+              .select('*, profile_picture')
+              .order('rank', { ascending: true });
+              
+            if (playersError) {
+              console.error('Error fetching players:', playersError);
+              showToast('Error loading players', 'error');
+              return;
+            }
+            
+            if (players && players.length > 0) {
+              // Update player count
+              document.getElementById('playerCount').textContent = `${players.length} players`;
+              
+              // Clear existing players and render new ones
+              const playerList = document.getElementById('playerList');
+              playerList.innerHTML = '';
+              
+              players.forEach(player => {
+                const playerCard = document.createElement('div');
+                playerCard.className = 'player-card';
+                playerCard.dataset.playerId = player.id;
+                playerCard.dataset.playerPrice = player.price;
+                playerCard.dataset.profilePicture = player.profile_picture || '';
+                
+                // Create player avatar
+                const avatar = createPlayerAvatar(player, 'large');
+                
+                // Create player info section
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'player-info';
+                playerInfo.appendChild(avatar);
+                
+                // Add name and price
+                const namePrice = document.createElement('div');
+                namePrice.innerHTML = `
+                  <h4 style="margin: 0;">${player.name}</h4>
+                  <div style="color: var(--accent);">$${player.price.toLocaleString()}</div>
+                `;
+                playerInfo.appendChild(namePrice);
+                
+                // Create player stats section
+                const playerStats = document.createElement('div');
+                playerStats.className = 'player-stats';
+                playerStats.innerHTML = `
+                  <div class="stat">
+                    <span>Rank:</span>
+                    <span class="stat-value">#${player.rank}</span>
+                  </div>
+                  <div class="stat">
+                    <span>Win Rate:</span>
+                    <span class="stat-value">${player.win_rate}%</span>
+                  </div>
+                  <div class="stat">
+                    <span>Airmail:</span>
+                    <span class="stat-value">${player.airmail_percentage}%</span>
+                  </div>
+                  <div class="stat">
+                    <span>Push:</span>
+                    <span class="stat-value">${player.push_percentage}%</span>
+                  </div>
+                `;
+                
+                // Add badges
+                const badgesHTML = renderBadges(player.badges);
+                
+                // Add draft button
+                const draftBtn = document.createElement('button');
+                draftBtn.className = 'draft-btn';
+                draftBtn.textContent = '+ DRAFT';
+                
+                // Assemble the player card
+                playerCard.appendChild(playerInfo);
+                playerCard.appendChild(playerStats);
+                if (badgesHTML) {
+                  const badgesDiv = document.createElement('div');
+                  badgesDiv.innerHTML = badgesHTML;
+                  playerCard.appendChild(badgesDiv.firstChild);
+                }
+                playerCard.appendChild(draftBtn);
+                
+                playerList.appendChild(playerCard);
+              });
+            }
+          } catch (err) {
+            console.error('Error initializing draft page:', err);
+            showToast('An unexpected error occurred', 'error');
+          }
+        } else {
+          // No tournament ID provided
+          showToast('No tournament selected. Redirecting to tournaments...', 'error');
+          setTimeout(() => {
+            window.location.href = 'tournaments.html';
+          }, 2000);
+        }
+        
+        // Setup draft buttons and search functionality
+        setupDraftButtons();
+        setupSearchFilter();
+        
+        // Handle form submission
+        document.getElementById('submitTeam').addEventListener('click', async function() {
+          const selectedPlayers = Array.from(document.querySelectorAll('.team-player')).map(el => ({
+            id: el.dataset.playerId,
+            price: parseInt(el.dataset.playerPrice)
+          }));
+          
+          if (selectedPlayers.length === 4) {
+            try {
+              showToast('Submitting team...', 'info');
+              
+              const result = await submitTeam(user.id, tournamentId, selectedPlayers);
+              
+              if (result) {
+                showToast('Team submitted successfully!');
+                // Switch to view-only mode instead of redirecting
+                switchToViewOnlyMode(selectedPlayers);
+              } else {
+                showToast('Error submitting team. Please try again.', 'error');
+              }
+            } catch (err) {
+              console.error('Error submitting team:', err);
+              showToast('Error submitting team. Please try again.', 'error');
+            }
+          } else {
+            showToast('Please select exactly 4 players', 'error');
+          }
+        });
+      }
+    });
+    
+    // Helper function to render player badges
+    function renderBadges(badges) {
+      if (!badges || badges.length === 0) return '';
+      
+      return `
+        <div class="badges">
+          ${badges.map(badge => `<span class="badge">${badge}</span>`).join('')}
+        </div>
+      `;
+    }
+    
+    // Format date helper
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    }
+    
+    // Update draft timer
+    function updateDraftTimer(closeDate) {
+      const timerElement = document.getElementById('draftTimer').querySelector('span:last-child');
+      const now = new Date();
+      const draftClose = new Date(closeDate);
+      
+      if (draftClose > now) {
+        const diff = draftClose - now;
+        const hours = Math.floor(diff / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        timerElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Update timer every second
+        setTimeout(() => updateDraftTimer(closeDate), 1000);
+      } else {
+        timerElement.textContent = '00:00:00';
+        timerElement.style.color = 'var(--secondary)';
+        showToast('Draft has closed for this tournament', 'error');
+      }
+    }
+    
+    // Setup draft buttons functionality
+    function setupDraftButtons() {
+      const playerList = document.getElementById('playerList');
+      
+      playerList.addEventListener('click', function(e) {
+        if (!e.target.classList.contains('draft-btn')) return;
+        
+        const draftButton = e.target;
+        const playerCard = draftButton.closest('.player-card');
+        const playerId = playerCard.dataset.playerId;
+        const playerName = playerCard.querySelector('h4').textContent;
+        const playerPrice = playerCard.querySelector('.player-info div div').textContent;
+        const priceValue = parseInt(playerCard.dataset.playerPrice);
+        const profilePicture = playerCard.dataset.profilePicture;
+        
+        // Add player to team
+        addPlayerToTeam(playerId, playerName, playerPrice, priceValue, profilePicture);
+        
+        // Disable the draft button
+        draftButton.disabled = true;
+        playerCard.style.opacity = '0.6';
+      });
+    }
+    
+    // Add player to team
+    function addPlayerToTeam(playerId, playerName, playerPrice, priceValue, profilePicture) {
+      const teamList = document.getElementById('selectedPlayers');
+      const teamCount = document.querySelectorAll('.team-player').length;
+      const maxTeamSize = 4;
+      
+      if (teamCount >= maxTeamSize) {
+        showToast('Your team is full! Remove a player to add another.', 'error');
+        return;
+      }
+      
+      // Remove empty state message if first player
+      if (teamCount === 0) {
+        const emptyMessage = document.getElementById('emptyTeamMessage');
+        if (emptyMessage) emptyMessage.remove();
+      }
+      
+      // Create team player element
+      const teamPlayer = document.createElement('div');
+      teamPlayer.className = 'team-player';
+      teamPlayer.dataset.playerId = playerId;
+      teamPlayer.dataset.playerPrice = priceValue;
+      
+      // Create player info with avatar
+      const playerInfo = document.createElement('div');
+      playerInfo.className = 'team-player-info';
+      
+      // Create avatar (either image or fallback with initials)
+      const defaultImageUrl = 'https://mysqlvm.blob.core.windows.net/pro-players/acl-pro-logo-default.svg';
+      const imageUrl = profilePicture || defaultImageUrl;
+      const initials = getInitials(playerName);
+      
+      const avatar = document.createElement('img');
+      avatar.src = imageUrl;
+      avatar.alt = playerName;
+      avatar.className = 'team-player-avatar';
+      avatar.onerror = function() {
+        // Replace with fallback div showing initials
+        const fallback = document.createElement('div');
+        fallback.className = 'team-player-avatar-fallback';
+        fallback.textContent = initials;
+        this.parentNode.replaceChild(fallback, this);
+      };
+      
+      playerInfo.appendChild(avatar);
+      
+      // Add name and price
+      const namePrice = document.createElement('div');
+      namePrice.innerHTML = `
+        <strong>${playerName}</strong>
+        <div>${playerPrice}</div>
+      `;
+      playerInfo.appendChild(namePrice);
+      
+      // Add remove button
+      const removeButton = document.createElement('button');
+      removeButton.className = 'remove-player';
+      removeButton.textContent = '×';
+      
+      // Add remove functionality
+      removeButton.addEventListener('click', function() {
+        teamPlayer.remove();
+        
+        // Re-enable the draft button
+        const playerCard = document.querySelector(`.player-card[data-player-id="${playerId}"]`);
+        if (playerCard) {
+          playerCard.querySelector('.draft-btn').disabled = false;
+          playerCard.style.opacity = '1';
+        }
+        
+        updateTeamSummary();
+        
+        // Show empty state if no players
+        if (document.querySelectorAll('.team-player').length === 0) {
+          const emptyMessage = document.createElement('p');
+          emptyMessage.id = 'emptyTeamMessage';
+          emptyMessage.style.textAlign = 'center';
+          emptyMessage.style.color = 'rgba(255,255,255,0.5)';
+          emptyMessage.textContent = 'Select players from the available pool to build your team';
+          teamList.appendChild(emptyMessage);
+        }
+      });
+      
+      teamPlayer.appendChild(playerInfo);
+      teamPlayer.appendChild(removeButton);
+      teamList.appendChild(teamPlayer);
+      updateTeamSummary();
+    }
+    
+    // Update team summary
+    function updateTeamSummary() {
+      const teamPlayers = document.querySelectorAll('.team-player');
+      const teamCount = teamPlayers.length;
+      const maxTeamSize = 4;
+      const totalChips = 10000;
+      
+      let chipsSpent = 0;
+      teamPlayers.forEach(player => {
+        chipsSpent += parseInt(player.dataset.playerPrice);
+      });
+      
+      // Update UI elements
+      document.getElementById('teamCount').textContent = `${teamCount}/${maxTeamSize} Selected`;
+      document.getElementById('totalPlayers').textContent = `${teamCount}/${maxTeamSize}`;
+      document.getElementById('chipsSpent').textContent = chipsSpent;
+      document.getElementById('chipsRemaining').textContent = totalChips - chipsSpent;
+      
+      // Enable/disable submit button
+      const submitButton = document.getElementById('submitTeam');
+      submitButton.disabled = teamCount !== maxTeamSize;
+    }
+    
+    // Function to set up search and filter
+    function setupSearchFilter() {
+      const searchInput = document.getElementById('playerSearch');
+      const sortSelect = document.getElementById('playerSort');
+      
+      // Add event listeners for search and sort
+      searchInput.addEventListener('input', filterPlayers);
+      sortSelect.addEventListener('change', sortPlayers);
+      
+      function filterPlayers() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const playerCards = document.querySelectorAll('.player-card');
+        
+        playerCards.forEach(card => {
+          const playerName = card.querySelector('h4').textContent.toLowerCase();
+          const isVisible = playerName.includes(searchTerm);
+          card.style.display = isVisible ? 'block' : 'none';
+        });
+      }
+      
+      function sortPlayers() {
+        const sortOption = sortSelect.value.split(': ')[1].toLowerCase();
+        const playerList = document.getElementById('playerList');
+        const playerCards = Array.from(playerList.querySelectorAll('.player-card'));
+        
+        playerCards.sort((a, b) => {
+          if (sortOption === 'rank') {
+            const rankA = parseInt(a.querySelector('.stat-value').textContent.replace('#', ''));
+            const rankB = parseInt(b.querySelector('.stat-value').textContent.replace('#', ''));
+            return rankA - rankB;
+          } else if (sortOption === 'win rate') {
+            const winRateA = parseFloat(a.querySelectorAll('.stat-value')[1].textContent);
+            const winRateB = parseFloat(b.querySelectorAll('.stat-value')[1].textContent);
+            return winRateB - winRateA;
+          } else if (sortOption === 'price') {
+            const priceA = parseInt(a.dataset.playerPrice);
+            const priceB = parseInt(b.dataset.playerPrice);
+            return priceB - priceA;
+          }
+          return 0;
+        });
+        
+        // Remove all current cards
+        playerCards.forEach(card => card.remove());
+        
+        // Add sorted cards back
+        playerCards.forEach(card => playerList.appendChild(card));
+      }
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set color based on message type
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

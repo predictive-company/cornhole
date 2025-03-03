@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournaments - Cornhole Kings</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">CK</div>
+        <h1>Cornhole Kings</h1>
+      </div>
+      <nav>
+        <a href="tournaments.html" class="active">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+      </nav>
+    </header>
+    
+    <div class="tournaments-container">
+      <h2>Upcoming Tournaments</h2>
+      
+      <div id="tournamentsList" class="tournaments-list">
+        <p>Loading tournaments...</p>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Check if user is authenticated
+      const user = await checkAuth();
+      
+      if (user) {
+        // Add user info to UI
+        const header = document.querySelector('header');
+        if (header && !document.querySelector('.user-menu')) {
+          const userMenu = document.createElement('div');
+          userMenu.className = 'user-menu';
+          userMenu.innerHTML = `
+            <a href="profile.html">${user.email}</a>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          `;
+          header.appendChild(userMenu);
+          
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.href = 'login.html';
+            }
+          });
+        }
+        
+        // Fetch tournaments
+        const { data: tournaments, error } = await supabase
+          .from('tournaments')
+          .select('*')
+          .order('start_date', { ascending: true });
+        
+        const tournamentsContainer = document.getElementById('tournamentsList');
+        
+        if (error) {
+          console.error('Error fetching tournaments:', error);
+          tournamentsContainer.innerHTML = '<p>Error loading tournaments. Please try again later.</p>';
+          return;
+        }
+        
+        if (tournaments.length === 0) {
+          tournamentsContainer.innerHTML = '<p>No upcoming tournaments available.</p>';
+          return;
+        }
+        
+        // Display tournaments
+        tournamentsContainer.innerHTML = '';
+        tournaments.forEach(tournament => {
+          const tournamentElement = document.createElement('div');
+          tournamentElement.className = 'tournament-card';
+          
+          const now = new Date();
+          const draftCloseDate = new Date(tournament.draft_close_date);
+          const isDraftOpen = now < draftCloseDate;
+          
+          tournamentElement.innerHTML = `
+            <h3>${tournament.name}</h3>
+            <div class="tournament-details">
+              <p><strong>Date:</strong> ${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}</p>
+              <p><strong>Prize Pool:</strong> $${tournament.prize_pool.toLocaleString()}</p>
+              <p><strong>Draft Close:</strong> ${draftCloseDate.toLocaleString()}</p>
+              <p><strong>Team Size:</strong> ${tournament.team_size} players</p>
+            </div>
+            ${isDraftOpen ? 
+              `<a href="draft.html?tournamentId=${tournament.id}" class="draft-now-btn">Draft Now</a>` : 
+              `<div class="draft-closed">Draft Closed</div>`}
+          `;
+          
+          tournamentsContainer.appendChild(tournamentElement);
+        });
+      }
+    });
+  </script>
+</body>
+</html>

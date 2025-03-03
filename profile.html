@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Cornhole Kings</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">CK</div>
+        <h1>Cornhole Kings</h1>
+      </div>
+      <nav>
+        <a href="index.html">Tournaments</a>
+        <a href="profile.html" class="active">My Profile</a>
+      </nav>
+    </header>
+    
+    <div class="profile-container">
+      <h2>My Profile</h2>
+      
+      <div class="profile-section">
+        <h3>Account Information</h3>
+        <div class="profile-details">
+          <div class="profile-row">
+            <span class="profile-label">Email:</span>
+            <span id="userEmail">Loading...</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-label">Name:</span>
+            <span id="userName">Loading...</span>
+          </div>
+          <div class="profile-row">
+            <span class="profile-label">Account Created:</span>
+            <span id="userCreated">Loading...</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <h3>My Teams</h3>
+        <div id="userTeams" class="teams-list">
+          <p>Loading your teams...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Check if user is authenticated
+      const user = await checkAuth();
+      
+      if (user) {
+        // Update profile information
+        document.getElementById('userEmail').textContent = user.email;
+        document.getElementById('userName').textContent = user.user_metadata.full_name || 'Not provided';
+        document.getElementById('userCreated').textContent = new Date(user.created_at).toLocaleDateString();
+        
+        // Fetch user's teams
+        const { data: teams, error } = await supabase
+          .from('teams')
+          .select(`
+            *,
+            tournaments(name, start_date),
+            team_players(
+              *,
+              players(name, price)
+            )
+          `)
+          .eq('user_id', user.id);
+        
+        const teamsContainer = document.getElementById('userTeams');
+        
+        if (error) {
+          console.error('Error fetching teams:', error);
+          teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
+          return;
+        }
+        
+        if (teams.length === 0) {
+          teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
+          return;
+        }
+        
+        // Display teams
+        teamsContainer.innerHTML = '';
+        teams.forEach(team => {
+          const teamElement = document.createElement('div');
+          teamElement.className = 'team-card';
+          
+          const players = team.team_players.map(tp => tp.players.name).join(', ');
+          
+          teamElement.innerHTML = `
+            <h4>${team.tournaments.name}</h4>
+            <p>Tournament Date: ${new Date(team.tournaments.start_date).toLocaleDateString()}</p>
+            <p>Team Cost: $${team.total_spent}</p>
+            <p>Players: ${players}</p>
+          `;
+          
+          teamsContainer.appendChild(teamElement);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
