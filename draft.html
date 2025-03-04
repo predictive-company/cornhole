@@ -127,6 +127,56 @@
       color: white;
       margin-right: 0.5rem;
     }
+    
+    /* New points system styles */
+    .potential-points {
+      background-color: rgba(39, 174, 96, 0.2);
+      color: #27ae60;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 5px;
+    }
+    
+    .points-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .points-icon {
+      width: 24px;
+      height: 24px;
+      background-color: #27ae60;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .points-range {
+      background-color: rgba(39, 174, 96, 0.1);
+      border-radius: 4px;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .points-description {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .points-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
   </style>
 </head>
 <body>
@@ -139,15 +189,25 @@
       <nav>
         <a href="tournaments.html">Tournaments</a>
         <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
       </nav>
     </header>
     
     <div class="tournament-info" id="tournamentInfo">
       <h2>Nashville Spring Showdown</h2>
       <p>March 15-16, 2025 • $25,000 Prize Pool • Draft 4 Players</p>
-      <div class="chips-info">
-        <div class="chip-icon">$</div>
-        <span>Your Draft Chips: <strong id="userChips">10,000</strong></span>
+      <div class="points-info">
+        <div class="points-icon">P</div>
+        <span>Potential Points: Higher rankings earn fewer points, underdogs earn more</span>
+      </div>
+      <div class="points-range">
+        <div class="points-description">Player points are based on their ranking. Lower ranked players offer more potential points!</div>
+        <div class="points-scale">
+          <span>Top Ranked: 30-50 pts</span>
+          <span>Mid Ranked: 50-70 pts</span>
+          <span>Lower Ranked: 70-100 pts</span>
+        </div>
       </div>
       <div class="timer" id="draftTimer">
         <span>Draft Closes In:</span>
@@ -167,7 +227,7 @@
           <select id="playerSort">
             <option>Sort By: Rank</option>
             <option>Sort By: Win Rate</option>
-            <option>Sort By: Price</option>
+            <option>Sort By: Points</option>
           </select>
         </div>
         
@@ -196,12 +256,8 @@
             <span id="totalPlayers">0/4</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span>Chips Spent:</span>
-            <span id="chipsSpent">0</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-weight: bold;">
-            <span>Remaining:</span>
-            <span id="chipsRemaining">10,000</span>
+            <span>Total Potential Points:</span>
+            <span id="totalPoints">0</span>
           </div>
         </div>
         
@@ -220,6 +276,26 @@
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
+    // Global constants
+    const MAX_TEAM_SIZE = 4;
+    
+    // Function to calculate potential points based on rank
+    function calculatePotentialPoints(rank) {
+  // Top players (lower rank numbers) get fewer points
+  // Lower-ranked players (higher rank numbers) get more points
+  
+      if (rank <= 10) {
+        // Top 10 players: 30-50 points (rank 1 = 30 points, rank 10 = 50 points)
+        return 30 + ((rank - 1) * 2);
+      } else if (rank <= 30) {
+        // Rank 11-30: 50-70 points
+        return 50 + ((rank - 10) * 1);
+      } else {
+        // Rank 31+: 70-100 points (capped at 100)
+        return Math.min(100, Math.round(70 + ((rank - 30) * 0.8)));
+      }
+    }
+    
     // Function to switch to view-only mode after team submission
     function switchToViewOnlyMode(selectedPlayers) {
       // Get the player IDs that are in the team
@@ -346,7 +422,7 @@
         const teamPlayer = document.createElement('div');
         teamPlayer.className = 'team-player';
         teamPlayer.dataset.playerId = player.id;
-        teamPlayer.dataset.playerPrice = player.price;
+        teamPlayer.dataset.potentialPoints = player.potentialPoints;
         
         // Create player info with avatar
         const playerInfo = document.createElement('div');
@@ -356,13 +432,13 @@
         const avatar = createPlayerAvatar(player, 'small');
         playerInfo.appendChild(avatar);
         
-        // Add name and price
-        const namePrice = document.createElement('div');
-        namePrice.innerHTML = `
+        // Add name and points
+        const namePoints = document.createElement('div');
+        namePoints.innerHTML = `
           <strong>${player.name}</strong>
-          <div>$${player.price.toLocaleString()}</div>
+          <div class="potential-points">${player.potentialPoints} pts</div>
         `;
-        playerInfo.appendChild(namePrice);
+        playerInfo.appendChild(namePoints);
         
         teamPlayer.appendChild(playerInfo);
         teamList.appendChild(teamPlayer);
@@ -381,8 +457,8 @@
           players
         });
         
-        // Calculate total spent
-        const totalSpent = players.reduce((sum, player) => sum + player.price, 0);
+        // Calculate total potential points
+        const totalPotentialPoints = players.reduce((sum, player) => sum + player.potentialPoints, 0);
         
         // First create the team entry
         const { data: team, error: teamError } = await supabase
@@ -391,7 +467,7 @@
             { 
               user_id: userId,
               tournament_id: tournamentId,
-              total_spent: totalSpent,
+              total_potential_points: totalPotentialPoints,
               created_at: new Date().toISOString()
             }
           ])
@@ -409,7 +485,7 @@
         const teamPlayers = players.map(player => ({
           team_id: teamId,
           player_id: player.id,
-          price: player.price
+          potential_points: player.potentialPoints
         }));
         
         console.log('Adding team players:', teamPlayers);
@@ -511,12 +587,17 @@
                 showToast('You already have a team for this tournament', 'info');
                 
                 // Convert the existing team data to the format our function expects
-                const selectedPlayers = existingTeam.team_players.map(tp => ({
-                  id: tp.player_id,
-                  price: tp.price,
-                  name: tp.players.name,
-                  profile_picture: tp.players.profile_picture
-                }));
+                const selectedPlayers = existingTeam.team_players.map(tp => {
+                  // Calculate potential points based on player rank if not already stored
+                  const potentialPoints = tp.potential_points || calculatePotentialPoints(tp.players.rank);
+                  
+                  return {
+                    id: tp.player_id,
+                    potentialPoints: potentialPoints,
+                    name: tp.players.name,
+                    profile_picture: tp.players.profile_picture
+                  };
+                });
                 
                 // Load the players into the UI
                 loadExistingTeam(selectedPlayers);
@@ -541,6 +622,11 @@
             }
             
             if (players && players.length > 0) {
+              // Add potential points to each player based on rank
+              players.forEach(player => {
+                player.potentialPoints = calculatePotentialPoints(player.rank);
+              });
+              
               // Update player count
               document.getElementById('playerCount').textContent = `${players.length} players`;
               
@@ -552,7 +638,7 @@
                 const playerCard = document.createElement('div');
                 playerCard.className = 'player-card';
                 playerCard.dataset.playerId = player.id;
-                playerCard.dataset.playerPrice = player.price;
+                playerCard.dataset.potentialPoints = player.potentialPoints;
                 playerCard.dataset.profilePicture = player.profile_picture || '';
                 
                 // Create player avatar
@@ -563,13 +649,13 @@
                 playerInfo.className = 'player-info';
                 playerInfo.appendChild(avatar);
                 
-                // Add name and price
-                const namePrice = document.createElement('div');
-                namePrice.innerHTML = `
+                // Add name and potential points
+                const namePoints = document.createElement('div');
+                namePoints.innerHTML = `
                   <h4 style="margin: 0;">${player.name}</h4>
-                  <div style="color: var(--accent);">$${player.price.toLocaleString()}</div>
+                  <div class="potential-points">${player.potentialPoints} potential points</div>
                 `;
-                playerInfo.appendChild(namePrice);
+                playerInfo.appendChild(namePoints);
                 
                 // Create player stats section
                 const playerStats = document.createElement('div');
@@ -634,10 +720,10 @@
         document.getElementById('submitTeam').addEventListener('click', async function() {
           const selectedPlayers = Array.from(document.querySelectorAll('.team-player')).map(el => ({
             id: el.dataset.playerId,
-            price: parseInt(el.dataset.playerPrice)
+            potentialPoints: parseInt(el.dataset.potentialPoints)
           }));
           
-          if (selectedPlayers.length === 4) {
+          if (selectedPlayers.length === MAX_TEAM_SIZE) {
             try {
               showToast('Submitting team...', 'info');
               
@@ -716,12 +802,11 @@
         const playerCard = draftButton.closest('.player-card');
         const playerId = playerCard.dataset.playerId;
         const playerName = playerCard.querySelector('h4').textContent;
-        const playerPrice = playerCard.querySelector('.player-info div div').textContent;
-        const priceValue = parseInt(playerCard.dataset.playerPrice);
+        const potentialPoints = parseInt(playerCard.dataset.potentialPoints);
         const profilePicture = playerCard.dataset.profilePicture;
         
         // Add player to team
-        addPlayerToTeam(playerId, playerName, playerPrice, priceValue, profilePicture);
+        addPlayerToTeam(playerId, playerName, potentialPoints, profilePicture);
         
         // Disable the draft button
         draftButton.disabled = true;
@@ -730,12 +815,11 @@
     }
     
     // Add player to team
-    function addPlayerToTeam(playerId, playerName, playerPrice, priceValue, profilePicture) {
+    function addPlayerToTeam(playerId, playerName, potentialPoints, profilePicture) {
       const teamList = document.getElementById('selectedPlayers');
       const teamCount = document.querySelectorAll('.team-player').length;
-      const maxTeamSize = 4;
       
-      if (teamCount >= maxTeamSize) {
+      if (teamCount >= MAX_TEAM_SIZE) {
         showToast('Your team is full! Remove a player to add another.', 'error');
         return;
       }
@@ -750,7 +834,7 @@
       const teamPlayer = document.createElement('div');
       teamPlayer.className = 'team-player';
       teamPlayer.dataset.playerId = playerId;
-      teamPlayer.dataset.playerPrice = priceValue;
+      teamPlayer.dataset.potentialPoints = potentialPoints;
       
       // Create player info with avatar
       const playerInfo = document.createElement('div');
@@ -775,13 +859,13 @@
       
       playerInfo.appendChild(avatar);
       
-      // Add name and price
-      const namePrice = document.createElement('div');
-      namePrice.innerHTML = `
+      // Add name and points
+      const namePoints = document.createElement('div');
+      namePoints.innerHTML = `
         <strong>${playerName}</strong>
-        <div>${playerPrice}</div>
+        <div class="potential-points">${potentialPoints} pts</div>
       `;
-      playerInfo.appendChild(namePrice);
+      playerInfo.appendChild(namePoints);
       
       // Add remove button
       const removeButton = document.createElement('button');
@@ -822,23 +906,20 @@
     function updateTeamSummary() {
       const teamPlayers = document.querySelectorAll('.team-player');
       const teamCount = teamPlayers.length;
-      const maxTeamSize = 4;
-      const totalChips = 10000;
       
-      let chipsSpent = 0;
+      let totalPoints = 0;
       teamPlayers.forEach(player => {
-        chipsSpent += parseInt(player.dataset.playerPrice);
+        totalPoints += parseInt(player.dataset.potentialPoints);
       });
       
       // Update UI elements
-      document.getElementById('teamCount').textContent = `${teamCount}/${maxTeamSize} Selected`;
-      document.getElementById('totalPlayers').textContent = `${teamCount}/${maxTeamSize}`;
-      document.getElementById('chipsSpent').textContent = chipsSpent;
-      document.getElementById('chipsRemaining').textContent = totalChips - chipsSpent;
+      document.getElementById('teamCount').textContent = `${teamCount}/${MAX_TEAM_SIZE} Selected`;
+      document.getElementById('totalPlayers').textContent = `${teamCount}/${MAX_TEAM_SIZE}`;
+      document.getElementById('totalPoints').textContent = totalPoints;
       
       // Enable/disable submit button
       const submitButton = document.getElementById('submitTeam');
-      submitButton.disabled = teamCount !== maxTeamSize;
+      submitButton.disabled = teamCount !== MAX_TEAM_SIZE;
     }
     
     // Function to set up search and filter
@@ -875,10 +956,10 @@
             const winRateA = parseFloat(a.querySelectorAll('.stat-value')[1].textContent);
             const winRateB = parseFloat(b.querySelectorAll('.stat-value')[1].textContent);
             return winRateB - winRateA;
-          } else if (sortOption === 'price') {
-            const priceA = parseInt(a.dataset.playerPrice);
-            const priceB = parseInt(b.dataset.playerPrice);
-            return priceB - priceA;
+          } else if (sortOption === 'points') {
+            const pointsA = parseInt(a.dataset.potentialPoints);
+            const pointsB = parseInt(b.dataset.potentialPoints);
+            return pointsB - pointsA;
           }
           return 0;
         });

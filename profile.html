@@ -5,6 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - Cornhole Kings</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .points-total {
+      background-color: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+    
+    .points-badge {
+      background-color: #27ae60;
+      color: white;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 0.5rem;
+    }
+    
+    .player-avatar-small {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: white;
+      margin-right: 0.5rem;
+    }
+    
+    .team-player {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .team-player:last-child {
+      border-bottom: none;
+    }
+    
+    .team-player-info {
+      flex: 1;
+    }
+    
+    .team-player-points {
+      text-align: right;
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    .team-players-list {
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .team-card-header .tournament-date {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -14,8 +88,10 @@
         <h1>Cornhole Kings</h1>
       </div>
       <nav>
-        <a href="index.html">Tournaments</a>
+        <a href="tournaments.html">Tournaments</a>
         <a href="profile.html" class="active">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
       </nav>
     </header>
     
@@ -55,6 +131,15 @@
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
+    // Helper function to get initials from name
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .map(part => part[0])
+        .join('')
+        .toUpperCase();
+    }
+    
     document.addEventListener('DOMContentLoaded', async function() {
       // Check if user is authenticated
       const user = await checkAuth();
@@ -62,7 +147,7 @@
       if (user) {
         // Update profile information
         document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userName').textContent = user.user_metadata.full_name || 'Not provided';
+        document.getElementById('userName').textContent = user.user_metadata?.full_name || 'Not provided';
         document.getElementById('userCreated').textContent = new Date(user.created_at).toLocaleDateString();
         
         // Fetch user's teams
@@ -73,10 +158,11 @@
             tournaments(name, start_date),
             team_players(
               *,
-              players(name, price)
+              players(*)
             )
           `)
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
         
         const teamsContainer = document.getElementById('userTeams');
         
@@ -86,7 +172,7 @@
           return;
         }
         
-        if (teams.length === 0) {
+        if (!teams || teams.length === 0) {
           teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
           return;
         }
@@ -97,19 +183,94 @@
           const teamElement = document.createElement('div');
           teamElement.className = 'team-card';
           
-          const players = team.team_players.map(tp => tp.players.name).join(', ');
+          // Calculate total potential points
+          let totalPotentialPoints = 0;
           
-          teamElement.innerHTML = `
-            <h4>${team.tournaments.name}</h4>
-            <p>Tournament Date: ${new Date(team.tournaments.start_date).toLocaleDateString()}</p>
-            <p>Team Cost: $${team.total_spent}</p>
-            <p>Players: ${players}</p>
-          `;
+          // Format players list
+          const playersList = document.createElement('div');
+          playersList.className = 'team-players-list';
+          
+          if (team.team_players && team.team_players.length > 0) {
+            team.team_players.forEach(tp => {
+              const playerPotentialPoints = tp.potential_points || 0;
+              totalPotentialPoints += playerPotentialPoints;
+              
+              const playerElement = document.createElement('div');
+              playerElement.className = 'team-player';
+              
+              // Create player avatar
+              const avatar = document.createElement('div');
+              avatar.className = 'player-avatar-small';
+              avatar.textContent = getInitials(tp.players.name);
+              
+              // Player info section
+              const playerInfo = document.createElement('div');
+              playerInfo.className = 'team-player-info';
+              playerInfo.textContent = tp.players.name;
+              
+              // Player points
+              const playerPoints = document.createElement('div');
+              playerPoints.className = 'team-player-points';
+              playerPoints.textContent = `${playerPotentialPoints} pts`;
+              
+              playerElement.appendChild(avatar);
+              playerElement.appendChild(playerInfo);
+              playerElement.appendChild(playerPoints);
+              
+              playersList.appendChild(playerElement);
+            });
+          }
+          
+          // Create team card header
+          const header = document.createElement('div');
+          header.className = 'team-card-header';
+          
+          const heading = document.createElement('h4');
+          heading.textContent = team.tournaments?.name || 'Unknown Tournament';
+          
+          const date = document.createElement('div');
+          date.className = 'tournament-date';
+          date.textContent = team.tournaments?.start_date ? new Date(team.tournaments.start_date).toLocaleDateString() : 'Unknown Date';
+          
+          header.appendChild(heading);
+          header.appendChild(date);
+          
+          // Assemble the team card
+          teamElement.appendChild(header);
+          
+          // Add points information
+          const pointsInfo = document.createElement('div');
+          pointsInfo.className = 'points-total';
+          pointsInfo.textContent = `Total Potential Points: ${totalPotentialPoints}`;
+          teamElement.appendChild(pointsInfo);
+          
+          // Add players list
+          teamElement.appendChild(playersList);
           
           teamsContainer.appendChild(teamElement);
         });
       }
     });
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set color based on message type
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
   </script>
 </body>
 </html>

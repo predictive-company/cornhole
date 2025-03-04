@@ -5,6 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tournaments - Cornhole Kings</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .points-system-banner {
+      background-color: rgba(39, 174, 96, 0.1);
+      border: 1px solid #27ae60;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .points-system-banner h3 {
+      color: #27ae60;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tournament-card .points-info {
+      background-color: rgba(39, 174, 96, 0.1);
+      border-radius: 4px;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .tournament-card .points-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      background-color: #27ae60;
+      color: white;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: bold;
+      line-height: 18px;
+      margin-right: 0.25rem;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -16,8 +53,21 @@
       <nav>
         <a href="tournaments.html" class="active">Tournaments</a>
         <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
       </nav>
     </header>
+    
+    <div class="points-system-banner">
+      <h3>NEW: Points-Based Fantasy System</h3>
+      <p>We've updated our fantasy draft system! Now, players earn potential points based on their ranking:</p>
+      <ul>
+        <li><strong>Higher-ranked players:</strong> Lower potential points (30-50 pts)</li>
+        <li><strong>Mid-ranked players:</strong> Medium potential points (50-70 pts)</li>
+        <li><strong>Lower-ranked players:</strong> Higher potential points (70-100 pts)</li>
+      </ul>
+      <p>This creates an exciting strategic balance - draft top talent or bet on underdogs for bigger rewards!</p>
+    </div>
     
     <div class="tournaments-container">
       <h2>Upcoming Tournaments</h2>
@@ -95,6 +145,10 @@
               <p><strong>Prize Pool:</strong> $${tournament.prize_pool.toLocaleString()}</p>
               <p><strong>Draft Close:</strong> ${draftCloseDate.toLocaleString()}</p>
               <p><strong>Team Size:</strong> ${tournament.team_size} players</p>
+              <div class="points-info">
+                <span class="points-icon">P</span>
+                <span>New points system! Draft top players or bet on underdogs for higher potential points.</span>
+              </div>
             </div>
             ${isDraftOpen ? 
               `<a href="draft.html?tournamentId=${tournament.id}" class="draft-now-btn">Draft Now</a>` : 
@@ -105,6 +159,26 @@
         });
       }
     });
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set different background colors for different message types
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
   </script>
 </body>
 </html>
