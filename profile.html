@@ -4,112 +4,555 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - Cornhole Kings</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 500;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 0.95rem;
+    }
+    
+    nav a:hover {
+      color: #f1c40f;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Mobile Responsiveness for Header */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+    
+    /* Profile Styles */
+    .profile-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: rgba(13, 16, 35, 0.7);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    
+    .profile-container h2 {
+      margin-top: 0;
+      color: #f1c40f;
+      border-bottom: 2px solid #f1c40f;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .profile-section {
+      margin-bottom: 2rem;
+    }
+    
+    .profile-section h3 {
+      color: #f1c40f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+    }
+    
+    .profile-row {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .profile-label {
+      font-weight: bold;
+      width: 150px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .teams-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .team-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+      border-left: 3px solid #4ade80;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .team-card h4 {
+      margin-top: 0;
+      color: #f1c40f;
+    }
+    
+    .points-total {
+      background-color: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+    
+    .points-badge {
+      background-color: #27ae60;
+      color: white;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 0.5rem;
+    }
+    
+    .player-avatar-small {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: white;
+      margin-right: 0.5rem;
+    }
+    
+    .team-player {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .team-player:last-child {
+      border-bottom: none;
+    }
+    
+    .team-player-info {
+      flex: 1;
+    }
+    
+    .team-player-points {
+      text-align: right;
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    .team-players-list {
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .team-card-header .tournament-date {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
         <div class="logo-icon">CK</div>
         <h1>Cornhole Kings</h1>
-      </div>
-      <nav>
-        <a href="index.html">Tournaments</a>
-        <a href="profile.html" class="active">My Profile</a>
-      </nav>
-    </header>
+      </a>
+    </div>
     
-    <div class="profile-container">
-      <h2>My Profile</h2>
-      
-      <div class="profile-section">
-        <h3>Account Information</h3>
-        <div class="profile-details">
-          <div class="profile-row">
-            <span class="profile-label">Email:</span>
-            <span id="userEmail">Loading...</span>
-          </div>
-          <div class="profile-row">
-            <span class="profile-label">Name:</span>
-            <span id="userName">Loading...</span>
-          </div>
-          <div class="profile-row">
-            <span class="profile-label">Account Created:</span>
-            <span id="userCreated">Loading...</span>
-          </div>
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html" class="active">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="profile-container">
+    <h2>My Profile</h2>
+    
+    <div class="profile-section">
+      <h3>Account Information</h3>
+      <div class="profile-details">
+        <div class="profile-row">
+          <span class="profile-label">Email:</span>
+          <span id="userEmail">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Name:</span>
+          <span id="userName">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Account Created:</span>
+          <span id="userCreated">Loading...</span>
         </div>
       </div>
-      
-      <div class="profile-section">
-        <h3>My Teams</h3>
-        <div id="userTeams" class="teams-list">
-          <p>Loading your teams...</p>
-        </div>
+    </div>
+    
+    <div class="profile-section">
+      <h3>My Teams</h3>
+      <div id="userTeams" class="teams-list">
+        <p>Loading your teams...</p>
       </div>
     </div>
   </div>
   
-  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+  <div id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
+    // Helper function to get initials from name
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .map(part => part[0])
+        .join('')
+        .toUpperCase();
+    }
+    
     document.addEventListener('DOMContentLoaded', async function() {
-      // Check if user is authenticated
-      const user = await checkAuth();
-      
-      if (user) {
-        // Update profile information
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userName').textContent = user.user_metadata.full_name || 'Not provided';
-        document.getElementById('userCreated').textContent = new Date(user.created_at).toLocaleDateString();
+      try {
+        // Check if user is authenticated
+        const user = await getCurrentUser();
         
-        // Fetch user's teams
-        const { data: teams, error } = await supabase
-          .from('teams')
-          .select(`
-            *,
-            tournaments(name, start_date),
-            team_players(
-              *,
-              players(name, price)
-            )
-          `)
-          .eq('user_id', user.id);
-        
-        const teamsContainer = document.getElementById('userTeams');
-        
-        if (error) {
-          console.error('Error fetching teams:', error);
-          teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
-          return;
-        }
-        
-        if (teams.length === 0) {
-          teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
-          return;
-        }
-        
-        // Display teams
-        teamsContainer.innerHTML = '';
-        teams.forEach(team => {
-          const teamElement = document.createElement('div');
-          teamElement.className = 'team-card';
-          
-          const players = team.team_players.map(tp => tp.players.name).join(', ');
-          
-          teamElement.innerHTML = `
-            <h4>${team.tournaments.name}</h4>
-            <p>Tournament Date: ${new Date(team.tournaments.start_date).toLocaleDateString()}</p>
-            <p>Team Cost: $${team.total_spent}</p>
-            <p>Players: ${players}</p>
+        if (user) {
+          // Update user section when logged in
+          const userSection = document.querySelector('.user-section');
+          userSection.innerHTML = `
+            <span class="user-email">${user.email}</span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
           `;
           
-          teamsContainer.appendChild(teamElement);
-        });
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            }
+          });
+          
+          // Update profile information
+          document.getElementById('userEmail').textContent = user.email;
+          document.getElementById('userName').textContent = user.user_metadata?.full_name || 'Not provided';
+          document.getElementById('userCreated').textContent = new Date(user.created_at).toLocaleDateString();
+          
+          // Fetch user's teams
+          const { data: teams, error } = await supabase
+            .from('teams')
+            .select(`
+              *,
+              tournaments(name, start_date),
+              team_players(
+                *,
+                players(*)
+              )
+            `)
+            .eq('user_id', user.id)
+            .order('created_at', { ascending: false });
+          
+          const teamsContainer = document.getElementById('userTeams');
+          
+          if (error) {
+            console.error('Error fetching teams:', error);
+            teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
+            return;
+          }
+          
+          if (!teams || teams.length === 0) {
+            teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
+            return;
+          }
+          
+          // Display teams
+          teamsContainer.innerHTML = '';
+          teams.forEach(team => {
+            const teamElement = document.createElement('div');
+            teamElement.className = 'team-card';
+            
+            // Calculate total potential points
+            let totalPotentialPoints = 0;
+            
+            // Format players list
+            const playersList = document.createElement('div');
+            playersList.className = 'team-players-list';
+            
+            if (team.team_players && team.team_players.length > 0) {
+              team.team_players.forEach(tp => {
+                const playerPotentialPoints = tp.potential_points || 0;
+                totalPotentialPoints += playerPotentialPoints;
+                
+                const playerElement = document.createElement('div');
+                playerElement.className = 'team-player';
+                
+                // Create player avatar
+                const avatar = document.createElement('div');
+                avatar.className = 'player-avatar-small';
+                avatar.textContent = getInitials(tp.players.name);
+                
+                // Player info section
+                const playerInfo = document.createElement('div');
+                playerInfo.className = 'team-player-info';
+                playerInfo.textContent = tp.players.name;
+                
+                // Player points
+                const playerPoints = document.createElement('div');
+                playerPoints.className = 'team-player-points';
+                playerPoints.textContent = `${playerPotentialPoints} pts`;
+                
+                playerElement.appendChild(avatar);
+                playerElement.appendChild(playerInfo);
+                playerElement.appendChild(playerPoints);
+                
+                playersList.appendChild(playerElement);
+              });
+            }
+            
+            // Create team card header
+            const header = document.createElement('div');
+            header.className = 'team-card-header';
+            
+            const heading = document.createElement('h4');
+            heading.textContent = team.tournaments?.name || 'Unknown Tournament';
+            
+            const date = document.createElement('div');
+            date.className = 'tournament-date';
+            date.textContent = team.tournaments?.start_date ? new Date(team.tournaments.start_date).toLocaleDateString() : 'Unknown Date';
+            
+            header.appendChild(heading);
+            header.appendChild(date);
+            
+            // Assemble the team card
+            teamElement.appendChild(header);
+            
+            // Add points information
+            const pointsInfo = document.createElement('div');
+            pointsInfo.className = 'points-total';
+            pointsInfo.textContent = `Total Potential Points: ${totalPotentialPoints}`;
+            teamElement.appendChild(pointsInfo);
+            
+            // Add players list
+            teamElement.appendChild(playersList);
+            
+            teamsContainer.appendChild(teamElement);
+          });
+        }
+      } catch (err) {
+        console.error('Error:', err);
       }
     });
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set different background colors for different message types
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(74, 222, 128, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
   </script>
 </body>
 </html>
