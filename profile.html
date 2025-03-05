@@ -4,112 +4,721 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - Cornhole Kings</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 500;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 0.95rem;
+    }
+    
+    nav a:hover {
+      color: #f1c40f;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Mobile Responsiveness for Header */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+    
+    /* Profile Styles */
+    .profile-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: rgba(13, 16, 35, 0.7);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    
+    .profile-container h2 {
+      margin-top: 0;
+      color: #f1c40f;
+      border-bottom: 2px solid #f1c40f;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .profile-section {
+      margin-bottom: 2rem;
+    }
+    
+    .profile-section h3 {
+      color: #f1c40f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+    }
+    
+    .profile-row {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .profile-label {
+      font-weight: bold;
+      width: 150px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .teams-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .team-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+      border-left: 3px solid #4ade80;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .team-card h4 {
+      margin-top: 0;
+      color: #f1c40f;
+    }
+    
+    .points-total {
+      background-color: rgba(39, 174, 96, 0.1);
+      color: #27ae60;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+    
+    .points-badge {
+      background-color: #27ae60;
+      color: white;
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 0.5rem;
+    }
+    
+    .player-avatar-small {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: white;
+      margin-right: 0.5rem;
+    }
+    
+    .team-player {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .team-player:last-child {
+      border-bottom: none;
+    }
+    
+    .team-player-info {
+      flex: 1;
+    }
+    
+    .team-player-points {
+      text-align: right;
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    .team-players-list {
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .team-card-header .tournament-date {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #4ade80;
+      animation: spin 1s ease-in-out infinite;
+      margin: 1rem auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
         <div class="logo-icon">CK</div>
         <h1>Cornhole Kings</h1>
-      </div>
-      <nav>
-        <a href="index.html">Tournaments</a>
-        <a href="profile.html" class="active">My Profile</a>
-      </nav>
-    </header>
+      </a>
+    </div>
     
-    <div class="profile-container">
-      <h2>My Profile</h2>
-      
-      <div class="profile-section">
-        <h3>Account Information</h3>
-        <div class="profile-details">
-          <div class="profile-row">
-            <span class="profile-label">Email:</span>
-            <span id="userEmail">Loading...</span>
-          </div>
-          <div class="profile-row">
-            <span class="profile-label">Name:</span>
-            <span id="userName">Loading...</span>
-          </div>
-          <div class="profile-row">
-            <span class="profile-label">Account Created:</span>
-            <span id="userCreated">Loading...</span>
-          </div>
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html" class="active">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="profile-container">
+    <h2>My Profile</h2>
+    
+    <div class="profile-section">
+      <h3>Account Information</h3>
+      <div class="profile-details">
+        <div class="profile-row">
+          <span class="profile-label">Email:</span>
+          <span id="userEmail">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Name:</span>
+          <span id="userName">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Account Created:</span>
+          <span id="userCreated">Loading...</span>
         </div>
       </div>
-      
-      <div class="profile-section">
-        <h3>My Teams</h3>
-        <div id="userTeams" class="teams-list">
+    </div>
+    
+    <div class="profile-section">
+      <h3>My Teams</h3>
+      <div id="userTeams" class="teams-list">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
           <p>Loading your teams...</p>
         </div>
       </div>
     </div>
   </div>
   
-  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+  <div id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Check if user is authenticated
-      const user = await checkAuth();
+    // Helper function to get initials from name
+    function getInitials(name) {
+      if (!name) return 'XX';
+      return name
+        .split(' ')
+        .map(part => part[0])
+        .join('')
+        .toUpperCase();
+    }
+    
+    // Format date helper
+    function formatDate(dateString) {
+      if (!dateString) return 'Unknown Date';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', { 
+        month: 'long', 
+        day: 'numeric', 
+        year: 'numeric' 
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Wrap initialization in async function for better error handling
+      async function initializeProfilePage() {
+        try {
+          // Check if user is authenticated
+          const user = await getCurrentUser();
+          
+          if (user) {
+            console.log('User authenticated:', user.email);
+            
+            // Update UI with user information
+            await updateUserInterface(user);
+            
+            // Fetch and display user's teams with improved error handling
+            await loadUserTeams(user);
+          } else {
+            // Not logged in, redirect to login
+            console.log('User not logged in, redirecting to login');
+            window.location.href = 'login.html?redirect=profile.html';
+          }
+        } catch (err) {
+          console.error('Error initializing profile page:', err);
+          showToast('An unexpected error occurred. Please try again later.', 'error');
+        }
+      }
       
-      if (user) {
-        // Update profile information
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userName').textContent = user.user_metadata.full_name || 'Not provided';
-        document.getElementById('userCreated').textContent = new Date(user.created_at).toLocaleDateString();
+      // Start initialization
+      initializeProfilePage();
+    });
+    
+    // Update the user interface with user data
+    async function updateUserInterface(user) {
+      try {
+        // Update user section in header when logged in
+        const userSection = document.querySelector('.user-section');
+        userSection.innerHTML = `
+          <span class="user-email">${user.email}</span>
+          <button id="logoutBtn" class="logout-btn">Logout</button>
+        `;
         
-        // Fetch user's teams
-        const { data: teams, error } = await supabase
+        // Add logout event listener
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+          try {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            } else {
+              showToast('Error logging out: ' + error.message, 'error');
+            }
+          } catch (err) {
+            console.error('Error during logout:', err);
+            showToast('Error during logout', 'error');
+          }
+        });
+        
+        // Update profile information
+        document.getElementById('userEmail').textContent = user.email || 'Not available';
+        document.getElementById('userName').textContent = user.user_metadata?.full_name || 'Not provided';
+        document.getElementById('userCreated').textContent = user.created_at ? formatDate(user.created_at) : 'Unknown';
+      } catch (err) {
+        console.error('Error updating user interface:', err);
+        showToast('Error loading user information', 'error');
+        // Continue execution despite this error
+      }
+    }
+    
+    // Load user teams with improved error handling
+    async function loadUserTeams(user) {
+      const teamsContainer = document.getElementById('userTeams');
+      
+      try {
+        // First, fetch basic team data
+        const { data: teams, error: teamsError } = await supabase
           .from('teams')
           .select(`
-            *,
-            tournaments(name, start_date),
-            team_players(
-              *,
-              players(name, price)
-            )
+            id,
+            created_at,
+            tournament_id,
+            total_potential_points
           `)
-          .eq('user_id', user.id);
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
         
-        const teamsContainer = document.getElementById('userTeams');
-        
-        if (error) {
-          console.error('Error fetching teams:', error);
+        if (teamsError) {
+          console.error('Error fetching teams:', teamsError);
           teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
           return;
         }
         
-        if (teams.length === 0) {
+        if (!teams || teams.length === 0) {
           teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
           return;
         }
         
-        // Display teams
-        teamsContainer.innerHTML = '';
+        console.log(`Found ${teams.length} teams for user`);
+        
+        // Create an array to hold all processed teams
+        const processedTeams = [];
+        
+        // Process each team sequentially to avoid race conditions
+        for (const team of teams) {
+          try {
+            // Get tournament details
+            const { data: tournament, error: tournamentError } = await supabase
+              .from('tournaments')
+              .select('name, start_date')
+              .eq('id', team.tournament_id)
+              .single();
+            
+            if (tournamentError) {
+              console.error(`Error fetching tournament for team ${team.id}:`, tournamentError);
+              // Continue anyway, we'll just use placeholder text
+            }
+            
+            // Get team players
+            const { data: teamPlayers, error: playersError } = await supabase
+              .from('team_players')
+              .select('player_id, potential_points')
+              .eq('team_id', team.id);
+            
+            if (playersError) {
+              console.error(`Error fetching players for team ${team.id}:`, playersError);
+              // Continue anyway, we'll just show empty players list
+            }
+            
+            // Prepare players data
+            let players = [];
+            
+            if (teamPlayers && teamPlayers.length > 0) {
+              // Get all player IDs
+              const playerIds = teamPlayers.map(tp => tp.player_id);
+              
+              // Fetch player details
+              const { data: playerDetails, error: playerDetailsError } = await supabase
+                .from('players')
+                .select('id, name, profile_picture, rank')
+                .in('id', playerIds);
+              
+              if (playerDetailsError) {
+                console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
+                // Continue anyway, we'll use minimal player data
+              }
+              
+              // Combine player details with team players
+              players = teamPlayers.map(tp => {
+                const player = playerDetails?.find(p => p.id === tp.player_id) || { name: 'Unknown Player' };
+                return {
+                  ...tp,
+                  player_details: player
+                };
+              });
+            }
+            
+            // Assemble complete team data
+            processedTeams.push({
+              ...team,
+              tournament: tournament || { name: 'Unknown Tournament', start_date: null },
+              players: players
+            });
+          } catch (err) {
+            console.error(`Error processing team ${team.id}:`, err);
+            // Continue to next team
+          }
+        }
+        
+        // Now render all teams to the DOM
+        renderTeams(processedTeams, teamsContainer);
+      } catch (err) {
+        console.error('Error loading user teams:', err);
+        teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
+        showToast('Error loading teams', 'error');
+      }
+    }
+    
+    // Render teams to the DOM
+    function renderTeams(teams, container) {
+      try {
+        // Clear loading message
+        container.innerHTML = '';
+        
+        // Create and append each team element
         teams.forEach(team => {
           const teamElement = document.createElement('div');
           teamElement.className = 'team-card';
           
-          const players = team.team_players.map(tp => tp.players.name).join(', ');
+          // Create team card header
+          const header = document.createElement('div');
+          header.className = 'team-card-header';
           
-          teamElement.innerHTML = `
-            <h4>${team.tournaments.name}</h4>
-            <p>Tournament Date: ${new Date(team.tournaments.start_date).toLocaleDateString()}</p>
-            <p>Team Cost: $${team.total_spent}</p>
-            <p>Players: ${players}</p>
-          `;
+          const heading = document.createElement('h4');
+          heading.textContent = team.tournament?.name || 'Unknown Tournament';
           
-          teamsContainer.appendChild(teamElement);
+          const date = document.createElement('div');
+          date.className = 'tournament-date';
+          date.textContent = formatDate(team.tournament?.start_date);
+          
+          header.appendChild(heading);
+          header.appendChild(date);
+          teamElement.appendChild(header);
+          
+          // Add points information
+          const pointsInfo = document.createElement('div');
+          pointsInfo.className = 'points-total';
+          pointsInfo.textContent = `Total Potential Points: ${team.total_potential_points || 0}`;
+          teamElement.appendChild(pointsInfo);
+          
+          // Format players list
+          const playersList = document.createElement('div');
+          playersList.className = 'team-players-list';
+          
+          if (team.players && team.players.length > 0) {
+            team.players.forEach(player => {
+              const playerElement = document.createElement('div');
+              playerElement.className = 'team-player';
+              
+              // Create player avatar
+              const avatar = document.createElement('div');
+              avatar.className = 'player-avatar-small';
+              avatar.textContent = getInitials(player.player_details.name);
+              
+              // Player info section
+              const playerInfo = document.createElement('div');
+              playerInfo.className = 'team-player-info';
+              playerInfo.textContent = player.player_details.name;
+              
+              // Player points
+              const playerPoints = document.createElement('div');
+              playerPoints.className = 'team-player-points';
+              playerPoints.textContent = `${player.potential_points || 0} pts`;
+              
+              playerElement.appendChild(avatar);
+              playerElement.appendChild(playerInfo);
+              playerElement.appendChild(playerPoints);
+              
+              playersList.appendChild(playerElement);
+            });
+          } else {
+            const noPlayers = document.createElement('div');
+            noPlayers.textContent = 'No players found for this team';
+            noPlayers.style.padding = '0.75rem';
+            noPlayers.style.textAlign = 'center';
+            noPlayers.style.color = 'rgba(255, 255, 255, 0.6)';
+            playersList.appendChild(noPlayers);
+          }
+          
+          // Add players list
+          teamElement.appendChild(playersList);
+          
+          container.appendChild(teamElement);
         });
+      } catch (err) {
+        console.error('Error rendering teams:', err);
+        container.innerHTML = '<p>Error displaying teams. Please try again later.</p>';
       }
-    });
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set color based on message type
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
   </script>
 </body>
 </html>
