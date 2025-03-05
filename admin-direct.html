@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #121212; color: white; padding: 20px; }
+        .panel { background: rgba(255,255,255,0.1); padding: 15px; margin-bottom: 15px; border-radius: 5px; }
+        h1, h2 { margin-top: 0; }
+        pre { background: rgba(0,0,0,0.2); padding: 10px; overflow: auto; }
+        .error { color: #ff5555; }
+        .success { color: #55ff55; }
+    </style>
+</head>
+<body>
+    <h1>Admin Debug Tool</h1>
+    
+    <div class="panel">
+        <h2>Authentication Status</h2>
+        <div id="auth-status">Checking...</div>
+    </div>
+    
+    <div class="panel">
+        <h2>Admin Status Check</h2>
+        <div id="admin-status">Waiting for auth check...</div>
+    </div>
+    
+    <div class="panel">
+        <h2>Database Connection Test</h2>
+        <div id="db-test">Waiting for previous steps...</div>
+    </div>
+    
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase client
+        const supabaseUrl = 'https://ungxxrxwfbftlcsrmexl.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3h4cnh3ZmJmdGxjc3JtZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NTQ2MjAsImV4cCI6MjA1NjMzMDYyMH0.mpZepE3mgF4EMNIoe2k5_7LhNLWqAwv7se1amsHLYiA';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Log to element
+        function logTo(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const entry = document.createElement('div');
+            entry.className = isError ? 'error' : '';
+            entry.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            element.appendChild(entry);
+            console.log(`[${elementId}] ${message}`);
+        }
+
+        // Step 1: Check authentication
+        async function checkAuth() {
+            try {
+                logTo('auth-status', 'Checking if user is logged in...');
+                
+                const { data: { user }, error } = await supabase.auth.getUser();
+                
+                if (error) {
+                    logTo('auth-status', `Auth error: ${error.message}`, true);
+                    return null;
+                }
+                
+                if (!user) {
+                    logTo('auth-status', 'No user found - not authenticated', true);
+                    return null;
+                }
+                
+                logTo('auth-status', `User authenticated! ID: ${user.id}`, false);
+                logTo('auth-status', `Email: ${user.email}`, false);
+                
+                return user;
+            } catch (err) {
+                logTo('auth-status', `Unexpected error: ${err.message}`, true);
+                console.error(err);
+                return null;
+            }
+        }
+
+        // Step 2: Check admin status
+        async function checkAdminStatus(user) {
+            if (!user) {
+                logTo('admin-status', 'Cannot check admin status - no authenticated user', true);
+                return false;
+            }
+            
+            try {
+                logTo('admin-status', `Checking admin status for user ${user.id}...`);
+                
+                // Check in profiles table
+                const { data: profile, error } = await supabase
+                    .from('profiles')
+                    .select('is_admin')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (error) {
+                    logTo('admin-status', `Error checking admin status: ${error.message}`, true);
+                    logTo('admin-status', `SQL query attempted: SELECT is_admin FROM profiles WHERE id = '${user.id}'`);
+                    return false;
+                }
+                
+                if (!profile) {
+                    logTo('admin-status', 'No profile found for this user', true);
+                    return false;
+                }
+                
+                logTo('admin-status', `Profile data: ${JSON.stringify(profile)}`);
+                
+                if (profile.is_admin) {
+                    logTo('admin-status', 'User is an admin! ✅', false);
+                    return true;
+                } else {
+                    logTo('admin-status', 'User is NOT an admin ❌', true);
+                    return false;
+                }
+            } catch (err) {
+                logTo('admin-status', `Unexpected error: ${err.message}`, true);
+                console.error(err);
+                return false;
+            }
+        }
+
+        // Step 3: Test database connection with a simple query
+        async function testDatabaseConnection(isAdmin) {
+            if (!isAdmin) {
+                logTo('db-test', 'Skipping database test - user is not an admin', true);
+                return;
+            }
+            
+            try {
+                logTo('db-test', 'Testing database access with a simple query...');
+                
+                // Try to fetch 3 tournaments
+                const { data: tournaments, error } = await supabase
+                    .from('tournaments')
+                    .select('id, name')
+                    .limit(3);
+                
+                if (error) {
+                    logTo('db-test', `Error fetching tournaments: ${error.message}`, true);
+                    return;
+                }
+                
+                if (tournaments.length === 0) {
+                    logTo('db-test', 'No tournaments found, but query executed successfully', false);
+                } else {
+                    logTo('db-test', `Successfully fetched ${tournaments.length} tournaments:`, false);
+                    const list = document.createElement('pre');
+                    list.textContent = JSON.stringify(tournaments, null, 2);
+                    document.getElementById('db-test').appendChild(list);
+                }
+                
+                // Try to fetch 3 players
+                const { data: players, error: playersError } = await supabase
+                    .from('players')
+                    .select('id, name, rank')
+                    .limit(3);
+                
+                if (playersError) {
+                    logTo('db-test', `Error fetching players: ${playersError.message}`, true);
+                } else {
+                    logTo('db-test', `Successfully fetched ${players.length} players:`, false);
+                    const playersList = document.createElement('pre');
+                    playersList.textContent = JSON.stringify(players, null, 2);
+                    document.getElementById('db-test').appendChild(playersList);
+                }
+                
+            } catch (err) {
+                logTo('db-test', `Unexpected error: ${err.message}`, true);
+                console.error(err);
+            }
+        }
+
+        // Run diagnostic sequence
+        async function runDiagnostics() {
+            const user = await checkAuth();
+            const isAdmin = await checkAdminStatus(user);
+            await testDatabaseConnection(isAdmin);
+        }
+
+        // Run on page load
+        document.addEventListener('DOMContentLoaded', runDiagnostics);
+    </script>
+</body>
+</html>

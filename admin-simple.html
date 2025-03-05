@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal (Simple)</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background-color: rgba(255, 255, 255, 0.05); padding: 20px; margin-bottom: 20px; border-radius: 8px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Portal (Simple Version)</h1>
+        
+        <div class="card">
+            <h2>Tournaments</h2>
+            <div id="tournaments-container">Loading...</div>
+        </div>
+        
+        <div class="card">
+            <h2>Players</h2>
+            <div id="players-container">Loading...</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase initialization
+        const supabaseUrl = 'https://ungxxrxwfbftlcsrmexl.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3h4cnh3ZmJmdGxjc3JtZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NTQ2MjAsImV4cCI6MjA1NjMzMDYyMH0.mpZepE3mgF4EMNIoe2k5_7LhNLWqAwv7se1amsHLYiA';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Format date helper
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric'
+            });
+        }
+        
+        // Load tournaments
+        async function loadTournaments() {
+            try {
+                const { data, error } = await supabase
+                    .from('tournaments')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('tournaments-container');
+                
+                if (!data || data.length === 0) {
+                    container.textContent = 'No tournaments found.';
+                    return;
+                }
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Prize Pool</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                data.forEach(tournament => {
+                    html += `
+                        <tr>
+                            <td>${tournament.name}</td>
+                            <td>${formatDate(tournament.start_date)}</td>
+                            <td>${formatDate(tournament.end_date)}</td>
+                            <td>$${tournament.prize_pool}</td>
+                            <td>${tournament.status || 'upcoming'}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (err) {
+                console.error('Error loading tournaments:', err);
+                document.getElementById('tournaments-container').innerHTML = 
+                    `<p style="color: red;">Error loading tournaments: ${err.message}</p>`;
+            }
+        }
+        
+        // Load players
+        async function loadPlayers() {
+            try {
+                const { data, error } = await supabase
+                    .from('players')
+                    .select('*')
+                    .order('rank', { ascending: true });
+                
+                if (error) throw error;
+                
+                const container = document.getElementById('players-container');
+                
+                if (!data || data.length === 0) {
+                    container.textContent = 'No players found.';
+                    return;
+                }
+                
+                let html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Rank</th>
+                                <th>Win Rate</th>
+                                <th>Airmail %</th>
+                                <th>Push %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                data.forEach(player => {
+                    html += `
+                        <tr>
+                            <td>${player.name}</td>
+                            <td>${player.rank}</td>
+                            <td>${player.win_rate.toFixed(1)}%</td>
+                            <td>${player.airmail_percentage.toFixed(1)}%</td>
+                            <td>${player.push_percentage.toFixed(1)}%</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                        </tbody>
+                    </table>
+                `;
+                
+                container.innerHTML = html;
+                
+            } catch (err) {
+                console.error('Error loading players:', err);
+                document.getElementById('players-container').innerHTML = 
+                    `<p style="color: red;">Error loading players: ${err.message}</p>`;
+            }
+        }
+        
+        // Check authentication and initialize page
+        async function init() {
+            try {
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                
+                if (authError || !user) {
+                    document.body.innerHTML = '<div class="container"><h1>Authentication Error</h1><p>Please <a href="login.html">login</a> to access the admin area.</p></div>';
+                    return;
+                }
+                
+                // Check if user is admin
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('is_admin')
+                    .eq('id', user.id)
+                    .single();
+                
+                if (profileError || !profile || !profile.is_admin) {
+                    document.body.innerHTML = '<div class="container"><h1>Access Denied</h1><p>You do not have admin privileges.</p></div>';
+                    return;
+                }
+                
+                // Load page content
+                loadTournaments();
+                loadPlayers();
+                
+            } catch (err) {
+                console.error('Initialization error:', err);
+                document.body.innerHTML = `<div class="container"><h1>Error</h1><p>${err.message}</p></div>`;
+            }
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
