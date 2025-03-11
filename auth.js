@@ -50,6 +50,7 @@ async function logoutUser() {
 }
 
 // Get the current user
+// In auth.js, modify the getCurrentUser function
 async function getCurrentUser() {
   try {
     const { data, error } = await supabase.auth.getUser();
@@ -59,6 +60,7 @@ async function getCurrentUser() {
       return null;
     }
     
+    console.log("getCurrentUser returned user with ID:", data.user.id);
     return data.user;
   } catch (err) {
     console.error('Get user error:', err);
