@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Results - Cornhole Kings</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 1000;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 1.1rem;
+    }
+    
+    nav a:hover {
+      color: #f1c40f;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Main Container */
+    .results-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: rgba(13, 16, 35, 0.7);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    
+    .results-container h2 {
+      margin-top: 0;
+      color: #f1c40f;
+      border-bottom: 2px solid #f1c40f;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tournament-info {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+    }
+    
+    .tournament-info h3 {
+      margin-top: 0;
+      color: #f1c40f;
+    }
+    
+    .results-section {
+      margin-bottom: 2rem;
+    }
+    
+    .results-section h3 {
+      color: #f1c40f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Team Results Styles */
+    .team-results {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .team-result-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      overflow: hidden;
+      transition: transform 0.2s;
+    }
+    
+    .team-result-card:hover {
+      transform: translateY(-3px);
+    }
+    
+    .team-result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .team-user {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    
+    .team-points {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #4ade80;
+    }
+    
+    .team-players {
+      padding: 1rem 1.5rem;
+    }
+    
+    .player-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .player-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+    
+    /* Placement Indicator */
+    .placement-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 1rem;
+    }
+    
+    .placement-badge {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      color: #080a14;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    
+    .first-place {
+      background-color: #f1c40f; /* Gold */
+    }
+    
+    .second-place {
+      background-color: #bdc3c7; /* Silver */
+    }
+    
+    .third-place {
+      background-color: #cd7f32; /* Bronze */
+    }
+    
+    .fourth-place {
+      background-color: #3498db; /* Blue */
+    }
+    
+    /* Team Cards By Placement */
+    .team-result-card.first-place {
+      border-left: 5px solid #f1c40f;
+    }
+    
+    .team-result-card.second-place {
+      border-left: 5px solid #bdc3c7;
+    }
+    
+    .team-result-card.third-place {
+      border-left: 5px solid #cd7f32;
+    }
+    
+    .team-result-card.fourth-place {
+      border-left: 5px solid #3498db;
+    }
+    
+    /* Back to profile button */
+    .back-button {
+      display: inline-block;
+      padding: 0.6rem 1rem;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      transition: background-color 0.2s;
+    }
+    
+    .back-button:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #4ade80;
+      animation: spin 1s ease-in-out infinite;
+      margin: 1rem auto;
+    }
+    
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">CK</div>
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html" class="active">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <span class="user-email" id="userEmail">Loading...</span>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </header>
+  
+  <div class="results-container">
+    <a href="profile.html" class="back-button">← Back to Profile</a>
+    
+    <h2>Tournament Results</h2>
+    
+    <div id="tournamentInfo" class="tournament-info">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading tournament information...</p>
+      </div>
+    </div>
+    
+    <div class="results-section">
+      <h3>Team Rankings</h3>
+      <div id="teamResults" class="team-results">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading team results...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+// Helper functions
+function getInitials(name) {
+  if (!name) return 'XX';
+  return name
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .toUpperCase();
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'Unknown Date';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+}
+
+function getOrdinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function capitalizeFirstLetter(string) {
+  if (!string) return '';
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getPlacementClass(placement) {
+  if (!placement) return '';
+  if (placement === 1) return 'first-place';
+  if (placement === 2) return 'second-place';
+  if (placement === 3) return 'third-place';
+  if (placement === 4) return 'fourth-place';
+  return '';
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  
+  // Set color based on message type
+  if (type === 'success') {
+    toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+  } else if (type === 'error') {
+    toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+  } else if (type === 'info') {
+    toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+  }
+  
+  toast.style.display = 'block';
+  
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    // Check if user is authenticated
+    const user = await getCurrentUser();
+    
+    if (!user) {
+      // Not logged in, redirect to login
+      window.location.href = 'login.html?redirect=profile.html';
+      return;
+    }
+    
+    // Update user info in header
+    document.getElementById('userEmail').textContent = user.email || 'User';
+    
+    // Add logout event listener
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+      try {
+        const { error } = await logoutUser();
+        if (!error) {
+          window.location.href = 'login.html';
+        } else {
+          showToast('Error logging out: ' + error.message, 'error');
+        }
+      } catch (err) {
+        console.error('Error during logout:', err);
+        showToast('Error during logout', 'error');
+      }
+    });
+    
+    // Get tournament ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const tournamentId = urlParams.get('tournamentId');
+    
+    if (!tournamentId) {
+      showToast('No tournament specified', 'error');
+      document.getElementById('tournamentInfo').innerHTML = `
+        <p>Error: No tournament specified. Please go back to your profile and select a tournament.</p>
+      `;
+      document.getElementById('teamResults').innerHTML = '';
+      return;
+    }
+    
+    // Load tournament info and results
+    await loadTournamentInfo(tournamentId);
+    await loadTournamentResults(tournamentId);
+    
+  } catch (err) {
+    console.error('Error initializing results page:', err);
+    showToast('An error occurred while loading the page', 'error');
+  }
+});
+
+// Load tournament information
+async function loadTournamentInfo(tournamentId) {
+  const tournamentInfoContainer = document.getElementById('tournamentInfo');
+  
+  try {
+    // Fetch tournament details
+    const { data: tournament, error } = await supabase
+      .from('tournaments')
+      .select('*')
+      .eq('id', tournamentId)
+      .single();
+      
+    if (error) {
+      console.error('Error fetching tournament:', error);
+      tournamentInfoContainer.innerHTML = `<p>Error loading tournament information.</p>`;
+      return;
+    }
+    
+    if (!tournament) {
+      tournamentInfoContainer.innerHTML = `<p>Tournament not found.</p>`;
+      return;
+    }
+    
+    // Check if tournament is completed
+    if (tournament.status !== 'completed') {
+      tournamentInfoContainer.innerHTML = `
+        <h3>${tournament.name}</h3>
+        <p>This tournament is not yet completed. Results will be available after the tournament ends.</p>
+        <p>Current status: ${capitalizeFirstLetter(tournament.status)}</p>
+        <p>Tournament dates: ${formatDate(tournament.start_date)} to ${formatDate(tournament.end_date)}</p>
+      `;
+      document.getElementById('teamResults').innerHTML = '';
+      return;
+    }
+    
+    // Display tournament info
+    tournamentInfoContainer.innerHTML = `
+      <h3>${tournament.name}</h3>
+      <p>Status: <span style="color: #4ade80;">${capitalizeFirstLetter(tournament.status)}</span></p>
+      <p>Tournament dates: ${formatDate(tournament.start_date)} to ${formatDate(tournament.end_date)}</p>
+      <p>Team size: ${tournament.team_size} players</p>
+    `;
+    
+  } catch (err) {
+    console.error('Error loading tournament info:', err);
+    tournamentInfoContainer.innerHTML = `<p>Error loading tournament information.</p>`;
+  }
+}
+
+async function loadTournamentResults(tournamentId) {
+  const teamResultsContainer = document.getElementById('teamResults');
+  
+  try {
+    // Fetch teams for this tournament with team_points for sorting
+    // Remove final_rank from the select query since that column doesn't exist
+    const { data: teams, error: teamsError } = await supabase
+      .from('teams')
+      .select('id, user_id, team_points, winnings')
+      .eq('tournament_id', tournamentId)
+      .order('team_points', { ascending: false }); // Sort by team points
+      
+    if (teamsError) {
+      console.error('Error fetching teams:', teamsError);
+      teamResultsContainer.innerHTML = `<p>Error loading team results.</p>`;
+      return;
+    }
+    
+    if (!teams || teams.length === 0) {
+      teamResultsContainer.innerHTML = `<p>No teams found for this tournament.</p>`;
+      return;
+    }
+    
+    // Process each team to get user and player details
+    const processedTeams = [];
+    
+    for (const team of teams) {
+      try {
+        // Get user details for this team
+        const { data: user, error: userError } = await supabase
+          .from('profiles')
+          .select('username, email')
+          .eq('id', team.user_id)
+          .maybeSingle();
+          
+        if (userError) {
+          console.error(`Error fetching user for team ${team.id}:`, userError);
+        }
+        
+        // Get team players
+        const { data: teamPlayers, error: playersError } = await supabase
+          .from('team_players')
+          .select('player_id')
+          .eq('team_id', team.id);
+          
+        if (playersError) {
+          console.error(`Error fetching players for team ${team.id}:`, playersError);
+        }
+        
+        // Get player details
+        const players = [];
+        
+        if (teamPlayers && teamPlayers.length > 0) {
+          const playerIds = teamPlayers.map(tp => tp.player_id);
+          
+          const { data: playerDetails, error: playerDetailsError } = await supabase
+            .from('players')
+            .select('id, name, potential_points, actual_points')
+            .in('id', playerIds);
+            
+          if (playerDetailsError) {
+            console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
+          } else if (playerDetails) {
+            // Get player tournament points
+            for (const player of playerDetails) {
+              const { data: playerPoints, error: pointsError } = await supabase
+                .from('player_tournament_points')
+                .select('points_earned, placement')
+                .eq('player_id', player.id)
+                .eq('tournament_id', tournamentId)
+                .eq('team_id', team.id)
+                .maybeSingle();
+                
+              if (!pointsError && playerPoints) {
+                players.push({
+                  ...player,
+                  tournament_points: playerPoints.points_earned || 0,
+                  placement: playerPoints.placement
+                });
+              } else {
+                players.push({
+                  ...player,
+                  tournament_points: 0,
+                  placement: null
+                });
+              }
+            }
+          }
+        }
+        
+        // Get the team's placement from tournament_results if available
+        let placement = null;
+        try {
+          const { data: resultData, error: resultError } = await supabase
+            .from('tournament_results')
+            .select('placement')
+            .eq('tournament_id', tournamentId)
+            .eq('team_id', team.id)
+            .maybeSingle();
+            
+          if (!resultError && resultData) {
+            placement = resultData.placement;
+          }
+        } catch (err) {
+          console.error(`Error fetching tournament result for team ${team.id}:`, err);
+        }
+        
+        // Add to processed teams
+        processedTeams.push({
+          ...team,
+          user: user || { username: 'Unknown User', email: '' },
+          players: players,
+          placement: placement
+        });
+        
+      } catch (err) {
+        console.error(`Error processing team ${team.id}:`, err);
+      }
+    }
+    
+    // Sort teams by team_points (highest first)
+    processedTeams.sort((a, b) => (b.team_points || 0) - (a.team_points || 0));
+    
+    // Render teams
+    renderTeamResults(processedTeams, teamResultsContainer);
+    
+  } catch (err) {
+    console.error('Error loading tournament results:', err);
+    teamResultsContainer.innerHTML = `<p>Error loading team results.</p>`;
+  }
+}
+
+function renderTeamResults(teams, container) {
+  // Clear container
+  container.innerHTML = '';
+  
+  if (!teams || teams.length === 0) {
+    container.innerHTML = `<p>No team results available.</p>`;
+    return;
+  }
+  
+  // Create and add team result cards
+  teams.forEach((team, index) => {
+    const teamCard = document.createElement('div');
+    
+    // Use placement from tournament_results instead of final_rank
+    teamCard.className = `team-result-card ${getPlacementClass(team.placement)}`;
+    
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'team-result-header';
+    
+    // Placement indicator if team has a placement value
+    let placementHTML = '';
+    if (team.placement && team.placement > 0 && team.placement <= 4) {
+      placementHTML = `
+        <div class="placement-indicator">
+          <div class="placement-badge ${getPlacementClass(team.placement)}">${team.placement}</div>
+          <span>${getOrdinal(team.placement)} Place</span>
+        </div>
+      `;
+    }
+    
+    // Add winnings if available
+    let winningsHTML = '';
+    if (team.winnings && team.winnings > 0) {
+      winningsHTML = ` <span style="color: #4ade80;">($${team.winnings.toLocaleString()})</span>`;
+    }
+    
+    header.innerHTML = `
+      ${placementHTML}
+      <div class="team-user">${team.user.username}</div>
+      <div class="team-points">${team.team_points || 0} points${winningsHTML}</div>
+    `;
+    
+    teamCard.appendChild(header);
+    
+    // Create players section
+    const playersSection = document.createElement('div');
+    playersSection.className = 'team-players';
+    
+    if (team.players && team.players.length > 0) {
+      const playerList = document.createElement('div');
+      playerList.className = 'player-list';
+      
+      // Sort players by placement (players with placement first)
+      team.players.sort((a, b) => {
+        // Players with placement first
+        if (a.placement && !b.placement) return -1;
+        if (!a.placement && b.placement) return 1;
+        
+        // Sort by placement
+        if (a.placement && b.placement) {
+          return a.placement - b.placement;
+        }
+        
+        // Sort by points if no placement
+        return (b.tournament_points || 0) - (a.tournament_points || 0);
+      });
+      
+      team.players.forEach(player => {
+        const playerItem = document.createElement('div');
+        playerItem.className = 'player-item';
+        
+        // Player placement indicator
+        let playerPlacementHTML = '';
+        if (player.placement && player.placement > 0 && player.placement <= 4) {
+          const placementClass = getPlacementClass(player.placement);
+          const placementIcon = player.placement === 1 ? '🥇' : player.placement === 2 ? '🥈' : player.placement === 3 ? '🥉' : '🏅';
+          
+          playerPlacementHTML = `<span class="placement-icon" title="${getOrdinal(player.placement)} Place">${placementIcon}</span>`;
+        }
+        
+        playerItem.innerHTML = `
+          <div>${player.name} ${playerPlacementHTML}</div>
+          <div>${player.tournament_points || 0} points</div>
+        `;
+        
+        playerList.appendChild(playerItem);
+      });
+      
+      playersSection.appendChild(playerList);
+    } else {
+      playersSection.innerHTML = `<p>No player information available</p>`;
+    }
+    
+    teamCard.appendChild(playersSection);
+    container.appendChild(teamCard);
+  });
+}
+  </script>
+</body>
+</html>
