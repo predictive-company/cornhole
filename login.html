@@ -37,6 +37,22 @@
         </div>
       </form>
       
+      <!-- Reset Password Form (initially hidden) -->
+      <form id="resetPasswordForm" style="display: none;">
+        <div class="auth-field">
+          <label for="resetEmail">Email</label>
+          <input type="email" id="resetEmail" required>
+        </div>
+        
+        <div id="resetErrorMessage" class="error-message"></div>
+        
+        <button type="submit" class="auth-button">Send Reset Link</button>
+        
+        <div class="auth-links">
+          <a href="#" id="backToLogin">Back to Login</a>
+        </div>
+      </form>
+      
       <p class="auth-footer">
         Don't have an account? <a href="signup.html">Sign Up</a>
       </p>
@@ -46,20 +62,47 @@
   <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    // Initialize Supabase client directly in the page
+    const supabaseUrl = 'https://ungxxrxwfbftlcsrmexl.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3h4cnh3ZmJmdGxjc3JtZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NTQ2MjAsImV4cCI6MjA1NjMzMDYyMH0.mpZepE3mgF4EMNIoe2k5_7LhNLWqAwv7se1amsHLYiA';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Define loginUser function directly in the page as a fallback
+    async function loginUser(email, password) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        
+        return { data, error };
+      } catch (err) {
+        console.error('Login error:', err);
+        throw err;
+      }
+    }
+  </script>
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Check if user is coming from verification
       const urlParams = new URLSearchParams(window.location.search);
       const verified = urlParams.get('verified');
+      const redirect = urlParams.get('redirect');
       
       if (verified === 'pending') {
         showToast('Please check your email and verify your account before logging in.', 'info');
+      } else if (verified === 'true') {
+        showToast('Email verified! You can now log in.', 'success');
       }
       
       const loginForm = document.getElementById('loginForm');
+      const resetPasswordForm = document.getElementById('resetPasswordForm');
       const errorMessage = document.getElementById('errorMessage');
+      const resetErrorMessage = document.getElementById('resetErrorMessage');
       const forgotPasswordLink = document.getElementById('forgotPassword');
+      const backToLoginLink = document.getElementById('backToLogin');
       
       // Handle login form submission
       loginForm.addEventListener('submit', async function(e) {
@@ -75,9 +118,14 @@
             errorMessage.textContent = error.message;
           } else {
             showToast('Login successful!');
-            // Redirect to dashboard after successful login
+            
+            // Redirect to the intended page or dashboard
             setTimeout(() => {
-              window.location.href = 'tournaments.html';
+              if (redirect) {
+                window.location.href = decodeURIComponent(redirect);
+              } else {
+                window.location.href = 'tournaments.html';
+              }
             }, 1000);
           }
         } catch (err) {
@@ -86,14 +134,35 @@
         }
       });
       
-      // Handle forgot password
-      forgotPasswordLink.addEventListener('click', async function(e) {
+      // Toggle between login and reset password forms
+      forgotPasswordLink.addEventListener('click', function(e) {
         e.preventDefault();
         
-        const email = document.getElementById('email').value;
+        const emailValue = document.getElementById('email').value;
+        loginForm.style.display = 'none';
+        resetPasswordForm.style.display = 'block';
+        
+        // Pre-fill the email field if it was entered in the login form
+        if (emailValue) {
+          document.getElementById('resetEmail').value = emailValue;
+        }
+      });
+      
+      backToLoginLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        resetPasswordForm.style.display = 'none';
+        loginForm.style.display = 'block';
+      });
+      
+      // Handle forgot password
+      resetPasswordForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('resetEmail').value;
         
         if (!email) {
-          errorMessage.textContent = 'Please enter your email address first.';
+          resetErrorMessage.textContent = 'Please enter your email address.';
           return;
         }
         
@@ -103,12 +172,16 @@
           });
           
           if (error) {
-            errorMessage.textContent = error.message;
+            resetErrorMessage.textContent = error.message;
           } else {
-            showToast('Password reset email sent. Please check your inbox.');
+            // Show the login form again
+            resetPasswordForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            
+            showToast('Password reset email sent. Please check your inbox.', 'info');
           }
         } catch (err) {
-          errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+          resetErrorMessage.textContent = 'An unexpected error occurred. Please try again.';
           console.error('Reset password error:', err);
         }
       });
