@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works - Cornhole Kings</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 1000;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 1.1rem;
+    }
+    
+    nav a:hover {
+      color: #f1c40f;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Mobile Responsiveness for Header */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+    
+    /* How It Works specific styles */
+    .how-it-works-container {
+      background-color: rgba(44, 62, 80, 0.8);
+      border-radius: 8px;
+      padding: 2rem;
+      margin: 2rem auto;
+      max-width: 1000px;
+    }
+    
+    .how-it-works-container h2 {
+      color: #f1c40f;
+      margin-top: 0;
+      border-bottom: 2px solid #f1c40f;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .section {
+      margin-bottom: 2.5rem;
+    }
+    
+    .section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .section h3 {
+      color: #f1c40f;
+      border-bottom: 2px solid #f1c40f;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .step {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: #0d1023;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .step-content h4 {
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+      color: #f1c40f;
+    }
+    
+    .points-example {
+      background-color: rgba(39, 174, 96, 0.1);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    .points-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    
+    .points-table th,
+    .points-table td {
+      padding: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      text-align: center;
+    }
+    
+    .points-table th {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .player-example {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .player-rank {
+      width: 36px;
+      height: 36px;
+      background-color: #0d1023;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 1rem;
+    }
+    
+    .player-points {
+      background-color: #27ae60;
+      color: white;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: bold;
+      margin-left: auto;
+    }
+    
+    .strategy-tips {
+      list-style-type: none;
+      padding: 0;
+    }
+    
+    .strategy-tips li {
+      margin-bottom: 1rem;
+      padding-left: 2rem;
+      position: relative;
+    }
+    
+    .strategy-tips li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: #f1c40f;
+      font-weight: bold;
+    }
+    
+    .prizes-preview {
+      display: flex;
+      align-items: center;
+      background-color: rgba(231, 76, 60, 0.1);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    
+    .prizes-icon {
+      width: 60px;
+      height: 60px;
+      background-color: #e74c3c;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .prizes-icon i {
+      font-size: 2rem;
+      color: white;
+    }
+    
+    .prizes-content {
+      flex: 1;
+    }
+    
+    .prizes-content h4 {
+      margin-top: 0;
+      color: #e74c3c;
+    }
+    
+    .prizes-link {
+      display: inline-block;
+      background-color: #e74c3c;
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      transition: background-color 0.2s;
+    }
+    
+    .prizes-link:hover {
+      background-color: #c0392b;
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html" class="active">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="how-it-works-container">
+    <h2>How It Works</h2>
+    
+    <div class="section">
+      <h3>Our Fantasy Draft System</h3>
+      <p>Welcome to Cornhole Kings Fantasy Draft! Our unique points-based system gives everyone a chance to win, whether you're backing the top players or betting on underdogs. Here's everything you need to know:</p>
+    </div>
+    
+    <div class="section">
+      <h3>How to Play</h3>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Join a Tournament</h4>
+          <p>Browse upcoming tournaments and select one you'd like to join. Each tournament has its own pool of available players and prize structure.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Draft Your Team</h4>
+          <p>Select 4 players to build your dream team. Choose wisely - each player is assigned potential points based on their ranking!</p>
+          
+          <div class="points-example">
+            <h4>How Points Work</h4>
+            <p>Player points are inverse to their ranking. Top players are safer picks but offer fewer potential points. Lower-ranked players are riskier but offer higher potential rewards!</p>
+            
+            <table class="points-table">
+              <thead>
+                <tr>
+                  <th>Player Rank</th>
+                  <th>Potential Points</th>
+                  <th>Strategy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Rank 1-10</td>
+                  <td>30-50 points</td>
+                  <td>Safe, consistent performers</td>
+                </tr>
+                <tr>
+                  <td>Rank 11-30</td>
+                  <td>50-70 points</td>
+                  <td>Balanced risk/reward</td>
+                </tr>
+                <tr>
+                  <td>Rank 31+</td>
+                  <td>70-100 points</td>
+                  <td>High risk, high reward</td>
+                </tr>
+              </tbody>
+            </table>
+            
+            <div style="margin-top: 1.5rem;">
+              <h5>Example Players:</h5>
+              
+              <div class="player-example">
+                <div class="player-rank">#1</div>
+                <div>Matt Sorrells (Top ranked)</div>
+                <div class="player-points">30 pts</div>
+              </div>
+              
+              <div class="player-example">
+                <div class="player-rank">#20</div>
+                <div>Jamie Davis (Mid ranked)</div>
+                <div class="player-points">60 pts</div>
+              </div>
+              
+              <div class="player-example">
+                <div class="player-rank">#50</div>
+                <div>Tyler Johnson (Lower ranked)</div>
+                <div class="player-points">86 pts</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Submit Your Team</h4>
+          <p>Once you've selected your 4 players, submit your team before the draft deadline. You can only submit one team per tournament.</p>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Watch the Tournament</h4>
+          <p>As the tournament progresses, your players earn points based on their performance. Check your profile to see how your team is doing!</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h3>How to Win</h3>
+      <p>The player with the most points at the end of the tournament wins! Points are calculated based on your drafted players' performances during the event.</p>
+      
+      <h4>Winning Strategy Tips:</h4>
+      <ul class="strategy-tips">
+        <li><strong>Balance your team</strong> - Mix top players with promising underdogs</li>
+        <li><strong>Research player matchups</strong> - Some players perform better against certain opponents</li>
+        <li><strong>Consider tournament formats</strong> - Different formats favor different player styles</li>
+        <li><strong>Track recent performance</strong> - Players on hot streaks might outperform their ranking</li>
+        <li><strong>Look for value picks</strong> - Find underrated players who have more potential than their ranking suggests</li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h3>Prizes</h3>
+      <p>Tournament winners receive exclusive, premium cornhole bags from top manufacturers! These custom, tournament-edition bags aren't available anywhere else.</p>
+      
+      <div class="prizes-preview">
+        <div class="prizes-icon">🎁</div>
+        <div class="prizes-content">
+          <h4>Win Premium Cornhole Bags</h4>
+          <p>Take home tournament-edition, professional-grade cornhole bags from our sponsoring partners. Each tournament features different prizes from various bag manufacturers.</p>
+          <a href="prizes.html" class="prizes-link">View Prize Gallery</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // Check if user is authenticated
+        const user = await getCurrentUser();
+        
+        if (user) {
+          // Update user section when logged in
+          const userSection = document.querySelector('.user-section');
+          userSection.innerHTML = `
+            <span class="user-email">${user.email}</span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          `;
+          
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    });
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set different background colors for different message types
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(74, 222, 128, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

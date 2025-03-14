@@ -40,6 +40,15 @@ header {
   gap: 1rem;
 }
 
+.logo h1 {
+  margin: 0;
+  font-size: 1.8rem; /* Increased from 1.5rem */
+  font-family: 'Montserrat', sans-serif; /* Change to your preferred font */
+  font-weight: 700; /* Make it bold */
+  letter-spacing: 0.5px; /* Add slight letter spacing for better readability */
+}
+
+
 .logo-icon {
   width: 50px;
   height: 50px;
@@ -49,7 +58,7 @@ header {
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  font-size: 1.5rem;
+  font-size: 5.5rem;
   color: var(--dark);
 }
 
@@ -128,6 +137,21 @@ header {
   margin-bottom: 1rem;
   border-bottom: 1px solid var(--accent);
   padding-bottom: 0.5rem;
+}
+
+.player-card.not-ranked {
+  opacity: 0.7;
+}
+
+.potential-points-placeholder {
+  color: #6b7280;
+  font-style: italic;
+}
+
+.draft-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #4b5563;
 }
 
 .search-filter {
