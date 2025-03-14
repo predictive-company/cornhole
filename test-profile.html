@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Creation Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .error {
+      color: red;
+    }
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Profile Creation Test</h1>
+    <p>Use this page to test direct profile creation in your database</p>
+    
+    <div>
+      <button id="testCreateProfile">Test Create Profile</button>
+      <button id="checkProfile">Check Profile</button>
+      <button id="checkProfilesTable">Check Profiles Table</button>
+    </div>
+    
+    <h3>User ID:</h3>
+    <input type="text" id="userId" style="width: 300px;">
+    
+    <h3>Results:</h3>
+    <pre id="results">Results will appear here...</pre>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = 'https://ungxxrxwfbftlcsrmexl.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3h4cnh3ZmJmdGxjc3JtZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NTQ2MjAsImV4cCI6MjA1NjMzMDYyMH0.mpZepE3mgF4EMNIoe2k5_7LhNLWqAwv7se1amsHLYiA';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Get current user to pre-fill the user ID field
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (user) {
+          document.getElementById('userId').value = user.id;
+          logMessage('User logged in: ' + user.email);
+        } else {
+          logMessage('No user logged in. You can still test with a user ID.', 'error');
+        }
+      } catch (err) {
+        logError(err);
+      }
+    });
+    
+    // Test profile creation
+    document.getElementById('testCreateProfile').addEventListener('click', async function() {
+      const userId = document.getElementById('userId').value.trim();
+      
+      if (!userId) {
+        logMessage('Please enter a user ID', 'error');
+        return;
+      }
+      
+      try {
+        logMessage('Attempting to create profile for user ID: ' + userId);
+        
+        // Try to create a profile
+        const { data, error } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: userId,
+              username: 'test_user_' + Math.floor(Math.random() * 1000),
+              email: 'test' + Math.floor(Math.random() * 1000) + '@example.com',
+              full_name: 'Test User',
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              is_admin: false
+            }
+          ])
+          .select();
+          
+        if (error) {
+          logMessage('Error creating profile: ' + error.message, 'error');
+          logMessage('Error details: ' + JSON.stringify(error, null, 2), 'error');
+          
+          // Check for specific errors
+          if (error.code === '23505') {
+            logMessage('Profile already exists for this user ID', 'error');
+          } else if (error.code === '42P01') {
+            logMessage("Error: Table 'profiles' doesn't exist", 'error');
+          } else if (error.code === '42703') {
+            logMessage("Error: Column doesn't exist in profiles table", 'error');
+          }
+        } else {
+          logMessage('Profile created successfully!', 'success');
+          logMessage('Profile data: ' + JSON.stringify(data, null, 2), 'success');
+        }
+      } catch (err) {
+        logError(err);
+      }
+    });
+    
+    // Check for existing profile
+    document.getElementById('checkProfile').addEventListener('click', async function() {
+      const userId = document.getElementById('userId').value.trim();
+      
+      if (!userId) {
+        logMessage('Please enter a user ID', 'error');
+        return;
+      }
+      
+      try {
+        logMessage('Checking if profile exists for user ID: ' + userId);
+        
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', userId);
+          
+        if (error) {
+          logMessage('Error checking profile: ' + error.message, 'error');
+        } else if (data && data.length > 0) {
+          logMessage('Profile found!', 'success');
+          logMessage('Profile data: ' + JSON.stringify(data[0], null, 2), 'success');
+        } else {
+          logMessage('No profile found for this user ID', 'error');
+        }
+      } catch (err) {
+        logError(err);
+      }
+    });
+    
+    // Check profiles table structure
+    document.getElementById('checkProfilesTable').addEventListener('click', async function() {
+      try {
+        logMessage('Checking profiles table...');
+        
+        // Try to get a few profiles to see if the table exists
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .limit(1);
+          
+        if (error) {
+          logMessage('Error accessing profiles table: ' + error.message, 'error');
+          
+          if (error.code === '42P01') {
+            logMessage("Table 'profiles' doesn't exist! You need to create it.", 'error');
+          }
+        } else {
+          logMessage('Profiles table exists and is accessible', 'success');
+          
+          // Check for schema
+          if (data && data.length > 0) {
+            const columns = Object.keys(data[0]);
+            logMessage('Table columns: ' + columns.join(', '), 'success');
+          } else {
+            logMessage('Profiles table is empty', 'success');
+            
+            // Try to inspect the schema by inserting a test profile
+            logMessage('Attempting to create a test profile to check schema...');
+            
+            const testId = 'test-' + Date.now();
+            const { error: insertError } = await supabase
+              .from('profiles')
+              .insert([
+                {
+                  id: testId,
+                  username: 'schema_test',
+                  email: 'schema@test.com',
+                  full_name: 'Schema Test',
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                  is_admin: false
+                }
+              ]);
+              
+            if (insertError) {
+              logMessage('Error creating test profile: ' + insertError.message, 'error');
+              
+              if (insertError.message.includes('column')) {
+                logMessage('Schema issue detected. Please check your profiles table schema.', 'error');
+              }
+            } else {
+              logMessage('Test profile created successfully, schema seems correct', 'success');
+              
+              // Clean up test profile
+              await supabase
+                .from('profiles')
+                .delete()
+                .eq('id', testId);
+            }
+          }
+        }
+      } catch (err) {
+        logError(err);
+      }
+    });
+    
+    // Helper function to log messages to the results area
+    function logMessage(message, type = 'info') {
+      const results = document.getElementById('results');
+      const timestamp = new Date().toLocaleTimeString();
+      
+      const formattedMessage = `[${timestamp}] ${message}`;
+      
+      if (type === 'error') {
+        results.innerHTML += `<div class="error">${formattedMessage}</div>`;
+      } else if (type === 'success') {
+        results.innerHTML += `<div class="success">${formattedMessage}</div>`;
+      } else {
+        results.innerHTML += `<div>${formattedMessage}</div>`;
+      }
+      
+      // Scroll to bottom
+      results.scrollTop = results.scrollHeight;
+    }
+    
+    // Helper function to log errors
+    function logError(err) {
+      logMessage('Unexpected error: ' + err.message, 'error');
+      console.error(err);
+    }
+  </script>
+</body>
+</html>

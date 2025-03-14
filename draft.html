@@ -4,23 +4,201 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Draft Team - Cornhole Kings</title>
-  <link rel="stylesheet" href="css/styles.css">
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 1000;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 1.1rem;
+    }
+    
+    nav a:hover {
+      color: #f1c40f;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Mobile Responsiveness for Header */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      .timer {
+        position: static;
+        margin-bottom: 1rem;
+        width: 100%;
+        justify-content: center;
+      }
+
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+    
+    /* Draft page styles */
     /* Add these new styles for the view-only mode */
     .submitted-banner {
       background-color: rgba(46, 204, 113, 0.2);
-      border: 2px solid var(--success);
+      border: 2px solid #2ecc71;
       border-radius: 8px;
       padding: 0.75rem 1rem;
-      margin-bottom: 1rem;
+      margin: 0.5rem 0 1rem 0;
       text-align: center;
-      color: var(--success);
+      color: #2ecc71;
       font-weight: bold;
     }
     
     .view-team-btn {
-      background-color: var(--accent);
-      color: var(--dark);
+      background-color: #f1c40f;
+      color: #080a14;
       border: none;
       border-radius: 4px;
       padding: 0.75rem 1rem;
@@ -37,13 +215,13 @@
     }
     
     .submit-team.submitted {
-      background-color: var(--success);
+      background-color: #2ecc71;
       opacity: 0.7;
       cursor: default;
     }
     
     #selectedPlayers.submitted {
-      border: 1px solid var(--success);
+      border: 1px solid #2ecc71;
     }
     
     .draft-btn.disabled {
@@ -69,44 +247,55 @@
     }
     
     .player-card.drafted .view-only-label {
-      background-color: var(--success);
+      background-color: #2ecc71;
     }
     
     /* Player avatar styles */
     .player-avatar {
-      width: 50px;
-      height: 50px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      object-fit: cover;
-      background-color: var(--secondary);
+      object-fit: cover; /* This makes the image cover the container */
+      object-position: center top; /* This focuses on the top part of the image (face) */
+      background-color: #e74c3c;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
-      font-size: 1.2rem;
+      font-size: 1.8rem;
       color: white;
+      /* Optional: add a subtle zoom effect on hover */
+      transition: transform 0.3s ease;
+      margin-bottom: 0.5rem;
+
     }
-    
+
     .player-avatar-fallback {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: var(--secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: white;
-    }
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #e74c3c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.8rem;
+  color: white;
+  margin-bottom: 0.5rem;
+
+}
+
+.player-avatar:hover {
+  transform: scale(1.05); /* Subtle zoom on hover */
+}
     
     .team-player-avatar {
-      width: 30px;
-      height: 30px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       object-fit: cover;
       margin-right: 0.5rem;
-      background-color: var(--secondary);
+      background-color: #e74c3c;
     }
     
     .team-player-info {
@@ -118,7 +307,7 @@
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      background-color: var(--secondary);
+      background-color: #e74c3c;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -127,103 +316,549 @@
       color: white;
       margin-right: 0.5rem;
     }
+    
+    /* New points system styles */
+    .potential-points {
+      background-color: rgba(39, 174, 96, 0.2);
+      color: #27ae60;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 5px;
+    }
+    
+    .points-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .points-icon {
+      width: 24px;
+      height: 24px;
+      background-color: #27ae60;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: white;
+    }
+    
+    .points-range {
+      background-color: rgba(39, 174, 96, 0.1);
+      border-radius: 4px;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .points-description {
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .points-scale {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    /* Tournament info with integrated team section */
+  .tournament-info {
+    max-width: 1200px;
+    margin: 2rem auto;
+    background-color: rgba(13, 16, 35, 0.7);
+    border-radius: 8px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  
+  .tournament-info h2 {
+    margin-top: 0;
+    color: #f1c40f;
+    border-bottom: 2px solid #f1c40f;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .timer {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: rgba(231, 76, 60, 0.3);
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+    
+    /* Draft container */
+    .draft-container {
+      max-width: 1200px;
+      margin: 0 auto 2rem auto;
+    }
+    
+    .players-pool {
+      width: 100%;
+      background-color: rgba(13, 16, 35, 0.7);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .your-team {
+      width: 100%;
+      background-color: rgba(13, 16, 35, 0.9);
+      border-radius: 8px;
+      padding: 1rem;
+      position: relative;
+      margin: 1.5rem 0;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #f1c40f;
+      padding-bottom: 0.5rem;
+    }
+    
+    .section-header-info {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    
+    .search-filter {
+      padding: 0.5rem;
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    input, select {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.5rem;
+      border-radius: 4px;
+      color: white;
+    }
+    
+    input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .player-list {
+  max-height: 1000px; /* Increase from your current setting */
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+    
+.player-card {
+  background: linear-gradient(135deg, rgba(41, 128, 185, 0.6), rgba(44, 62, 80, 0.8));
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative; /* Important for absolute positioning of the draft button */
+  padding-bottom: 2.5rem; /* Add extra padding at bottom to make room for the draft button */
+}
+    
+.player-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border-color: #f1c40f;
+}
+    
+.player-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+
+.player-info h4, .potential-points {
+  text-align: center;
+  width: 100%;
+}
+    
+.player-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding-right: 0; /* Remove right padding that might push content under the button */
+}
+
+.player-stats .stat:last-child {
+  margin-right: 50px; /* Add margin to avoid overlap with draft button */
+}
+    
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .stat-value {
+      font-weight: bold;
+      color: #f1c40f;
+    }
+    
+    .draft-btn {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  background-color: #f1c40f;
+  color: #0d1023;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  z-index: 2; /* Ensure it stays above other content */
+}
+    
+    .draft-btn:hover {
+      background-color: #f39c12;
+    }
+    
+    .draft-btn:disabled {
+      background-color: #7f8c8d;
+      cursor: not-allowed;
+    }
+    
+    .team-list {
+      min-height: 120px;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+    
+    .team-player {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(41, 128, 185, 0.3);
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0;
+    }
+    
+    .remove-player {
+      background-color: rgba(231, 76, 60, 0.7);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .remove-player:hover {
+      background-color: #e74c3c;
+    }
+    
+    .team-summary {
+      margin-bottom: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .team-summary div {
+      flex: 1;
+    }
+    
+    .submit-team {
+      background-color: #2ecc71;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.75rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+    
+    .submit-team:hover {
+      background-color: #27ae60;
+    }
+    
+    .submit-team:disabled {
+      background-color: #7f8c8d;
+      cursor: not-allowed;
+    }
+    
+    .badges {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .badge {
+      background-color: rgba(142, 68, 173, 0.6);
+      padding: 0.25rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Debug overlay for development */
+    .debug-overlay {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border: 1px solid #f1c40f;
+      border-radius: 6px;
+      padding: 10px;
+      max-width: 300px;
+      max-height: 200px;
+      overflow: auto;
+      font-size: 12px;
+      z-index: 9999;
+      display: none;
+    }
+    .debug-overlay.active {
+      display: block;
+    }
+    .debug-title {
+      color: #f1c40f;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .debug-content {
+      color: #ddd;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">CK</div>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
         <h1>Cornhole Kings</h1>
-      </div>
-      <nav>
-        <a href="tournaments.html">Tournaments</a>
-        <a href="profile.html">My Profile</a>
-      </nav>
-    </header>
+      </a>
+    </div>
     
-    <div class="tournament-info" id="tournamentInfo">
-      <h2>Nashville Spring Showdown</h2>
-      <p>March 15-16, 2025 • $25,000 Prize Pool • Draft 4 Players</p>
-      <div class="chips-info">
-        <div class="chip-icon">$</div>
-        <span>Your Draft Chips: <strong id="userChips">10,000</strong></span>
-      </div>
-      <div class="timer" id="draftTimer">
-        <span>Draft Closes In:</span>
-        <span>23:45:12</span>
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html" class="active">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="tournament-info" id="tournamentInfo">
+    <div class="timer" id="draftTimer">
+      <span>Draft Closes:</span>
+      <span>23:45:12</span>
+    </div>
+    
+    <h2>Nashville Spring Showdown</h2>
+    <p>March 15-16, 2025 • $25,000 Prize Pool • Draft 4 Players</p>
+    
+    <div class="section-header">
+      <h3>Your Team</h3>
+      <div class="section-header-info">
+        <span id="teamCount">0/4 Selected</span>
+        <span id="totalPoints-display" style="display: none;">Total Potential Points: <span id="totalPoints">0</span></span>
       </div>
     </div>
     
-    <div class="draft-container">
-      <div class="players-pool">
-        <div class="section-header">
-          <h3>Available Players</h3>
-          <span id="playerCount">72 players</span>
-        </div>
-        
-        <div class="search-filter">
-          <input type="text" placeholder="Search players..." style="flex: 1;" id="playerSearch">
-          <select id="playerSort">
-            <option>Sort By: Rank</option>
-            <option>Sort By: Win Rate</option>
-            <option>Sort By: Price</option>
-          </select>
-        </div>
-        
-        <div class="player-list" id="playerList">
-          <!-- Players will be loaded dynamically -->
-          <p style="text-align: center; color: rgba(255,255,255,0.5);">Loading players...</p>
-        </div>
+    <div class="team-list" id="selectedPlayers">
+      <!-- Empty state message -->
+      <p style="text-align: center; color: rgba(255,255,255,0.5);" id="emptyTeamMessage">
+        Select players from the available pool to build your team
+      </p>
+    </div>
+    
+    <button class="submit-team" id="submitTeam" disabled>SUBMIT TEAM</button>
+    <p style="font-size: 0.8rem; text-align: center; color: rgba(255,255,255,0.7);">
+      You must draft exactly 4 players to submit your team
+    </p>
+  </div>
+  
+  <div class="draft-container">
+    <div class="players-pool">
+      <div class="section-header">
+        <h3>Available Players</h3>
+        <span id="playerCount">72 players</span>
       </div>
       
-      <div class="your-team">
-        <div class="section-header">
-          <h3>Your Team</h3>
-          <span id="teamCount">0/4 Selected</span>
-        </div>
-        
-        <div class="team-list" id="selectedPlayers">
-          <!-- Empty state message -->
-          <p style="text-align: center; color: rgba(255,255,255,0.5);" id="emptyTeamMessage">
-            Select players from the available pool to build your team
-          </p>
-        </div>
-        
-        <div class="team-summary">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span>Total Players:</span>
-            <span id="totalPlayers">0/4</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span>Chips Spent:</span>
-            <span id="chipsSpent">0</span>
-          </div>
-          <div style="display: flex; justify-content: space-between; font-weight: bold;">
-            <span>Remaining:</span>
-            <span id="chipsRemaining">10,000</span>
-          </div>
-        </div>
-        
-        <button class="submit-team" id="submitTeam" disabled>SUBMIT TEAM</button>
-        <p style="font-size: 0.8rem; text-align: center; color: rgba(255,255,255,0.7);">
-          You must draft exactly 4 players to submit your team
-        </p>
+      <div class="search-filter">
+        <input type="text" placeholder="Search players..." style="flex: 1;" id="playerSearch">
+        <select id="playerSort">
+          <option>Sort By: Rank</option>
+          <option>Sort By: Win Rate</option>
+          <option>Sort By: Points</option>
+        </select>
+      </div>
+      
+      <div class="player-list" id="playerList">
+        <!-- Players will be loaded dynamically -->
+        <p style="text-align: center; color: rgba(255,255,255,0.5);">Loading players...</p>
       </div>
     </div>
   </div>
   
   <!-- Toast notification for errors and success messages -->
-  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+  <div id="toast"></div>
+
+  <!-- Debug overlay for development -->
+  <div class="debug-overlay" id="debugOverlay">
+    <div class="debug-title">Debug Information</div>
+    <div class="debug-content" id="debugContent"></div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
+    // Global constants
+    const MAX_TEAM_SIZE = 4;
+    const DEBUG_MODE = true; // Set to false in production
+    
+    // Debug helper function
+    function debug(label, data) {
+      if (!DEBUG_MODE) return;
+      
+      console.log(`[DEBUG] ${label}:`, data);
+      
+      // Update debug overlay if it exists
+      const debugContent = document.getElementById('debugContent');
+      const debugOverlay = document.getElementById('debugOverlay');
+      
+      if (debugContent && debugOverlay) {
+        let content = `${label}: `;
+        
+        try {
+          if (typeof data === 'object') {
+            content += JSON.stringify(data, null, 2);
+          } else {
+            content += data;
+          }
+        } catch (e) {
+          content += '[Unable to stringify]';
+        }
+        
+        debugContent.textContent = content;
+        debugOverlay.classList.add('active');
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+          debugOverlay.classList.remove('active');
+        }, 10000);
+      }
+    }
+    
+    // Function to calculate potential points based on rank
+    function calculatePotentialPoints(rank) {
+      // Top players (lower rank numbers) get fewer points
+      // Lower-ranked players (higher rank numbers) get more points
+      
+      if (rank <= 10) {
+        // Top 10 players: 30-50 points (rank 1 = 30 points, rank 10 = 50 points)
+        return 30 + ((rank - 1) * 2);
+      } else if (rank <= 30) {
+        // Rank 11-30: 50-70 points
+        return 50 + ((rank - 10) * 1);
+      } else {
+        // Rank 31+: 70-100 points (capped at 100)
+        return Math.min(100, Math.round(70 + ((rank - 30) * 0.8)));
+      }
+    }
+    
+    // Validate player data before submission
+    function validatePlayerData(players) {
+      let isValid = true;
+      let errors = [];
+      
+      if (!players || !Array.isArray(players)) {
+        return { 
+          isValid: false, 
+          errors: ['Player data is invalid or not an array'] 
+        };
+      }
+      
+      if (players.length !== MAX_TEAM_SIZE) {
+        return { 
+          isValid: false, 
+          errors: [`Team must have exactly ${MAX_TEAM_SIZE} players, found ${players.length}`] 
+        };
+      }
+      
+      players.forEach((player, index) => {
+        if (!player.id) {
+          isValid = false;
+          errors.push(`Player ${index+1} is missing an ID`);
+        }
+        
+        if (typeof player.potentialPoints !== 'number') {
+          isValid = false;
+          errors.push(`Player ${index+1} has invalid points: ${player.potentialPoints}`);
+        }
+      });
+      
+      return { isValid, errors };
+    }
+    
     // Function to switch to view-only mode after team submission
     function switchToViewOnlyMode(selectedPlayers) {
       // Get the player IDs that are in the team
       const playerIds = selectedPlayers.map(player => player.id);
+      debug('Switching to view-only mode with players', playerIds);
       
       // Get all player cards and make them view-only
       const playerCards = document.querySelectorAll('.player-card');
@@ -279,9 +914,9 @@
         </div>
       `;
       
-      // Add the banner to the top of the page
-      const tournamentInfo = document.getElementById('tournamentInfo');
-      tournamentInfo.parentNode.insertBefore(banner, tournamentInfo.nextSibling);
+      // Add the banner to the team section
+      const sectionHeader = document.querySelector('.tournament-info .section-header');
+      sectionHeader.parentNode.insertBefore(banner, sectionHeader.nextSibling);
       
       // Remove ability to remove players
       const removeButtons = document.querySelectorAll('.remove-player');
@@ -299,6 +934,7 @@
     
     // Helper function to get initials from name
     function getInitials(name) {
+      if (!name) return 'XX';
       return name
         .split(' ')
         .map(part => part[0])
@@ -319,7 +955,7 @@
       // Create image element with fallback
       const img = document.createElement('img');
       img.src = imageUrl;
-      img.alt = player.name;
+      img.alt = player.name || 'Player';
       img.className = cssClass;
       img.onerror = function() {
         // Replace with fallback div showing initials
@@ -335,6 +971,8 @@
     
     // Function to load existing team data
     function loadExistingTeam(players) {
+      debug('Loading existing team', players);
+      
       // Clear the empty message if it exists
       const emptyMessage = document.getElementById('emptyTeamMessage');
       if (emptyMessage) emptyMessage.remove();
@@ -346,7 +984,7 @@
         const teamPlayer = document.createElement('div');
         teamPlayer.className = 'team-player';
         teamPlayer.dataset.playerId = player.id;
-        teamPlayer.dataset.playerPrice = player.price;
+        teamPlayer.dataset.potentialPoints = player.potentialPoints;
         
         // Create player info with avatar
         const playerInfo = document.createElement('div');
@@ -356,13 +994,13 @@
         const avatar = createPlayerAvatar(player, 'small');
         playerInfo.appendChild(avatar);
         
-        // Add name and price
-        const namePrice = document.createElement('div');
-        namePrice.innerHTML = `
+        // Add name and points
+        const namePoints = document.createElement('div');
+        namePoints.innerHTML = `
           <strong>${player.name}</strong>
-          <div>$${player.price.toLocaleString()}</div>
+          <div class="potential-points">${player.potentialPoints} pts</div>
         `;
-        playerInfo.appendChild(namePrice);
+        playerInfo.appendChild(namePoints);
         
         teamPlayer.appendChild(playerInfo);
         teamList.appendChild(teamPlayer);
@@ -372,252 +1010,133 @@
       updateTeamSummary();
     }
     
-    // Function to submit a team
-    async function submitTeam(userId, tournamentId, players) {
-      try {
-        console.log('Submitting team:', {
-          userId,
-          tournamentId,
-          players
-        });
-        
-        // Calculate total spent
-        const totalSpent = players.reduce((sum, player) => sum + player.price, 0);
-        
-        // First create the team entry
-        const { data: team, error: teamError } = await supabase
-          .from('teams')
-          .insert([
-            { 
-              user_id: userId,
-              tournament_id: tournamentId,
-              total_spent: totalSpent,
-              created_at: new Date().toISOString()
-            }
-          ])
-          .select();
-          
-        if (teamError) {
-          console.error('Error creating team:', teamError);
-          return false;
-        }
-        
-        console.log('Team created:', team);
-        
-        // Then add the team players
-        const teamId = team[0].id;
-        const teamPlayers = players.map(player => ({
-          team_id: teamId,
-          player_id: player.id,
-          price: player.price
-        }));
-        
-        console.log('Adding team players:', teamPlayers);
-        
-        const { error: playersError } = await supabase
-          .from('team_players')
-          .insert(teamPlayers);
-          
-        if (playersError) {
-          console.error('Error adding team players:', playersError);
-          return false;
-        }
-        
-        console.log('Team players added successfully');
-        return true;
-      } catch (err) {
-        console.error('Unexpected error in submitTeam:', err);
-        return false;
-      }
+    // Function to submit a team with enhanced error handling
+    // Function to submit a team with enhanced error handling
+async function submitTeam(userId, tournamentId, players) {
+  try {
+    debug('Submitting team', {
+      userId,
+      tournamentId,
+      players
+    });
+    
+    // Validate player data
+    const validation = validatePlayerData(players);
+    if (!validation.isValid) {
+      debug('Validation failed', validation.errors);
+      return { 
+        success: false, 
+        error: `Validation failed: ${validation.errors.join(', ')}` 
+      };
     }
     
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Debug: Log the page load and tournament ID
-      console.log('draft.html loaded');
-      const urlParams = new URLSearchParams(window.location.search);
-      const tournamentId = urlParams.get('tournamentId');
-      console.log('Tournament ID:', tournamentId);
+    // Calculate total potential points
+    const totalPotentialPoints = players.reduce((sum, player) => sum + player.potentialPoints, 0);
+    
+    // First create the team entry
+    const { data: team, error: teamError } = await supabase
+      .from('teams')
+      .insert([
+        { 
+          user_id: userId,
+          tournament_id: tournamentId,
+          total_potential_points: totalPotentialPoints, // Make sure this column exists
+          created_at: new Date().toISOString()
+        }
+      ])
+      .select();
       
+    if (teamError) {
+      debug('Error creating team', teamError);
+      
+      // Check if it's a unique constraint violation
+      if (teamError.code === '23505') {
+        return { 
+          success: false, 
+          error: 'You already have a team for this tournament' 
+        };
+      }
+      
+      return { 
+        success: false, 
+        error: `Error creating team: ${teamError.message}` 
+      };
+    }
+    
+    if (!team || team.length === 0) {
+      debug('No team data returned after insert', team);
+      return { 
+        success: false, 
+        error: 'Failed to create team: No data returned' 
+      };
+    }
+    
+    debug('Team created successfully', team);
+    
+    // Then add the team players
+    const teamId = team[0].id;
+    const teamPlayers = players.map(player => ({
+      team_id: teamId,
+      player_id: player.id,
+      potential_points: player.potentialPoints
+    }));
+    
+    debug('Adding team players', teamPlayers);
+    
+    const { data: playersData, error: playersError } = await supabase
+      .from('team_players')
+      .insert(teamPlayers)
+      .select();
+      
+    if (playersError) {
+      debug('Error adding team players', playersError);
+      
+      // Try to cleanup the orphaned team
+      const { error: cleanupError } = await supabase
+        .from('teams')
+        .delete()
+        .eq('id', teamId);
+        
+      if (cleanupError) {
+        debug('Error cleaning up orphaned team', cleanupError);
+      }
+      
+      return { 
+        success: false, 
+        error: `Error adding team players: ${playersError.message}` 
+      };
+    }
+    
+    debug('Team players added successfully', playersData);
+    return { success: true, teamId: teamId };
+  } catch (err) {
+    debug('Unexpected error in submitTeam', err);
+    return { success: false, error: `Unexpected error: ${err.message}` };
+  }
+}
+    
+    // Add this improved initialization code to replace the existing DOMContentLoaded event handler
+document.addEventListener('DOMContentLoaded', function() {
+  // Debug: Log the page load and tournament ID
+  const urlParams = new URLSearchParams(window.location.search);
+  const tournamentId = urlParams.get('tournamentId');
+  debug('draft.html loaded with tournament ID', tournamentId);
+  
+  // Wrap initialization in async function for better error handling
+  async function initializePage() {
+    try {
       // Check if user is authenticated
-      const user = await checkAuth();
+      const user = await getCurrentUser();
       
       if (user) {
-        console.log('User authenticated:', user.email);
+        debug('User authenticated', user.email);
         
-        // Add user info to UI
-        const header = document.querySelector('header');
-        if (header && !document.querySelector('.user-menu')) {
-          const userMenu = document.createElement('div');
-          userMenu.className = 'user-menu';
-          userMenu.innerHTML = `
-            <a href="profile.html">${user.email}</a>
-            <button id="logoutBtn" class="logout-btn">Logout</button>
-          `;
-          header.appendChild(userMenu);
-          
-          // Add logout event listener
-          document.getElementById('logoutBtn').addEventListener('click', async function() {
-            const { error } = await logoutUser();
-            if (!error) {
-              window.location.href = 'login.html';
-            }
-          });
-        }
+        // Update user section when logged in
+        updateUserSection(user.email);
         
         // Initialize the draft page with tournament data
         if (tournamentId) {
-          try {
-            // Fetch tournament info
-            const { data: tournament, error } = await supabase
-              .from('tournaments')
-              .select('*')
-              .eq('id', tournamentId)
-              .single();
-              
-            if (error) {
-              console.error('Error fetching tournament:', error);
-              showToast('Error loading tournament data', 'error');
-              return;
-            }
-            
-            if (tournament) {
-              // Update tournament info on the page
-              document.querySelector('#tournamentInfo h2').textContent = tournament.name;
-              const tournamentDateString = `${formatDate(tournament.start_date)} • $${tournament.prize_pool.toLocaleString()} Prize Pool • Draft ${tournament.team_size} Players`;
-              document.querySelector('#tournamentInfo p').textContent = tournamentDateString;
-              
-              // Update timer
-              updateDraftTimer(tournament.draft_close_date);
-              
-              // Check if user already has a team for this tournament
-              const { data: existingTeam, error: teamError } = await supabase
-                .from('teams')
-                .select(`
-                  *,
-                  team_players(
-                    *,
-                    players(*)
-                  )
-                `)
-                .eq('user_id', user.id)
-                .eq('tournament_id', tournamentId)
-                .single();
-                
-              if (teamError && teamError.code !== 'PGRST116') { // PGRST116 means no rows returned
-                console.error('Error checking existing team:', teamError);
-              }
-              
-              if (existingTeam) {
-                showToast('You already have a team for this tournament', 'info');
-                
-                // Convert the existing team data to the format our function expects
-                const selectedPlayers = existingTeam.team_players.map(tp => ({
-                  id: tp.player_id,
-                  price: tp.price,
-                  name: tp.players.name,
-                  profile_picture: tp.players.profile_picture
-                }));
-                
-                // Load the players into the UI
-                loadExistingTeam(selectedPlayers);
-                
-                // Then switch to view-only mode
-                setTimeout(() => {
-                  switchToViewOnlyMode(selectedPlayers);
-                }, 500);
-              }
-            }
-            
-            // Fetch available players
-            const { data: players, error: playersError } = await supabase
-              .from('players')
-              .select('*, profile_picture')
-              .order('rank', { ascending: true });
-              
-            if (playersError) {
-              console.error('Error fetching players:', playersError);
-              showToast('Error loading players', 'error');
-              return;
-            }
-            
-            if (players && players.length > 0) {
-              // Update player count
-              document.getElementById('playerCount').textContent = `${players.length} players`;
-              
-              // Clear existing players and render new ones
-              const playerList = document.getElementById('playerList');
-              playerList.innerHTML = '';
-              
-              players.forEach(player => {
-                const playerCard = document.createElement('div');
-                playerCard.className = 'player-card';
-                playerCard.dataset.playerId = player.id;
-                playerCard.dataset.playerPrice = player.price;
-                playerCard.dataset.profilePicture = player.profile_picture || '';
-                
-                // Create player avatar
-                const avatar = createPlayerAvatar(player, 'large');
-                
-                // Create player info section
-                const playerInfo = document.createElement('div');
-                playerInfo.className = 'player-info';
-                playerInfo.appendChild(avatar);
-                
-                // Add name and price
-                const namePrice = document.createElement('div');
-                namePrice.innerHTML = `
-                  <h4 style="margin: 0;">${player.name}</h4>
-                  <div style="color: var(--accent);">$${player.price.toLocaleString()}</div>
-                `;
-                playerInfo.appendChild(namePrice);
-                
-                // Create player stats section
-                const playerStats = document.createElement('div');
-                playerStats.className = 'player-stats';
-                playerStats.innerHTML = `
-                  <div class="stat">
-                    <span>Rank:</span>
-                    <span class="stat-value">#${player.rank}</span>
-                  </div>
-                  <div class="stat">
-                    <span>Win Rate:</span>
-                    <span class="stat-value">${player.win_rate}%</span>
-                  </div>
-                  <div class="stat">
-                    <span>Airmail:</span>
-                    <span class="stat-value">${player.airmail_percentage}%</span>
-                  </div>
-                  <div class="stat">
-                    <span>Push:</span>
-                    <span class="stat-value">${player.push_percentage}%</span>
-                  </div>
-                `;
-                
-                // Add badges
-                const badgesHTML = renderBadges(player.badges);
-                
-                // Add draft button
-                const draftBtn = document.createElement('button');
-                draftBtn.className = 'draft-btn';
-                draftBtn.textContent = '+ DRAFT';
-                
-                // Assemble the player card
-                playerCard.appendChild(playerInfo);
-                playerCard.appendChild(playerStats);
-                if (badgesHTML) {
-                  const badgesDiv = document.createElement('div');
-                  badgesDiv.innerHTML = badgesHTML;
-                  playerCard.appendChild(badgesDiv.firstChild);
-                }
-                playerCard.appendChild(draftBtn);
-                
-                playerList.appendChild(playerCard);
-              });
-            }
-          } catch (err) {
-            console.error('Error initializing draft page:', err);
-            showToast('An unexpected error occurred', 'error');
-          }
+          await initializeTournament(tournamentId, user);
         } else {
           // No tournament ID provided
           showToast('No tournament selected. Redirecting to tournaments...', 'error');
@@ -625,41 +1144,416 @@
             window.location.href = 'tournaments.html';
           }, 2000);
         }
-        
-        // Setup draft buttons and search functionality
-        setupDraftButtons();
-        setupSearchFilter();
-        
-        // Handle form submission
-        document.getElementById('submitTeam').addEventListener('click', async function() {
-          const selectedPlayers = Array.from(document.querySelectorAll('.team-player')).map(el => ({
-            id: el.dataset.playerId,
-            price: parseInt(el.dataset.playerPrice)
-          }));
-          
-          if (selectedPlayers.length === 4) {
-            try {
-              showToast('Submitting team...', 'info');
-              
-              const result = await submitTeam(user.id, tournamentId, selectedPlayers);
-              
-              if (result) {
-                showToast('Team submitted successfully!');
-                // Switch to view-only mode instead of redirecting
-                switchToViewOnlyMode(selectedPlayers);
-              } else {
-                showToast('Error submitting team. Please try again.', 'error');
-              }
-            } catch (err) {
-              console.error('Error submitting team:', err);
-              showToast('Error submitting team. Please try again.', 'error');
-            }
-          } else {
-            showToast('Please select exactly 4 players', 'error');
-          }
-        });
+      } else {
+        // Not logged in, redirect to login
+        debug('User not logged in, redirecting to login');
+        window.location.href = 'login.html?redirect=draft.html?tournamentId=' + tournamentId;
+      }
+    } catch (err) {
+      debug('Error in draft page initialization', err.message || err);
+      console.error('Initialization error:', err);
+      showToast('An unexpected error occurred during page initialization', 'error');
+    }
+  }
+  
+  // Start initialization
+  initializePage();
+});
+
+// Helper function to update user section
+function updateUserSection(email) {
+  try {
+    const userSection = document.querySelector('.user-section');
+    userSection.innerHTML = `
+      <span class="user-email">${email}</span>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    `;
+    
+    // Add logout event listener
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+      try {
+        const { error } = await logoutUser();
+        if (!error) {
+          window.location.reload();
+        } else {
+          showToast('Error logging out: ' + error.message, 'error');
+        }
+      } catch (err) {
+        debug('Error during logout', err);
+        showToast('Error during logout', 'error');
       }
     });
+  } catch (err) {
+    debug('Error updating user section', err);
+    // Non-critical error, continue execution
+  }
+}
+
+// Function to initialize tournament data
+async function initializeTournament(tournamentId, user) {
+  try {
+    // Fetch tournament info
+    const { data: tournament, error } = await supabase
+      .from('tournaments')
+      .select('*')
+      .eq('id', tournamentId)
+      .single();
+      
+    if (error) {
+      debug('Error fetching tournament', error);
+      showToast('Error loading tournament data', 'error');
+      return;
+    }
+    
+    if (tournament) {
+      debug('Tournament data loaded', tournament);
+      
+      // Update tournament info on the page
+      updateTournamentInfo(tournament);
+      
+      // Check for existing team
+      await checkExistingTeam(tournamentId, user);
+      
+      // Load available players
+      await loadAvailablePlayers(tournamentId);
+      
+      // Setup draft buttons and search functionality
+      setupDraftButtons();
+      setupSearchFilter();
+      
+      // Handle form submission
+      setupTeamSubmission(tournamentId, user);
+    } else {
+      showToast('Tournament not found', 'error');
+    }
+  } catch (err) {
+    debug('Error initializing tournament', err);
+    showToast('Error loading tournament data', 'error');
+    throw err; // Rethrow to be caught by the main error handler
+  }
+}
+
+// Update tournament info on the page
+function updateTournamentInfo(tournament) {
+  try {
+    document.querySelector('#tournamentInfo h2').textContent = tournament.name;
+    const tournamentDateString = `${formatDate(tournament.start_date)} • Top ${tournament.top_players_count || 4} Finishers Earn Points • Draft ${tournament.team_size} Players`;
+    document.querySelector('#tournamentInfo p').textContent = tournamentDateString;
+    
+    // Update timer
+    updateDraftTimer(tournament.draft_close_date);
+  } catch (err) {
+    debug('Error updating tournament info', err);
+    // Non-critical error, continue execution
+  }
+}
+
+// Check if user already has a team for this tournament
+async function checkExistingTeam(tournamentId, user) {
+  try {
+    // First check if the user has a team for this tournament
+    const { data: teamData, error: teamCheckError } = await supabase
+      .from('teams')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('tournament_id', tournamentId);
+      
+    if (teamCheckError) {
+      debug('Error checking if team exists', teamCheckError);
+      showToast('Error checking existing team', 'error');
+      return;
+    }
+    
+    // If team exists, then get all the details including players
+    if (teamData && teamData.length > 0) {
+      const teamId = teamData[0].id;
+      debug('Found existing team with ID', teamId);
+      
+      // Get team details
+      const { data: teamDetails, error: teamDetailsError } = await supabase
+        .from('teams')
+        .select('id, team_points')
+        .eq('id', teamId)
+        .single();
+        
+      if (teamDetailsError) {
+        debug('Error getting team details', teamDetailsError);
+        showToast('Error loading team details', 'error');
+        return;
+      }
+      
+      // Get team players
+      const { data: teamPlayers, error: playersError } = await supabase
+        .from('team_players')
+        .select('player_id, potential_points')  // Add potential_points here
+        .eq('team_id', teamId);
+        
+      if (playersError) {
+        debug('Error getting team players', playersError);
+        showToast('Error loading team players', 'error');
+        return;
+      }
+      
+      // If we have players, get their details
+      if (teamPlayers && teamPlayers.length > 0) {
+        // Get player IDs
+        const playerIds = teamPlayers.map(tp => tp.player_id);
+        
+        // Get player details
+        const { data: playerDetails, error: playerDetailsError } = await supabase
+          .from('players')
+          .select('id, name, profile_picture, rank, potential_points')  // Added potential_points
+          .in('id', playerIds);
+          
+        if (playerDetailsError) {
+          debug('Error getting player details', playerDetailsError);
+          showToast('Error loading player details', 'error');
+          return;
+        }
+        
+        // Combine player details with team players
+        const selectedPlayers = teamPlayers.map(tp => {
+          const player = playerDetails.find(p => p.id === tp.player_id);
+          return {
+            id: tp.player_id,
+            potentialPoints: tp.potential_points || (player ? player.potential_points : 0),
+            name: player ? player.name : 'Unknown Player',
+            profile_picture: player ? player.profile_picture : null
+          };
+        });
+        
+        // Show toast message and load existing team
+        showToast('Loading your submitted team', 'info');
+        debug('Existing team players loaded', selectedPlayers);
+        
+        // Load the players into the UI
+        loadExistingTeam(selectedPlayers);
+        
+        // Then switch to view-only mode
+        setTimeout(() => {
+          switchToViewOnlyMode(selectedPlayers);
+        }, 500);
+      }
+    } else {
+      debug('No existing team found', null);
+    }
+  } catch (err) {
+    debug('Exception checking existing team', err);
+    showToast('Error checking team status. Starting with empty team.', 'error');
+  }
+}
+
+// Find this function in draft.js
+async function loadAvailablePlayers(tournamentId) {
+  try {
+    // Get players associated with this tournament
+    const { data: tournamentPlayers, error: tpError } = await supabase
+      .from('tournament_players')
+      .select(`
+        player_id,
+        tournament_rank,
+        players (*)
+      `)
+      .eq('tournament_id', tournamentId);
+      
+    if (tpError) {
+      debug('Error fetching tournament players', tpError);
+      showToast('Error loading tournament players', 'error');
+      return;
+    }
+    
+    // Extract player data
+    const players = tournamentPlayers
+      .map(tp => {
+        // Create a modified player object with tournament rank
+        const player = tp.players;
+        if (player) {
+          // Use tournament_rank instead of global rank if available
+          if (tp.tournament_rank) {
+            player.tournamentRank = tp.tournament_rank; // Add tournament rank to player object
+          }
+        }
+        return player;
+      })
+      .filter(player => player !== null);
+    
+    if (!players || players.length === 0) {
+      debug('No players found for this tournament', players);
+      showToast('No players available for this tournament', 'error');
+      return;
+    }
+    
+    debug('Players loaded', `${players.length} tournament players`);
+    
+    // Add potential points to each player based on tournament rank if available, or fall back to global rank
+    players.forEach(player => {
+      if (player.tournamentRank) {
+        // Use tournament rank for potential points calculation
+        player.potentialPoints = calculatePotentialPoints(player.tournamentRank);
+      } else {
+        // Fall back to global rank
+        player.potentialPoints = calculatePotentialPoints(player.rank);
+      }
+    });
+    
+    // Update player count
+    document.getElementById('playerCount').textContent = `${players.length} players`;
+    
+    // Clear existing players and render new ones
+    renderPlayerCards(players);
+  } catch (err) {
+    debug('Error loading available players', err);
+    showToast('Error loading available players', 'error');
+    throw err;
+  }
+}
+
+// Find this function in draft.js
+function renderPlayerCards(players) {
+  try {
+    const playerList = document.getElementById('playerList');
+    playerList.innerHTML = '';
+    
+    players.forEach(player => {
+      const playerCard = document.createElement('div');
+      playerCard.className = 'player-card';
+      playerCard.dataset.playerId = player.id;
+      playerCard.dataset.potentialPoints = player.potentialPoints;
+      playerCard.dataset.profilePicture = player.profile_picture || '';
+      
+      // Create player avatar
+      const avatar = createPlayerAvatar(player, 'large');
+      
+      // Create player info section
+      const playerInfo = document.createElement('div');
+      playerInfo.className = 'player-info';
+      playerInfo.appendChild(avatar);
+      
+      // Add name and potential points
+      const namePoints = document.createElement('div');
+      namePoints.innerHTML = `
+        <h4 style="margin: 0;">${player.name}</h4>
+        <div class="potential-points">${player.potentialPoints} potential points</div>
+      `;
+      playerInfo.appendChild(namePoints);
+      
+      // Create player stats section
+      const playerStats = document.createElement('div');
+      playerStats.className = 'player-stats';
+      
+      // Format skill level from acronym to full name
+      let skillLevelText = "Unknown";
+      if (player.skill_level) {
+        switch(player.skill_level) {
+          case 'P':
+            skillLevelText = 'Pro';
+            break;
+          case 'E':
+            skillLevelText = 'Elite';
+            break;
+          case 'ACLS':
+            skillLevelText = 'Senior';
+            break;
+          case 'ACLJ':
+            skillLevelText = 'Junior';
+            break;
+          case 'ACLW':
+            skillLevelText = 'Women\'s';
+            break;
+          default:
+            skillLevelText = player.skill_level;
+        }
+      }
+      
+      // Handle null values
+      const ppr = player.player_ppr !== null ? player.player_ppr : '—';
+      const cpi = player.player_cpi !== null ? player.player_cpi : '—';
+      
+      // Use tournament rank if available, otherwise use global rank
+      const displayRank = player.tournamentRank || player.rank;
+      
+      playerStats.innerHTML = `
+        <div class="stat">
+          <span>Rank:</span>
+          <span class="stat-value">#${displayRank}</span>
+        </div>
+        <div class="stat">
+          <span>Player Tag:</span>
+          <span class="stat-value">${skillLevelText}</span>
+        </div>
+        <div class="stat">
+          <span>PPR:</span>
+          <span class="stat-value">${ppr}</span>
+        </div>
+        <div class="stat">
+          <span>CPI:</span>
+          <span class="stat-value">${cpi}</span>
+        </div>
+      `;
+      
+      // Add badges
+      const badgesHTML = renderBadges(player.badges || []);
+      
+      // Add draft button
+      const draftBtn = document.createElement('button');
+      draftBtn.className = 'draft-btn';
+      draftBtn.textContent = '+ DRAFT';
+      
+      // Assemble the player card
+      playerCard.appendChild(playerInfo);
+      playerCard.appendChild(playerStats);
+      if (badgesHTML) {
+        const badgesDiv = document.createElement('div');
+        badgesDiv.innerHTML = badgesHTML;
+        playerCard.appendChild(badgesDiv.firstChild);
+      }
+      playerCard.appendChild(draftBtn);
+      
+      playerList.appendChild(playerCard);
+    });
+  } catch (err) {
+    debug('Error rendering player cards', err);
+    showToast('Error displaying player cards', 'error');
+  }
+}
+
+// Setup team submission handling
+function setupTeamSubmission(tournamentId, user) {
+  try {
+    document.getElementById('submitTeam').addEventListener('click', async function() {
+      const selectedPlayers = Array.from(document.querySelectorAll('.team-player')).map(el => ({
+        id: el.dataset.playerId,
+        potentialPoints: parseInt(el.dataset.potentialPoints)
+      }));
+      
+      if (selectedPlayers.length === MAX_TEAM_SIZE) {
+        try {
+          showToast('Submitting team...', 'info');
+          
+          const result = await submitTeam(user.id, tournamentId, selectedPlayers);
+          
+          if (result.success) {
+            debug('Team submission successful', result);
+            showToast('Team submitted successfully!');
+            // Switch to view-only mode instead of redirecting
+            switchToViewOnlyMode(selectedPlayers);
+          } else {
+            debug('Team submission failed', result.error);
+            showToast(`Error submitting team: ${result.error}`, 'error');
+          }
+        } catch (err) {
+          debug('Exception during team submission', err);
+          showToast('Error submitting team. Please try again.', 'error');
+        }
+      } else {
+        showToast(`Please select exactly ${MAX_TEAM_SIZE} players`, 'error');
+      }
+    });
+  } catch (err) {
+    debug('Error setting up team submission', err);
+    // Non-critical error, continue execution
+  }
+}
     
     // Helper function to render player badges
     function renderBadges(badges) {
@@ -716,12 +1610,11 @@
         const playerCard = draftButton.closest('.player-card');
         const playerId = playerCard.dataset.playerId;
         const playerName = playerCard.querySelector('h4').textContent;
-        const playerPrice = playerCard.querySelector('.player-info div div').textContent;
-        const priceValue = parseInt(playerCard.dataset.playerPrice);
+        const potentialPoints = parseInt(playerCard.dataset.potentialPoints);
         const profilePicture = playerCard.dataset.profilePicture;
         
         // Add player to team
-        addPlayerToTeam(playerId, playerName, playerPrice, priceValue, profilePicture);
+        addPlayerToTeam(playerId, playerName, potentialPoints, profilePicture);
         
         // Disable the draft button
         draftButton.disabled = true;
@@ -730,12 +1623,11 @@
     }
     
     // Add player to team
-    function addPlayerToTeam(playerId, playerName, playerPrice, priceValue, profilePicture) {
+    function addPlayerToTeam(playerId, playerName, potentialPoints, profilePicture) {
       const teamList = document.getElementById('selectedPlayers');
       const teamCount = document.querySelectorAll('.team-player').length;
-      const maxTeamSize = 4;
       
-      if (teamCount >= maxTeamSize) {
+      if (teamCount >= MAX_TEAM_SIZE) {
         showToast('Your team is full! Remove a player to add another.', 'error');
         return;
       }
@@ -750,7 +1642,7 @@
       const teamPlayer = document.createElement('div');
       teamPlayer.className = 'team-player';
       teamPlayer.dataset.playerId = playerId;
-      teamPlayer.dataset.playerPrice = priceValue;
+      teamPlayer.dataset.potentialPoints = potentialPoints;
       
       // Create player info with avatar
       const playerInfo = document.createElement('div');
@@ -775,13 +1667,13 @@
       
       playerInfo.appendChild(avatar);
       
-      // Add name and price
-      const namePrice = document.createElement('div');
-      namePrice.innerHTML = `
+      // Add name and points
+      const namePoints = document.createElement('div');
+      namePoints.innerHTML = `
         <strong>${playerName}</strong>
-        <div>${playerPrice}</div>
+        <div class="potential-points">${potentialPoints} pts</div>
       `;
-      playerInfo.appendChild(namePrice);
+      playerInfo.appendChild(namePoints);
       
       // Add remove button
       const removeButton = document.createElement('button');
@@ -822,23 +1714,27 @@
     function updateTeamSummary() {
       const teamPlayers = document.querySelectorAll('.team-player');
       const teamCount = teamPlayers.length;
-      const maxTeamSize = 4;
-      const totalChips = 10000;
       
-      let chipsSpent = 0;
+      let totalPoints = 0;
       teamPlayers.forEach(player => {
-        chipsSpent += parseInt(player.dataset.playerPrice);
+        totalPoints += parseInt(player.dataset.potentialPoints);
       });
       
       // Update UI elements
-      document.getElementById('teamCount').textContent = `${teamCount}/${maxTeamSize} Selected`;
-      document.getElementById('totalPlayers').textContent = `${teamCount}/${maxTeamSize}`;
-      document.getElementById('chipsSpent').textContent = chipsSpent;
-      document.getElementById('chipsRemaining').textContent = totalChips - chipsSpent;
+      document.getElementById('teamCount').textContent = `${teamCount}/${MAX_TEAM_SIZE} Selected`;
+      
+      // Show total points in header when there are players
+      const totalPointsDisplay = document.getElementById('totalPoints-display');
+      if (teamCount > 0) {
+        totalPointsDisplay.style.display = 'block';
+        document.getElementById('totalPoints').textContent = totalPoints;
+      } else {
+        totalPointsDisplay.style.display = 'none';
+      }
       
       // Enable/disable submit button
       const submitButton = document.getElementById('submitTeam');
-      submitButton.disabled = teamCount !== maxTeamSize;
+      submitButton.disabled = teamCount !== MAX_TEAM_SIZE;
     }
     
     // Function to set up search and filter
@@ -875,10 +1771,10 @@
             const winRateA = parseFloat(a.querySelectorAll('.stat-value')[1].textContent);
             const winRateB = parseFloat(b.querySelectorAll('.stat-value')[1].textContent);
             return winRateB - winRateA;
-          } else if (sortOption === 'price') {
-            const priceA = parseInt(a.dataset.playerPrice);
-            const priceB = parseInt(b.dataset.playerPrice);
-            return priceB - priceA;
+          } else if (sortOption === 'points') {
+            const pointsA = parseInt(a.dataset.potentialPoints);
+            const pointsB = parseInt(b.dataset.potentialPoints);
+            return pointsB - pointsA;
           }
           return 0;
         });
@@ -911,6 +1807,14 @@
         toast.style.display = 'none';
       }, 3000);
     }
+    
+    // Add keyboard shortcut to toggle debug overlay (CTRL+SHIFT+D)
+    document.addEventListener('keydown', function(e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        const debugOverlay = document.getElementById('debugOverlay');
+        debugOverlay.classList.toggle('active');
+      }
+    });
   </script>
 </body>
 </html>
