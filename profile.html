@@ -4,112 +4,1066 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - Cornhole Kings</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 1000;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 1.1rem;
+    }
+    
+    nav a:hover {
+      color: #f1c40f;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Mobile Responsiveness for Header */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+    
+    /* Profile Styles */
+    .profile-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background-color: rgba(13, 16, 35, 0.7);
+      border-radius: 8px;
+      padding: 2rem;
+    }
+    
+    .profile-container h2 {
+      margin-top: 0;
+      color: #f1c40f;
+      border-bottom: 2px solid #f1c40f;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .profile-section {
+      margin-bottom: 2rem;
+    }
+    
+    .profile-section h3 {
+      color: #f1c40f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-details {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+    }
+    
+    .profile-row {
+      display: flex;
+      margin-bottom: 1rem;
+    }
+    
+    .profile-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .profile-label {
+      font-weight: bold;
+      width: 150px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .teams-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .team-card {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 6px;
+      border-left: 3px solid #4ade80;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .team-card h4 {
+      margin-top: 0;
+      color: #f1c40f;
+    }
+    
+    /* Tournament card styling */
+    .team-card.has-placement::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+    }
+    
+    .team-card.placement-1::before {
+      background-color: #f1c40f; /* Gold */
+    }
+    
+    .team-card.placement-2::before {
+      background-color: #bdc3c7; /* Silver */
+    }
+    
+    .team-card.placement-3::before {
+      background-color: #cd7f32; /* Bronze */
+    }
+    
+    .team-card.placement-4::before {
+      background-color: #3498db; /* Blue */
+    }
+    
+    /* Placement badges */
+    .placement-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+    
+    .placement-badge.gold {
+      background-color: #f1c40f;
+      color: #0d1023;
+    }
+    
+    .placement-badge.silver {
+      background-color: #bdc3c7;
+      color: #0d1023;
+    }
+    
+    .placement-badge.bronze {
+      background-color: #cd7f32;
+      color: #0d1023;
+    }
+    
+    .placement-badge.honorable {
+      background-color: #3498db;
+      color: #0d1023;
+    }
+    
+    /* Enhanced points display */
+    .points-total {
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(39, 174, 96, 0.1);
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin: 8px 0;
+    }
+    
+    .points-summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .points-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .points-value {
+      font-weight: bold;
+      color: #27ae60;
+    }
+    
+    .points-earned {
+      color: #2ecc71;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+    
+    .points-conversion {
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 4px;
+      justify-content: space-between;
+    }
+    
+    .conversion-arrow {
+      margin: 0 5px;
+    }
+    
+    .player-avatar-small {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: white;
+      margin-right: 0.5rem;
+    }
+    
+    /* Team players styling */
+    .team-player {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transition: background-color 0.2s;
+    }
+    
+    .team-player:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    .team-player:last-child {
+      border-bottom: none;
+    }
+    
+    .team-player-info {
+      flex: 1;
+    }
+    
+    .team-player-points {
+      text-align: right;
+      font-weight: bold;
+    }
+    
+    .player-points-detail {
+      display: flex;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    
+    .player-points-calculation {
+      background-color: rgba(46, 204, 113, 0.1);
+      padding: 2px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+    }
+    
+    /* Placement icons */
+    .placement-icon {
+      display: inline-block;
+      margin-left: 5px;
+      font-size: 16px;
+    }
+    
+    .team-players-list {
+      margin-top: 0.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .team-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .team-card-header .tournament-date {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+    
+    /* Tournament status badge */
+    .tournament-status {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      z-index: 1;
+    }
+    
+    .status-completed {
+      background-color: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+    }
+    
+    .status-active {
+      background-color: rgba(52, 152, 219, 0.2);
+      color: #3498db;
+    }
+    
+    .status-upcoming {
+      background-color: rgba(241, 196, 15, 0.2);
+      color: #f1c40f;
+    }
+    
+    .status-unknown {
+      background-color: rgba(149, 165, 166, 0.2);
+      color: #95a5a6;
+    }
+    
+    /* Winnings badge */
+    .winnings-badge {
+      margin-left: 10px;
+      background-color: #2ecc71;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    /* Points details */
+    .points-earned-label {
+      color: #2ecc71;
+    }
+    
+    .points-not-earned {
+      color: #e74c3c;
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+
+    .view-results-btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 5px 10px;
+      background-color: rgba(52, 152, 219, 0.2);
+      color: #3498db;
+      border: 1px solid rgba(52, 152, 219, 0.3);
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .view-results-btn:hover {
+      background-color: rgba(52, 152, 219, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Update team card to have more space at the bottom */
+    .team-card {
+      padding-bottom: 1rem;
+    }
+    
+    /* Animation for the card */
+    @keyframes highlight-card {
+      0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.5); }
+      70% { box-shadow: 0 0 0 10px rgba(241, 196, 15, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); }
+    }
+    
+    .team-card.highlight {
+      animation: highlight-card 1s ease-in-out;
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #4ade80;
+      animation: spin 1s ease-in-out infinite;
+      margin: 1rem auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">CK</div>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
         <h1>Cornhole Kings</h1>
-      </div>
-      <nav>
-        <a href="index.html">Tournaments</a>
-        <a href="profile.html" class="active">My Profile</a>
-      </nav>
-    </header>
+      </a>
+    </div>
     
-    <div class="profile-container">
-      <h2>My Profile</h2>
-      
-      <div class="profile-section">
-        <h3>Account Information</h3>
-        <div class="profile-details">
-          <div class="profile-row">
-            <span class="profile-label">Email:</span>
-            <span id="userEmail">Loading...</span>
-          </div>
-          <div class="profile-row">
-            <span class="profile-label">Name:</span>
-            <span id="userName">Loading...</span>
-          </div>
-          <div class="profile-row">
-            <span class="profile-label">Account Created:</span>
-            <span id="userCreated">Loading...</span>
-          </div>
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html" class="active">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="profile-container">
+    <h2>My Profile</h2>
+    
+    <div class="profile-section">
+      <h3>Account Information</h3>
+      <div class="profile-details">
+        <div class="profile-row">
+          <span class="profile-label">Email:</span>
+          <span id="userEmail">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Name:</span>
+          <span id="userName">Loading...</span>
+        </div>
+        <div class="profile-row">
+          <span class="profile-label">Account Created:</span>
+          <span id="userCreated">Loading...</span>
         </div>
       </div>
-      
-      <div class="profile-section">
-        <h3>My Teams</h3>
-        <div id="userTeams" class="teams-list">
+    </div>
+    
+    <div class="profile-section">
+      <h3>My Teams</h3>
+      <div id="userTeams" class="teams-list">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
           <p>Loading your teams...</p>
         </div>
       </div>
     </div>
   </div>
   
-  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+  <div id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async function() {
+// Helper function to get initials from name
+function getInitials(name) {
+  if (!name) return 'XX';
+  return name
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .toUpperCase();
+}
+
+// Format date helper
+function formatDate(dateString) {
+  if (!dateString) return 'Unknown Date';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+}
+
+// Helper function to get ordinal suffix (1st, 2nd, 3rd, etc)
+function getOrdinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+// Helper function to capitalize the first letter
+function capitalizeFirstLetter(string) {
+  if (!string) return '';
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Wrap initialization in async function for better error handling
+  async function initializeProfilePage() {
+    try {
       // Check if user is authenticated
-      const user = await checkAuth();
+      const user = await getCurrentUser();
       
       if (user) {
-        // Update profile information
-        document.getElementById('userEmail').textContent = user.email;
-        document.getElementById('userName').textContent = user.user_metadata.full_name || 'Not provided';
-        document.getElementById('userCreated').textContent = new Date(user.created_at).toLocaleDateString();
+        console.log('User authenticated:', user.email);
         
-        // Fetch user's teams
-        const { data: teams, error } = await supabase
-          .from('teams')
-          .select(`
-            *,
-            tournaments(name, start_date),
-            team_players(
-              *,
-              players(name, price)
-            )
-          `)
-          .eq('user_id', user.id);
+        // Update UI with user information
+        await updateUserInterface(user);
         
-        const teamsContainer = document.getElementById('userTeams');
-        
-        if (error) {
-          console.error('Error fetching teams:', error);
-          teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
-          return;
+        // Fetch and display user's teams with improved error handling
+        await loadUserTeams(user);
+      } else {
+        // Not logged in, redirect to login
+        console.log('User not logged in, redirecting to login');
+        window.location.href = 'login.html?redirect=profile.html';
+      }
+    } catch (err) {
+      console.error('Error initializing profile page:', err);
+      showToast('An unexpected error occurred. Please try again later.', 'error');
+    }
+  }
+  
+  // Start initialization
+  initializeProfilePage();
+});
+
+// Update the user interface with user data
+async function updateUserInterface(user) {
+  try {
+    // Update user section in header when logged in
+    const userSection = document.querySelector('.user-section');
+    userSection.innerHTML = `
+      <span class="user-email">${user.email}</span>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    `;
+    
+    // Add logout event listener
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+      try {
+        const { error } = await logoutUser();
+        if (!error) {
+          window.location.reload();
+        } else {
+          showToast('Error logging out: ' + error.message, 'error');
         }
-        
-        if (teams.length === 0) {
-          teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
-          return;
-        }
-        
-        // Display teams
-        teamsContainer.innerHTML = '';
-        teams.forEach(team => {
-          const teamElement = document.createElement('div');
-          teamElement.className = 'team-card';
-          
-          const players = team.team_players.map(tp => tp.players.name).join(', ');
-          
-          teamElement.innerHTML = `
-            <h4>${team.tournaments.name}</h4>
-            <p>Tournament Date: ${new Date(team.tournaments.start_date).toLocaleDateString()}</p>
-            <p>Team Cost: $${team.total_spent}</p>
-            <p>Players: ${players}</p>
-          `;
-          
-          teamsContainer.appendChild(teamElement);
-        });
+      } catch (err) {
+        console.error('Error during logout:', err);
+        showToast('Error during logout', 'error');
       }
     });
+    
+    // Update profile information
+    document.getElementById('userEmail').textContent = user.email || 'Not available';
+    document.getElementById('userName').textContent = user.user_metadata?.full_name || 'Not provided';
+    document.getElementById('userCreated').textContent = user.created_at ? formatDate(user.created_at) : 'Unknown';
+  } catch (err) {
+    console.error('Error updating user interface:', err);
+    showToast('Error loading user information', 'error');
+    // Continue execution despite this error
+  }
+}
+
+// Enhanced function to load user teams with tournament results
+async function loadUserTeams(user) {
+  const teamsContainer = document.getElementById('userTeams');
+  
+  try {
+    // First, fetch basic team data - only select fields that definitely exist
+    const { data: teams, error: teamsError } = await supabase
+      .from('teams')
+      .select(`
+        id,
+        created_at,
+        tournament_id,
+        team_points
+      `)
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+    
+    if (teamsError) {
+      console.error('Error fetching teams:', teamsError);
+      teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
+      return;
+    }
+    
+    if (!teams || teams.length === 0) {
+      teamsContainer.innerHTML = '<p>You haven\'t created any teams yet.</p>';
+      return;
+    }
+    
+    console.log(`Found ${teams.length} teams for user`);
+    
+    // Create an array to hold all processed teams
+    const processedTeams = [];
+    
+    // Process each team sequentially to avoid race conditions
+    for (const team of teams) {
+      try {
+        // Get tournament details
+        const { data: tournament, error: tournamentError } = await supabase
+          .from('tournaments')
+          .select('name, start_date, status')
+          .eq('id', team.tournament_id)
+          .single();
+        
+        if (tournamentError) {
+          console.error(`Error fetching tournament for team ${team.id}:`, tournamentError);
+          // Continue anyway, we'll just use placeholder text
+        }
+        
+        // Get team players with potential_points
+        const { data: teamPlayers, error: playersError } = await supabase
+          .from('team_players')
+          .select('player_id, potential_points')
+          .eq('team_id', team.id);
+
+        if (playersError) {
+          console.error(`Error fetching players for team ${team.id}:`, playersError);
+          // Continue anyway, we'll just show empty players list
+        }
+
+        // Prepare players data
+        let players = [];
+        let totalPointsEarned = 0;
+        let totalPotentialPoints = 0;
+
+        if (teamPlayers && teamPlayers.length > 0) {
+          // Get all player IDs
+          const playerIds = teamPlayers.map(tp => tp.player_id);
+          
+          // Fetch player details
+          const { data: playerDetails, error: playerDetailsError } = await supabase
+            .from('players')
+            .select('id, name, profile_picture, rank')
+            .in('id', playerIds);
+          
+          if (playerDetailsError) {
+            console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
+          }
+          
+          // Get player tournament points
+          const { data: playerPoints, error: pointsError } = await supabase
+            .from('player_tournament_points')
+            .select('player_id, points_earned, placement')
+            .eq('tournament_id', team.tournament_id)
+            .in('player_id', playerIds);
+            
+          if (pointsError) {
+            console.error(`Error fetching player points for tournament ${team.tournament_id}:`, pointsError);
+          }
+          
+          // Calculate total potential points from team_players data
+          totalPotentialPoints = teamPlayers.reduce((sum, tp) => 
+            sum + (tp.potential_points || 0), 0);
+          
+          // Combine player details with team players
+          players = teamPlayers.map(tp => {
+            const player = playerDetails?.find(p => p.id === tp.player_id) || { 
+              name: 'Unknown Player'
+            };
+            
+            // Use potential_points from team_players
+            const potentialPoints = tp.potential_points || 0;
+            
+            // Find player points from player_tournament_points
+            const playerResult = playerPoints?.find(pp => pp.player_id === tp.player_id);
+            const hasPlaced = playerResult && playerResult.placement > 0 && playerResult.placement <= 4;
+            const pointsEarned = hasPlaced ? (playerResult.points_earned || 0) : 0;
+            
+            // Add to total points earned
+            totalPointsEarned += pointsEarned;
+            
+            return {
+              ...tp,
+              potential_points: potentialPoints,
+              player_details: {
+                ...player,
+                hasPlaced,
+                pointsEarned,
+                placement: playerResult?.placement
+              }
+            };
+          });
+          
+          // Update team points calculation
+          team.total_potential_points = totalPotentialPoints;
+          team.total_points_earned = totalPointsEarned;
+        }
+        
+        // Assemble complete team data
+        processedTeams.push({
+          ...team,
+          tournament: tournament || { name: 'Unknown Tournament', start_date: null, status: 'unknown' },
+          players: players,
+          isCompleted: tournament?.status === 'completed'
+        });
+      } catch (err) {
+        console.error(`Error processing team ${team.id}:`, err);
+        // Continue to next team
+      }
+    }
+    
+    // Now render all teams to the DOM
+    renderTeams(processedTeams, teamsContainer);
+  } catch (err) {
+    console.error('Error loading user teams:', err);
+    teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
+    showToast('Error loading teams', 'error');
+  }
+}
+
+function renderTeams(teams, container) {
+  try {
+    // Clear loading message
+    container.innerHTML = '';
+    
+    // Create and append each team element
+    teams.forEach(team => {
+      const teamElement = document.createElement('div');
+      teamElement.className = 'team-card';
+      
+      // Add placement class if any player in the team has placed
+      const hasAnyPlayerPlaced = team.players.some(player => player.player_details.hasPlaced);
+      if (hasAnyPlayerPlaced) {
+        teamElement.classList.add('has-placed-players');
+      }
+      
+      // Create team card header
+      const header = document.createElement('div');
+      header.className = 'team-card-header';
+      
+      const heading = document.createElement('h4');
+      heading.textContent = team.tournament?.name || 'Unknown Tournament';
+      
+      const date = document.createElement('div');
+      date.className = 'tournament-date';
+      date.textContent = formatDate(team.tournament?.start_date);
+      
+      header.appendChild(heading);
+      header.appendChild(date);
+      teamElement.appendChild(header);
+      
+      // Add tournament status badge
+      const statusBadge = document.createElement('div');
+      statusBadge.className = `tournament-status status-${team.tournament?.status || 'unknown'}`;
+      statusBadge.textContent = capitalizeFirstLetter(team.tournament?.status || 'Unknown');
+      teamElement.appendChild(statusBadge);
+      
+      // Add points information
+      const pointsInfo = document.createElement('div');
+      pointsInfo.className = 'points-total';
+      
+      // Calculate points safely
+      const totalPotentialPoints = team.total_potential_points || 0;
+      const totalPointsEarned = team.total_points_earned || 0;
+      
+      if (team.isCompleted && totalPointsEarned > 0) {
+        // Calculate percentage of points earned vs potential points
+        const percentEarned = totalPotentialPoints > 0 ? 
+          (totalPointsEarned / totalPotentialPoints * 100) : 0;
+        
+        pointsInfo.innerHTML = `
+          <div class="points-summary">
+            <span class="points-label">Potential Points:</span>
+            <span class="points-value">${totalPotentialPoints}</span>
+          </div>
+          <div class="points-summary">
+            <span class="points-label">Points Earned:</span>
+            <span class="points-value points-earned">${totalPointsEarned}</span>
+          </div>
+          <div class="points-conversion">
+            <span>${totalPotentialPoints}</span>
+            <span class="conversion-arrow">→</span>
+            <span>${totalPointsEarned}</span>
+            <span>(${Math.round(percentEarned)}%)</span>
+          </div>
+        `;
+      } else {
+        pointsInfo.innerHTML = `<div class="points-summary">
+          <span class="points-label">Potential Points:</span>
+          <span class="points-value">${totalPotentialPoints}</span>
+        </div>`;
+      }
+      
+      teamElement.appendChild(pointsInfo);
+      
+      // Format players list
+      const playersList = document.createElement('div');
+      playersList.className = 'team-players-list';
+      
+      if (team.players && team.players.length > 0) {
+        team.players.forEach(player => {
+          const playerElement = document.createElement('div');
+          playerElement.className = 'team-player';
+          
+          // Player info section
+          const playerInfo = document.createElement('div');
+          playerInfo.className = 'team-player-info';
+          playerInfo.textContent = player.player_details.name;
+          
+          // Add a medal icon ONLY for players who placed
+          if (player.player_details.hasPlaced) {
+            const placementIcon = document.createElement('span');
+            placementIcon.className = 'placement-icon';
+            
+            const placement = player.player_details.placement;
+            if (placement === 1) {
+              placementIcon.innerHTML = '🥇';
+              placementIcon.title = '1st Place';
+            } else if (placement === 2) {
+              placementIcon.innerHTML = '🥈';
+              placementIcon.title = '2nd Place';
+            } else if (placement === 3) {
+              placementIcon.innerHTML = '🥉';
+              placementIcon.title = '3rd Place';
+            } else if (placement === 4) {
+              placementIcon.innerHTML = '🏅';
+              placementIcon.title = '4th Place';
+            }
+            
+            playerInfo.appendChild(placementIcon);
+          }
+          
+          // Player points
+          const playerPoints = document.createElement('div');
+          playerPoints.className = 'team-player-points';
+          
+          // Get potential points safely
+          const potentialPoints = player.potential_points || 0;
+          
+          if (team.isCompleted) {
+            if (player.player_details.hasPlaced) {
+              // Simply show points earned without multiplier since it's always 100%
+              playerPoints.innerHTML = `
+                <div class="player-points-detail">
+                  <span class="points-earned-label">${player.player_details.pointsEarned} pts earned</span>
+                </div>
+              `;
+            } else {
+              playerPoints.innerHTML = `
+                <div class="points-not-earned">${potentialPoints} potential pts</div>
+              `;
+            }
+          } else {
+            playerPoints.innerHTML = `${potentialPoints} potential pts`;
+          }
+          
+          playerElement.appendChild(playerInfo);
+          playerElement.appendChild(playerPoints);
+          
+          playersList.appendChild(playerElement);
+        });
+      } else {
+        const noPlayers = document.createElement('div');
+        noPlayers.textContent = 'No players found for this team';
+        noPlayers.style.padding = '0.75rem';
+        noPlayers.style.textAlign = 'center';
+        noPlayers.style.color = 'rgba(255, 255, 255, 0.6)';
+        playersList.appendChild(noPlayers);
+      }
+      
+      // Add players list
+      teamElement.appendChild(playersList);
+      
+      // Add View Results button for completed tournaments
+      if (team.tournament?.status === 'completed') {
+        const resultsButtonContainer = document.createElement('div');
+        resultsButtonContainer.style.textAlign = 'center';
+        resultsButtonContainer.style.marginTop = '10px';
+        
+        const resultsButton = document.createElement('a');
+        resultsButton.className = 'view-results-btn';
+        resultsButton.href = `tournament-results.html?tournamentId=${team.tournament_id}`;
+        resultsButton.textContent = 'View Tournament Results';
+        
+        resultsButtonContainer.appendChild(resultsButton);
+        teamElement.appendChild(resultsButtonContainer);
+      }
+      
+      container.appendChild(teamElement);
+    });
+    
+  } catch (err) {
+    console.error('Error rendering teams:', err);
+    container.innerHTML = '<p>Error displaying teams. Please try again later.</p>';
+  }
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  
+  // Set color based on message type
+  if (type === 'success') {
+    toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+  } else if (type === 'error') {
+    toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+  } else if (type === 'info') {
+    toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+  }
+  
+  toast.style.display = 'block';
+  
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 3000);
+}
   </script>
 </body>
 </html>

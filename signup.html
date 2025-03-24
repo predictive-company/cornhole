@@ -24,6 +24,12 @@
         </div>
         
         <div class="auth-field">
+          <label for="username">Username</label>
+          <input type="text" id="username" required>
+          <small>Choose a unique username</small>
+        </div>
+        
+        <div class="auth-field">
           <label for="email">Email</label>
           <input type="email" id="email" required>
         </div>
@@ -46,8 +52,90 @@
   </div>
   
   <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
-
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script>
+    // Initialize Supabase client directly in the page
+    const supabaseUrl = 'https://ungxxrxwfbftlcsrmexl.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3h4cnh3ZmJmdGxjc3JtZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NTQ2MjAsImV4cCI6MjA1NjMzMDYyMH0.mpZepE3mgF4EMNIoe2k5_7LhNLWqAwv7se1amsHLYiA';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Define signupUser function that matches your existing schema
+    async function signupUser(email, password, metadata = {}) {
+      try {
+        // First, create the auth user
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: metadata,
+            emailRedirectTo: `${window.location.origin}/login.html?verified=true`
+          }
+        });
+        
+        if (error) {
+          console.error("Auth signup error:", error);
+          return { data, error };
+        }
+        
+        console.log("Auth signup successful", data);
+        
+        // Then create a profile in the profiles table if the user was created
+        if (data && data.user) {
+          const userId = data.user.id;
+          console.log("Creating profile for user ID:", userId);
+          
+          // Create profile data that matches your schema (without full_name)
+          const profileData = {
+            id: userId,
+            username: metadata.username || '',
+            email: email,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            is_admin: false
+          };
+          
+          console.log("Profile data to insert:", profileData);
+          
+          // Create the profile record
+          const { data: profileResult, error: profileError } = await supabase
+            .from('profiles')
+            .insert([profileData])
+            .select();
+            
+          if (profileError) {
+            console.error("Error creating profile:", profileError);
+          } else {
+            console.log("Profile created successfully", profileResult);
+          }
+        }
+        
+        return { data, error: null };
+      } catch (err) {
+        console.error('Signup error:', err);
+        return { data: null, error: err };
+      }
+    }
+    
+    // Function to check if username exists
+    async function checkUsernameExists(username) {
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('username', username);
+          
+        if (error) {
+          throw error;
+        }
+        
+        return data && data.length > 0;
+      } catch (err) {
+        console.error('Check username error:', err);
+        return false;
+      }
+    }
+  </script>
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -58,11 +146,34 @@
         e.preventDefault();
         
         const name = document.getElementById('name').value;
+        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         
+        // Username validation
+        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+          errorMessage.textContent = 'Username can only contain letters, numbers, and underscores';
+          return;
+        }
+        
         try {
-          const { data, error } = await signupUser(email, password, { full_name: name });
+          // Check if username already exists
+          const usernameExists = await checkUsernameExists(username);
+          
+          if (usernameExists) {
+            errorMessage.textContent = 'Username already taken. Please choose another one.';
+            return;
+          }
+          
+          // Show a message that we're creating the account
+          errorMessage.textContent = '';
+          showToast('Creating your account...', 'info');
+          
+          // Proceed with signup - storing name in user metadata
+          const { data, error } = await signupUser(email, password, { 
+            full_name: name,
+            username: username
+          });
           
           if (error) {
             errorMessage.textContent = error.message;
@@ -84,7 +195,16 @@
     function showToast(message, type = 'success') {
       const toast = document.getElementById('toast');
       toast.textContent = message;
-      toast.style.backgroundColor = type === 'success' ? 'rgba(46, 204, 113, 0.9)' : 'rgba(231, 76, 60, 0.9)';
+      
+      // Set different background colors for different message types
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
       toast.style.display = 'block';
       
       setTimeout(() => {
