@@ -3,13 +3,819 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cornhole Kings</title>
-  <script>
-    // Redirect to tournaments page
-    window.location.href = 'tournaments.html';
-  </script>
+  <title>Cornhole Kings - Fantasy Cornhole Drafts</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      box-sizing: border-box;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #4ade80;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 1000;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 1.1rem;
+    }
+    
+    nav a:hover {
+      color: #4ade80;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Announcement Banner */
+    .announcement-banner {
+      background: linear-gradient(90deg, #4ade80, #f1c40f);
+      padding: 0.5rem 0;
+      text-align: center;
+      font-weight: bold;
+      overflow: hidden;
+      white-space: nowrap;
+      color: #080a14; /* Dark text color for better contrast */
+    }
+    
+    .banner-content {
+      display: inline-block;
+      animation: scrollBanner 50s linear infinite; /* Slowed down animation */
+    }
+    
+    .banner-item {
+      display: inline-flex;
+      align-items: center;
+      margin: 0 2rem;
+    }
+    
+    .emoji {
+      font-size: 1.5rem;
+      margin-right: 0.5rem;
+    }
+    
+    @keyframes scrollBanner {
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 4rem 5%;
+      text-align: center;
+      overflow: hidden;
+    }
+    
+    .hero-tag {
+      display: inline-block;
+      background-color: #2e1f55;
+      color: #4ade80;
+      font-weight: bold;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      margin-bottom: 1.5rem;
+      border: 1px solid #4ade80;
+    }
+    
+    .hero h1 {
+      font-size: 3.5rem;
+      margin: 0 0 1rem 0;
+      line-height: 1.2;
+    }
+    
+    .hero-highlight {
+      color: #4ade80;
+      font-size: 4rem;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 2rem auto;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    
+    .hero-cta {
+      display: inline-block;
+      background-color: #4ade80;
+      color: #080a14;
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    
+    .hero-cta:hover {
+      background-color: #22c55e;
+    }
+    
+    .cornhole-bag {
+      position: absolute;
+      top: 20%;
+      right: 15%;
+      transform: rotate(30deg);
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: rotate(30deg) translateY(0); }
+      50% { transform: rotate(30deg) translateY(-20px); }
+    }
+    
+    /* How It Works */
+    .how-it-works {
+      padding: 4rem 5%;
+      text-align: center;
+      position: relative;
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      display: inline-block;
+      position: relative;
+    }
+    
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background-color: #4ade80;
+      border-radius: 2px;
+    }
+    
+    .steps {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+    
+    .step-card {
+      background-color: #0d1023;
+      border-radius: 8px;
+      width: 300px;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+    
+    .step-number {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: #4ade80;
+      color: #080a14;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .step-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #4ade80;
+    }
+    
+    .step-card h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #4ade80;
+    }
+    
+    .step-card p {
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+    
+    .cta-button {
+      display: inline-block;
+      background-color: #4ade80;
+      color: #080a14;
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+    
+    .cta-button:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Features Section */
+    .features {
+      padding: 4rem 5%;
+      text-align: center;
+      background-color: #0d1023;
+    }
+    
+    .features-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 3rem 0;
+      flex-wrap: wrap;
+    }
+    
+    .feature-card {
+      width: 300px;
+      text-align: center;
+    }
+    
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5.5rem;
+      color: #4ade80;
+    }
+    
+    .feature-card h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #4ade80;
+    }
+    
+    .feature-card p {
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+    
+    /* Prizes Section */
+    .prizes {
+      padding: 4rem 5%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .prize-image {
+      max-width: 250px;
+      height: 200px;
+      margin: 0 auto 1.5rem auto;
+      object-fit: contain;
+    }
+    
+    .prizes-grid {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+    }
+    
+    .prize-card {
+      width: 300px;
+      text-align: center;
+      background-color: rgba(13, 16, 35, 0.7);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .prize-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .prize-card h3 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #4ade80;
+    }
+    
+    .prize-card p {
+      color: rgba(255, 255, 255, 0.7);
+      margin: 0;
+    }
+    
+    .prize-cta {
+      display: inline-block;
+      background-color: #4ade80;;
+      color: #080a14;
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      margin-top: 2rem;
+    }
+    
+    .prize-cta:hover {
+      background-color: #389e5e;;
+    }
+    
+    /* Footer */
+    footer {
+      background-color: #0d1023;
+      padding: 3rem 5%;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-logo-icon {
+      width: 30px;
+      height: 30px;
+      background-color: #4ade80;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #0d1023;
+    }
+    
+    .footer-links {
+      display: flex;
+      gap: 4rem;
+      flex-wrap: wrap;
+    }
+    
+    .footer-column {
+      min-width: 150px;
+    }
+    
+    .footer-column h4 {
+      color: #4ade80;
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-column ul {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+    }
+    
+    .footer-column ul li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-column a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .footer-column a:hover {
+      color: #4ade80;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .social-link {
+      width: 36px;
+      height: 36px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    
+    .social-link:hover {
+      background-color: #4ade80;
+      color: #0d1023;
+    }
+    
+    .copyright {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+    }
+    
+    /* Mobile Responsiveness for Header */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .hero-highlight {
+        font-size: 3rem;
+      }
+      
+      .steps, .features-grid, .prizes-grid {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .footer-links {
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <p>Redirecting to tournaments...</p>
+  <!-- Announcement Banner -->
+  <div class="announcement-banner">
+    <div class="banner-content">
+      <div class="banner-item">
+        <span class="emoji">🏆</span>
+        <span>ACL Open 14 Singles Tournament Draft Open Now!</span>
+      </div>
+      <div class="banner-item">
+        <span class="emoji">💰</span>
+        <span>Win Premium Cornhole Bags from Top Manufacturers!</span>
+      </div>
+      <div class="banner-item">
+        <span class="emoji">⚖️</span>
+        <span>Strategy Idea: Balance your team for maximum points!</span>
+      </div>
+      <div class="banner-item">
+        <span class="emoji">🎯</span>
+        <span>Dynamic Point System: Lower-ranked players worth MORE points!</span>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <section class="hero">
+    <h1>DRAFT PLAYERS<br>OUTSMART YOUR OPPONENTS<br> <span class="hero-highlight">WIN PRIZES</span></h1>
+    <p>Our fantasy cornhole draft gives underdogs more points for winning. Draft strategically and win premium cornhole bags from top manufacturers!</p>
+    <a href="tournaments.html" class="hero-cta">DRAFT NOW</a>
+    
+    <img src="img/cornhole-bag.png" alt="Cornhole Bag" class="cornhole-bag" width="150" onerror="this.style.display='none'">
+  </section>
+  
+  <section class="how-it-works">
+    <h2 class="section-title">HOW IT WORKS</h2>
+    
+    <div class="steps">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <div class="step-icon">👥</div>
+        <h3>PICK YOUR PLAYERS</h3>
+        <p>Select players from the available pool. Choose wisely - lower-ranked players offer higher potential points!</p>
+      </div>
+      
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <div class="step-icon">⚖️</div>
+        <h3>OUTSMART YOUR OPPONENTS</h3>
+        <p>Decide whether to pick top players or underdogs to finish with more points than other competitors.</p>
+      </div>
+      
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <div class="step-icon">🏆</div>
+        <h3>SUBMIT & WIN</h3>
+        <p>Submit your team before the deadline. The team with the most points at the end of the tournament wins free gear!</p>
+      </div>
+    </div>
+    
+    <a href="how-it-works.html" class="cta-button">LEARN MORE</a>
+  </section>
+  
+  <section class="features">
+    <h2 class="section-title">WHY PLAY WITH US</h2>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💸</div>
+        <h3>FREE TO PLAY</h3>
+        <p>Our no risk, big rewards system creates a user experience that everyone can enjoy, worry-free. </p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>PREMIUM PRIZES</h3>
+        <p>Win cornhole bags, merch, and gear from top manufacturers.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🎮</div>
+        <h3>UNIQUE POINT SYSTEM</h3>
+        <p>Our reverse points system rewards strategic drafting and creates exciting underdog opportunities.</p>
+      </div>
+    </div>
+  </section>
+  
+  <!-- UPDATED PRIZES SECTION WITH MULTIPLE PRIZES -->
+  <section class="prizes">
+    <h2 class="section-title">FEATURED PRIZES</h2>
+    
+    <div class="prizes-grid">
+      <div class="prize-card">
+        <img src="img/logic-bags.png" alt="Logic Cornhole Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+        <h3>Logic Cornhole</h3>
+        <p>Limited-edition, pro-grade cornhole bags with tournament branding. Only available to winners!</p>
+      </div>
+      
+      <div class="prize-card">
+        <img src="img/brotherhood-bags.png" alt="Brotherhood Cornhole Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+        <h3>Brotherhood Cornhole</h3>
+        <p>Professional-grade bags used by champions, with special edition design and premium feel.</p>
+      </div>
+      
+      <div class="prize-card">
+        <img src="img/bg-bags.png" alt="BG Cornhole Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+        <h3>BG Cornhole</h3>
+        <p>Tournament-exclusive bags with superior grip and durability features for competitive play.</p>
+      </div>
+    </div>
+    
+    <a href="prizes.html" class="prize-cta">VIEW ALL PRIZES</a>
+  </section>
+  
+  <footer>
+    <div class="footer-content">
+      <div class="footer-info">
+        <a href="index.html" class="logo">
+          <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+          <h1>Cornhole Kings</h1>
+        </a>
+        <p>The premier fantasy draft platform for cornhole enthusiasts.</p>
+        <div class="social-links">
+          <a href="#" class="social-link">f</a>
+          <a href="#" class="social-link">t</a>
+          <a href="#" class="social-link">in</a>
+          <a href="#" class="social-link">ig</a>
+        </div>
+      </div>
+      
+      <div class="footer-links">
+        <div class="footer-column">
+          <h4>Play</h4>
+          <ul>
+            <li><a href="tournaments.html">Tournaments</a></li>
+            <li><a href="how-it-works.html">How to Play</a></li>
+            <li><a href="prizes.html">Prizes</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="signup.html">Sign Up</a></li>
+            <li><a href="login.html">Log In</a></li>
+            <li><a href="profile.html">My Profile</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>About</h4>
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Terms & Conditions</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    
+    <div class="copyright">
+      &copy; 2025 Cornhole Kings. All rights reserved.
+    </div>
+  </footer>
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // Check if user is authenticated
+        const user = await getCurrentUser();
+        
+        if (user) {
+          // Update user section when logged in
+          const userSection = document.querySelector('.user-section');
+          userSection.innerHTML = `
+            <span class="user-email">${user.email}</span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          `;
+          
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Auth check error:', err);
+      }
+    });
+  </script>
 </body>
 </html>

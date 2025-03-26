@@ -4,107 +4,612 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tournaments - Cornhole Kings</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+    /* Header and Nav - Original Style */
+    header {
+      background-color: #0d1023;
+      padding: 0.7rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    /* Left section - Logo */
+    .logo-section {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+    }
+    
+    .logo h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background-color: #f1c40f;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #0d1023;
+    }
+    
+    /* Middle section - Navigation */
+    .nav-section {
+      display: flex;
+      justify-content: center;
+      flex: 1;
+    }
+    
+    nav {
+      display: flex;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      font-weight: 1000;
+      transition: color 0.2s, background-color 0.2s;
+      font-size: 1.1rem;
+    }
+    
+    nav a:hover {
+      color: #22c55e;
+    }
+    
+    nav a.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    
+    /* Right section - User info */
+    .user-section {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    
+    .user-email {
+      color: white;
+      margin-right: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-size: 0.9rem;
+    }
+    
+    .logout-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    .log-in-btn {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+      margin-right: 0.5rem;
+    }
+    
+    .log-in-btn:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .sign-up-btn {
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+    
+    .sign-up-btn:hover {
+      background-color: #22c55e;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      padding: 3rem 1rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero-section h1 {
+      font-size: 3.2rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(90deg, #4ade80, #a3e635);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 800;
+    }
+    
+    .hero-section p {
+      font-size: 1.2rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+    
+    /* Content Styling */
+    .content-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem 3rem;
+    }
+    
+    .tournaments-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+    
+    .tournament-card {
+      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .tournament-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(74, 222, 128, 0.3);
+    }
+    
+    .tournament-header {
+      background: linear-gradient(to right, rgba(74, 222, 128, 0.2), transparent);
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .tournament-card h3 {
+      color: white;
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .tournament-body {
+      padding: 1.5rem;
+    }
+    
+    .tournament-info {
+      margin-bottom: 1.5rem;
+    }
+    
+    .info-row {
+      display: flex;
+      margin-bottom: 0.7rem;
+      align-items: center;
+    }
+    
+    .info-label {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+      width: 120px;
+    }
+    
+    .info-value {
+      color: white;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    
+    .feature-badge {
+      display: flex;
+      align-items: center;
+      background-color: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .feature-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background-color: #4ade80;
+      color: #080a14;
+      border-radius: 50%;
+      margin-right: 1rem;
+      font-weight: bold;
+    }
+    
+    .feature-content {
+      flex: 1;
+    }
+    
+    .feature-title {
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+      color: #4ade80;
+    }
+    
+    .feature-description {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    
+    .tournament-action {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    
+    .action-button {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      text-align: center;
+      width: auto;
+      min-width: 260px;
+    }
+    
+    .action-button:hover {
+      background-color: #22c55e;
+      transform: translateY(-2px);
+    }
+    
+    .action-button.disabled {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
+    }
+    
+    .action-button.disabled:hover {
+      transform: none;
+    }
+    
+    .participants-count {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+      display: block;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    
+    .participants-count .count {
+      color: white;
+      font-weight: 600;
+      margin-left: 0.3rem;
+    }
+    
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 10px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      font-weight: 500;
+    }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      .logo-section, .nav-section, .user-section {
+        width: 100%;
+        justify-content: center;
+        margin: 0.5rem 0;
+      }
+      
+      nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .tournaments-list {
+        grid-template-columns: 1fr;
+      }
+      
+      .hero-section h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <div class="logo">
-        <div class="logo-icon">CK</div>
-        <h1>Cornhole Kings</h1>
+      <div class="logo-section">
+        <a href="index.html" class="logo">
+          <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+          <h1>Cornhole Kings</h1>
+        </a>
       </div>
-      <nav>
-        <a href="tournaments.html" class="active">Tournaments</a>
-        <a href="profile.html">My Profile</a>
-      </nav>
+      
+      <div class="nav-section">
+        <nav>
+          <a href="tournaments.html" class="active">Tournaments</a>
+          <a href="profile.html">My Profile</a>
+          <a href="how-it-works.html">How It Works</a>
+          <a href="prizes.html">Prizes</a>
+        </nav>
+      </div>
+      
+      <div class="user-section">
+        <a href="login.html" class="log-in-btn">Log In</a>
+        <a href="signup.html" class="sign-up-btn">Sign Up</a>
+      </div>
     </header>
     
-    <div class="tournaments-container">
-      <h2>Upcoming Tournaments</h2>
-      
-      <div id="tournamentsList" class="tournaments-list">
-        <p>Loading tournaments...</p>
+    <div class="hero-section">
+      <h1>Upcoming Tournaments</h1>
+      <p>Browse and join our exciting cornhole tournaments. Draft your team before the deadline closes!</p>
+    </div>
+    
+    <div class="content-container">
+      <div class="tournaments-container">        
+        <div id="tournamentsList" class="tournaments-list">
+          <p>Loading tournaments...</p>
+        </div>
       </div>
     </div>
   </div>
   
-  <div id="toast" style="position: fixed; bottom: 20px; right: 20px; padding: 12px 20px; background-color: rgba(46, 204, 113, 0.9); color: white; border-radius: 4px; display: none; z-index: 1000;"></div>
+  <div id="toast"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Check if user is authenticated
-      const user = await checkAuth();
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    // Check if user is authenticated
+    const user = await getCurrentUser();
+    
+    if (user) {
+      // Update user section when logged in
+      const userSection = document.querySelector('.user-section');
+      userSection.innerHTML = `
+        <span class="user-email">${user.email}</span>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+      `;
       
-      if (user) {
-        // Add user info to UI
-        const header = document.querySelector('header');
-        if (header && !document.querySelector('.user-menu')) {
-          const userMenu = document.createElement('div');
-          userMenu.className = 'user-menu';
-          userMenu.innerHTML = `
-            <a href="profile.html">${user.email}</a>
-            <button id="logoutBtn" class="logout-btn">Logout</button>
-          `;
-          header.appendChild(userMenu);
-          
-          // Add logout event listener
-          document.getElementById('logoutBtn').addEventListener('click', async function() {
-            const { error } = await logoutUser();
-            if (!error) {
-              window.location.href = 'login.html';
-            }
-          });
+      // Add logout event listener
+      document.getElementById('logoutBtn').addEventListener('click', async function() {
+        const { error } = await logoutUser();
+        if (!error) {
+          window.location.reload();
         }
-        
-        // Fetch tournaments
-        const { data: tournaments, error } = await supabase
-          .from('tournaments')
-          .select('*')
-          .order('start_date', { ascending: true });
-        
-        const tournamentsContainer = document.getElementById('tournamentsList');
-        
+      });
+    }
+    
+    // Fetch tournaments
+    const { data: tournaments, error } = await supabase
+      .from('tournaments')
+      .select('*')
+      .order('start_date', { ascending: true });
+    
+    const tournamentsContainer = document.getElementById('tournamentsList');
+    
+    if (error) {
+      console.error('Error fetching tournaments:', error);
+      tournamentsContainer.innerHTML = '<p>Error loading tournaments. Please try again later.</p>';
+      return;
+    }
+    
+    if (tournaments.length === 0) {
+      tournamentsContainer.innerHTML = '<p>No upcoming tournaments available.</p>';
+      return;
+    }
+    
+    // Function to get registered teams count - query from the database
+    async function getRegisteredTeams(tournamentId) {
+      try {
+        const { data, error, count } = await supabase
+          .from('teams')
+          .select('id', { count: 'exact' })
+          .eq('tournament_id', tournamentId);
+          
         if (error) {
-          console.error('Error fetching tournaments:', error);
-          tournamentsContainer.innerHTML = '<p>Error loading tournaments. Please try again later.</p>';
-          return;
+          console.error('Error counting teams:', error);
+          return 0;
         }
         
-        if (tournaments.length === 0) {
-          tournamentsContainer.innerHTML = '<p>No upcoming tournaments available.</p>';
-          return;
-        }
-        
-        // Display tournaments
-        tournamentsContainer.innerHTML = '';
-        tournaments.forEach(tournament => {
-          const tournamentElement = document.createElement('div');
-          tournamentElement.className = 'tournament-card';
-          
-          const now = new Date();
-          const draftCloseDate = new Date(tournament.draft_close_date);
-          const isDraftOpen = now < draftCloseDate;
-          
-          tournamentElement.innerHTML = `
-            <h3>${tournament.name}</h3>
-            <div class="tournament-details">
-              <p><strong>Date:</strong> ${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}</p>
-              <p><strong>Prize Pool:</strong> $${tournament.prize_pool.toLocaleString()}</p>
-              <p><strong>Draft Close:</strong> ${draftCloseDate.toLocaleString()}</p>
-              <p><strong>Team Size:</strong> ${tournament.team_size} players</p>
-            </div>
-            ${isDraftOpen ? 
-              `<a href="draft.html?tournamentId=${tournament.id}" class="draft-now-btn">Draft Now</a>` : 
-              `<div class="draft-closed">Draft Closed</div>`}
-          `;
-          
-          tournamentsContainer.appendChild(tournamentElement);
-        });
+        return count || 0;
+      } catch (err) {
+        console.error('Error in getRegisteredTeams:', err);
+        return 0;
       }
-    });
+    }
+    
+    // Assign feature types by tournament ID - add your tournament IDs here
+    // 1 = Live Streaming, 2 = Premium Prizes, 3 = Stats Tracking, 4 = Featured Event
+    const tournamentFeatures = {
+      "0c6a4d77-16b3-49f9-ba4e-b6de050764cd": 4, // Tournament ID 1 gets Featured Event (option 4)
+      "2": 1, // Tournament ID 2 gets Live Streaming (option 1)
+      "3": 2, // Tournament ID 3 gets Premium Prizes (option 2)
+    };
+    
+    // Define the available feature options by number
+    const featureOptions = [
+      { // Option 1
+        icon: '📺',
+        title: 'Live Streaming',
+        description: 'Follow this event live on our YouTube channel'
+      },
+      { // Option 2
+        icon: '🏆',
+        title: 'Premium Prizes',
+        description: 'Win exclusive merchandise and cash prizes'
+      },
+      { // Option 3
+        icon: '📊',
+        title: 'Stats Tracking',
+        description: 'Live performance analytics for all teams'
+      },
+      { // Option 4
+        icon: '🔥',
+        title: 'Featured Event',
+        description: 'Our most popular tournament this month'
+      }
+    ];
+    
+    // Default feature to use if none is specified
+    const defaultFeatureIndex = 2; // Stats Tracking (option 3)
+    
+    // Display tournaments
+    tournamentsContainer.innerHTML = '';
+    
+    // Process each tournament
+    for (const tournament of tournaments) {
+      const now = new Date();
+      const draftCloseDate = new Date(tournament.draft_close_date);
+      const isDraftOpen = now < draftCloseDate;
+      const registeredTeams = await getRegisteredTeams(tournament.id);
+      
+      // Get feature based on tournament ID or use default
+      // Subtract 1 from feature number to get array index (1-4 becomes 0-3)
+      const featureIndex = tournamentFeatures[tournament.id] 
+        ? tournamentFeatures[tournament.id] - 1 
+        : defaultFeatureIndex;
+      
+      const featureContent = featureOptions[featureIndex];
+      
+      const tournamentElement = document.createElement('div');
+      tournamentElement.className = 'tournament-card';
+      
+      tournamentElement.innerHTML = `
+        <div class="tournament-header">
+          <h3>${tournament.name}</h3>
+        </div>
+        <div class="tournament-body">
+          <div class="tournament-info">
+            <div class="info-row">
+              <span class="info-label">Date:</span>
+              <span class="info-value">${new Date(tournament.start_date).toLocaleDateString()} - ${new Date(tournament.end_date).toLocaleDateString()}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Draft Close:</span>
+              <span class="info-value">${draftCloseDate.toLocaleString()}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Team Size:</span>
+              <span class="info-value">${tournament.team_size} players</span>
+            </div>
+          </div>
+          
+          <div class="feature-badge">
+            <div class="feature-icon">${featureContent.icon}</div>
+            <div class="feature-content">
+              <div class="feature-title">${featureContent.title}</div>
+              <p class="feature-description">${featureContent.description}</p>
+            </div>
+          </div>
+          
+          <div class="tournament-action">
+            ${isDraftOpen ? 
+              `<a href="draft.html?tournamentId=${tournament.id}" class="action-button">Draft Now</a>` : 
+              `<div class="action-button disabled">Draft Closed</div>`}
+            
+            <div class="participants-count">
+              Registered Teams: <span class="count">${registeredTeams}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      tournamentsContainer.appendChild(tournamentElement);
+    }
+  } catch (err) {
+    console.error('Error:', err);
+    tournamentsContainer.innerHTML = '<p>Error loading tournaments. Please try again later.</p>';
+  }
+});
+
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  
+  // Set different background colors for different message types
+  if (type === 'success') {
+    toast.style.backgroundColor = 'rgba(74, 222, 128, 0.9)';
+  } else if (type === 'error') {
+    toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+  } else if (type === 'info') {
+    toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+  }
+  
+  toast.style.display = 'block';
+  
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 3000);
+}
   </script>
 </body>
 </html>
