@@ -184,7 +184,6 @@
     }
     
     /* Draft page styles */
-    /* Add these new styles for the view-only mode */
     .submitted-banner {
       background-color: rgba(46, 204, 113, 0.2);
       border: 2px solid #2ecc71;
@@ -255,8 +254,8 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      object-fit: cover; /* This makes the image cover the container */
-      object-position: center top; /* This focuses on the top part of the image (face) */
+      object-fit: cover;
+      object-position: center top;
       background-color: #e74c3c;
       display: flex;
       align-items: center;
@@ -264,7 +263,6 @@
       font-weight: bold;
       font-size: 1.8rem;
       color: white;
-      /* Optional: add a subtle zoom effect on hover */
       transition: transform 0.3s ease;
       margin-bottom: 0.5rem;
     }
@@ -284,7 +282,7 @@
     }
 
     .player-avatar:hover {
-      transform: scale(1.05); /* Subtle zoom on hover */
+      transform: scale(1.05);
     }
     
     .team-player-avatar {
@@ -315,7 +313,7 @@
       margin-right: 0.5rem;
     }
     
-    /* New points system styles */
+    /* Points system styles */
     .potential-points {
       background-color: rgba(39, 174, 96, 0.2);
       color: #27ae60;
@@ -459,7 +457,7 @@
     }
     
     .player-list {
-      max-height: 1000px; /* Increase from your current setting */
+      max-height: 1000px;
       overflow-y: auto;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -473,8 +471,8 @@
       margin-bottom: 1rem;
       border: 1px solid rgba(255, 255, 255, 0.1);
       transition: transform 0.2s, box-shadow 0.2s;
-      position: relative; /* Important for absolute positioning of the draft button */
-      padding-bottom: 2.5rem; /* Add extra padding at bottom to make room for the draft button */
+      position: relative;
+      padding-bottom: 2.5rem;
     }
     
     .player-card:hover {
@@ -503,11 +501,11 @@
       font-size: 0.85rem;
       width: 100%;
       margin-top: 0.5rem;
-      padding-right: 0; /* Remove right padding that might push content under the button */
+      padding-right: 0;
     }
 
     .player-stats .stat:last-child {
-      margin-right: 50px; /* Add margin to avoid overlap with draft button */
+      margin-right: 50px;
     }
     
     .stat {
@@ -533,7 +531,7 @@
       font-weight: bold;
       cursor: pointer;
       transition: background-color 0.2s;
-      z-index: 2; /* Ensure it stays above other content */
+      z-index: 2;
     }
     
     .draft-btn:hover {
@@ -645,36 +643,6 @@
       z-index: 1000;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     }
-
-    /* Debug overlay for development */
-    .debug-overlay {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      background-color: rgba(0, 0, 0, 0.8);
-      border: 1px solid #4ade80;
-      border-radius: 6px;
-      padding: 10px;
-      max-width: 300px;
-      max-height: 200px;
-      overflow: auto;
-      font-size: 12px;
-      z-index: 9999;
-      display: none;
-    }
-    .debug-overlay.active {
-      display: block;
-    }
-    .debug-title {
-      color: #4ade80;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .debug-content {
-      color: #ddd;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
   </style>
 </head>
 <body>
@@ -704,11 +672,11 @@
   <div class="tournament-info" id="tournamentInfo">
     <div class="timer" id="draftTimer">
       <span>Draft Closes:</span>
-      <span>23:45:12</span>
+      <span>Loading...</span>
     </div>
     
-    <h2>Nashville Spring Showdown</h2>
-    <p>March 15-16, 2025 • $25,000 Prize Pool • Draft 4 Players</p>
+    <h2>Loading Tournament...</h2>
+    <p>Loading tournament details...</p>
     
     <div class="section-header">
       <h3>Your Team</h3>
@@ -735,7 +703,7 @@
     <div class="players-pool">
       <div class="section-header">
         <h3>Available Players</h3>
-        <span id="playerCount">72 players</span>
+        <span id="playerCount">Loading players...</span>
       </div>
       
       <div class="search-filter">
@@ -756,52 +724,12 @@
   <!-- Toast notification for errors and success messages -->
   <div id="toast"></div>
 
-  <!-- Debug overlay for development -->
-  <div class="debug-overlay" id="debugOverlay">
-    <div class="debug-title">Debug Information</div>
-    <div class="debug-content" id="debugContent"></div>
-  </div>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/supabase.js"></script>
   <script>
     // Global constants
     let MAX_TEAM_SIZE = 4;
-    const DEBUG_MODE = true; // Set to false in production
-    
-    // Debug helper function
-    function debug(label, data) {
-      if (!DEBUG_MODE) return;
-      
-      console.log(`[DEBUG] ${label}:`, data);
-      
-      // Update debug overlay if it exists
-      const debugContent = document.getElementById('debugContent');
-      const debugOverlay = document.getElementById('debugOverlay');
-      
-      if (debugContent && debugOverlay) {
-        let content = `${label}: `;
-        
-        try {
-          if (typeof data === 'object') {
-            content += JSON.stringify(data, null, 2);
-          } else {
-            content += data;
-          }
-        } catch (e) {
-          content += '[Unable to stringify]';
-        }
-        
-        debugContent.textContent = content;
-        debugOverlay.classList.add('active');
-        
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-          debugOverlay.classList.remove('active');
-        }, 10000);
-      }
-    }
     
     // Function to calculate potential points based on rank
     function calculatePotentialPoints(rank) {
@@ -825,48 +753,47 @@
       }
     }
     
-// Validate player data before submission
-function validatePlayerData(players) {
-  let isValid = true;
-  let errors = [];
-  
-  // Use the team size from tournament settings
-  const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
-  
-  if (!players || !Array.isArray(players)) {
-    return { 
-      isValid: false, 
-      errors: ['Player data is invalid or not an array'] 
-    };
-  }
-  
-  if (players.length !== MAX_TEAM_SIZE) {
-    return { 
-      isValid: false, 
-      errors: [`Team must have exactly ${MAX_TEAM_SIZE} players, found ${players.length}`] 
-    };
-  }
-  
-  players.forEach((player, index) => {
-    if (!player.id) {
-      isValid = false;
-      errors.push(`Player ${index+1} is missing an ID`);
+    // Validate player data before submission
+    function validatePlayerData(players) {
+      let isValid = true;
+      let errors = [];
+      
+      // Use the team size from tournament settings
+      const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
+      
+      if (!players || !Array.isArray(players)) {
+        return { 
+          isValid: false, 
+          errors: ['Player data is invalid or not an array'] 
+        };
+      }
+      
+      if (players.length !== MAX_TEAM_SIZE) {
+        return { 
+          isValid: false, 
+          errors: [`Team must have exactly ${MAX_TEAM_SIZE} players, found ${players.length}`] 
+        };
+      }
+      
+      players.forEach((player, index) => {
+        if (!player.id) {
+          isValid = false;
+          errors.push(`Player ${index+1} is missing an ID`);
+        }
+        
+        if (typeof player.potentialPoints !== 'number') {
+          isValid = false;
+          errors.push(`Player ${index+1} has invalid points: ${player.potentialPoints}`);
+        }
+      });
+      
+      return { isValid, errors };
     }
-    
-    if (typeof player.potentialPoints !== 'number') {
-      isValid = false;
-      errors.push(`Player ${index+1} has invalid points: ${player.potentialPoints}`);
-    }
-  });
-  
-  return { isValid, errors };
-}
     
     // Function to switch to view-only mode after team submission
     function switchToViewOnlyMode(selectedPlayers) {
       // Get the player IDs that are in the team
       const playerIds = selectedPlayers.map(player => player.id);
-      debug('Switching to view-only mode with players', playerIds);
       
       // Get all player cards and make them view-only
       const playerCards = document.querySelectorAll('.player-card');
@@ -979,8 +906,6 @@ function validatePlayerData(players) {
     
     // Function to load existing team data
     function loadExistingTeam(players) {
-      debug('Loading existing team', players);
-      
       // Clear the empty message if it exists
       const emptyMessage = document.getElementById('emptyTeamMessage');
       if (emptyMessage) emptyMessage.remove();
@@ -1019,576 +944,515 @@ function validatePlayerData(players) {
     }
     
     // Function to submit a team with enhanced error handling
-    // Function to submit a team with enhanced error handling
-async function submitTeam(userId, tournamentId, players) {
-  try {
-    debug('Submitting team', {
-      userId,
-      tournamentId,
-      players
-    });
-    
-    // Validate player data
-    const validation = validatePlayerData(players);
-    if (!validation.isValid) {
-      debug('Validation failed', validation.errors);
-      return { 
-        success: false, 
-        error: `Validation failed: ${validation.errors.join(', ')}` 
-      };
-    }
-    
-    // Calculate total potential points
-    const totalPotentialPoints = players.reduce((sum, player) => sum + player.potentialPoints, 0);
-    
-    // First create the team entry
-    const { data: team, error: teamError } = await supabase
-      .from('teams')
-      .insert([
-        { 
-          user_id: userId,
-          tournament_id: tournamentId,
-          total_potential_points: totalPotentialPoints, // Make sure this column exists
-          created_at: new Date().toISOString()
-        }
-      ])
-      .select();
-      
-    if (teamError) {
-      debug('Error creating team', teamError);
-      
-      // Check if it's a unique constraint violation
-      if (teamError.code === '23505') {
-        return { 
-          success: false, 
-          error: 'You already have a team for this tournament' 
-        };
-      }
-      
-      return { 
-        success: false, 
-        error: `Error creating team: ${teamError.message}` 
-      };
-    }
-    
-    if (!team || team.length === 0) {
-      debug('No team data returned after insert', team);
-      return { 
-        success: false, 
-        error: 'Failed to create team: No data returned' 
-      };
-    }
-    
-    debug('Team created successfully', team);
-    
-    // Then add the team players
-    const teamId = team[0].id;
-    const teamPlayers = players.map(player => ({
-      team_id: teamId,
-      player_id: player.id,
-      potential_points: player.potentialPoints
-    }));
-    
-    debug('Adding team players', teamPlayers);
-    
-    const { data: playersData, error: playersError } = await supabase
-      .from('team_players')
-      .insert(teamPlayers)
-      .select();
-      
-    if (playersError) {
-      debug('Error adding team players', playersError);
-      
-      // Try to cleanup the orphaned team
-      const { error: cleanupError } = await supabase
-        .from('teams')
-        .delete()
-        .eq('id', teamId);
-        
-      if (cleanupError) {
-        debug('Error cleaning up orphaned team', cleanupError);
-      }
-      
-      return { 
-        success: false, 
-        error: `Error adding team players: ${playersError.message}` 
-      };
-    }
-    
-    debug('Team players added successfully', playersData);
-    return { success: true, teamId: teamId };
-  } catch (err) {
-    debug('Unexpected error in submitTeam', err);
-    return { success: false, error: `Unexpected error: ${err.message}` };
-  }
-}
-    
-    // Add this improved initialization code to replace the existing DOMContentLoaded event handler
-document.addEventListener('DOMContentLoaded', function() {
-  // Debug: Log the page load and tournament ID
-  const urlParams = new URLSearchParams(window.location.search);
-  const tournamentId = urlParams.get('tournamentId');
-  debug('draft.html loaded with tournament ID', tournamentId);
-  
-  // Wrap initialization in async function for better error handling
-  async function initializePage() {
-    try {
-      // Check if user is authenticated
-      const user = await getCurrentUser();
-      
-      if (user) {
-        debug('User authenticated', user.email);
-        
-        // Update user section when logged in
-        updateUserSection(user.email);
-        
-        // Initialize the draft page with tournament data
-        if (tournamentId) {
-          await initializeTournament(tournamentId, user);
-        } else {
-          // No tournament ID provided
-          showToast('No tournament selected. Redirecting to tournaments...', 'error');
-          setTimeout(() => {
-            window.location.href = 'tournaments.html';
-          }, 2000);
-        }
-      } else {
-        // Not logged in, redirect to login
-        debug('User not logged in, redirecting to login');
-        window.location.href = 'login.html?redirect=draft.html?tournamentId=' + tournamentId;
-      }
-    } catch (err) {
-      debug('Error in draft page initialization', err.message || err);
-      console.error('Initialization error:', err);
-      showToast('An unexpected error occurred during page initialization', 'error');
-    }
-  }
-  
-  // Start initialization
-  initializePage();
-});
-
-// Helper function to update user section
-function updateUserSection(email) {
-  try {
-    const userSection = document.querySelector('.user-section');
-    userSection.innerHTML = `
-      <span class="user-email">${email}</span>
-      <button id="logoutBtn" class="logout-btn">Logout</button>
-    `;
-    
-    // Add logout event listener
-    document.getElementById('logoutBtn').addEventListener('click', async function() {
+    async function submitTeam(userId, tournamentId, players) {
       try {
-        const { error } = await logoutUser();
-        if (!error) {
-          window.location.reload();
-        } else {
-          showToast('Error logging out: ' + error.message, 'error');
+        // Validate player data
+        const validation = validatePlayerData(players);
+        if (!validation.isValid) {
+          return { 
+            success: false, 
+            error: `Validation failed: ${validation.errors.join(', ')}` 
+          };
         }
-      } catch (err) {
-        debug('Error during logout', err);
-        showToast('Error during logout', 'error');
-      }
-    });
-  } catch (err) {
-    debug('Error updating user section', err);
-    // Non-critical error, continue execution
-  }
-}
-
-// Function to initialize tournament data
-// Function to initialize tournament data
-async function initializeTournament(tournamentId, user) {
-  try {
-    // Fetch tournament info
-    const { data: tournament, error } = await supabase
-      .from('tournaments')
-      .select('*')
-      .eq('id', tournamentId)
-      .single();
-      
-    if (error) {
-      debug('Error fetching tournament', error);
-      showToast('Error loading tournament data', 'error');
-      return;
-    }
-    
-    if (tournament) {
-      debug('Tournament data loaded', tournament);
-      
-      // Store the team size in a global variable or data attribute
-      window.TEAM_SIZE = tournament.team_size || 4; // Default to 4 if not set
-      
-      // Update tournament info on the page
-      updateTournamentInfo(tournament);
-      
-      // Check for existing team
-      await checkExistingTeam(tournamentId, user);
-      
-      // Load available players
-      await loadAvailablePlayers(tournamentId);
-      
-      // Setup draft buttons and search functionality
-      setupDraftButtons();
-      setupSearchFilter();
-      
-      // Handle form submission
-      setupTeamSubmission(tournamentId, user);
-    } else {
-      showToast('Tournament not found', 'error');
-    }
-  } catch (err) {
-    debug('Error initializing tournament', err);
-    showToast('Error loading tournament data', 'error');
-    throw err; // Rethrow to be caught by the main error handler
-  }
-}
-
-// Update tournament info on the page
-// Update tournament info on the page
-function updateTournamentInfo(tournament) {
-  try {
-    document.querySelector('#tournamentInfo h2').textContent = tournament.name;
-    
-    // Update team size info from tournament settings
-    const teamSize = tournament.team_size || 4; // Default to 4 if not set
-    const tournamentDateString = `${formatDate(tournament.start_date)} • Top ${tournament.top_players_count || 4} Finishers Earn Points • Draft ${teamSize} Players`;
-    document.querySelector('#tournamentInfo p').textContent = tournamentDateString;
-    
-    // Update the helper text that mentions team size
-    document.querySelector('#tournamentInfo p[style="font-size: 0.8rem; text-align: center; color: rgba(255,255,255,0.7);"]').textContent = 
-      `You must draft exactly ${teamSize} players to submit your team`;
-    
-    // Update timer
-    updateDraftTimer(tournament.draft_close_date);
-  } catch (err) {
-    debug('Error updating tournament info', err);
-    // Non-critical error, continue execution
-  }
-}
-
-// Check if user already has a team for this tournament
-async function checkExistingTeam(tournamentId, user) {
-  try {
-    // First check if the user has a team for this tournament
-    const { data: teamData, error: teamCheckError } = await supabase
-      .from('teams')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('tournament_id', tournamentId);
-      
-    if (teamCheckError) {
-      debug('Error checking if team exists', teamCheckError);
-      showToast('Error checking existing team', 'error');
-      return;
-    }
-    
-    // If team exists, then get all the details including players
-    if (teamData && teamData.length > 0) {
-      const teamId = teamData[0].id;
-      debug('Found existing team with ID', teamId);
-      
-      // Get team details
-      const { data: teamDetails, error: teamDetailsError } = await supabase
-        .from('teams')
-        .select('id, team_points')
-        .eq('id', teamId)
-        .single();
         
-      if (teamDetailsError) {
-        debug('Error getting team details', teamDetailsError);
-        showToast('Error loading team details', 'error');
-        return;
-      }
-      
-      // Get team players
-      const { data: teamPlayers, error: playersError } = await supabase
-        .from('team_players')
-        .select('player_id, potential_points')  // Add potential_points here
-        .eq('team_id', teamId);
+        // Calculate total potential points
+        const totalPotentialPoints = players.reduce((sum, player) => sum + player.potentialPoints, 0);
         
-      if (playersError) {
-        debug('Error getting team players', playersError);
-        showToast('Error loading team players', 'error');
-        return;
-      }
-      
-      // If we have players, get their details
-      if (teamPlayers && teamPlayers.length > 0) {
-        // Get player IDs
-        const playerIds = teamPlayers.map(tp => tp.player_id);
-        
-        // Get player details
-        const { data: playerDetails, error: playerDetailsError } = await supabase
-          .from('players')
-          .select('id, name, profile_picture, rank, potential_points')  // Added potential_points
-          .in('id', playerIds);
+        // First create the team entry
+        const { data: team, error: teamError } = await supabase
+          .from('teams')
+          .insert([
+            { 
+              user_id: userId,
+              tournament_id: tournamentId,
+              total_potential_points: totalPotentialPoints,
+              created_at: new Date().toISOString()
+            }
+          ])
+          .select();
           
-        if (playerDetailsError) {
-          debug('Error getting player details', playerDetailsError);
-          showToast('Error loading player details', 'error');
+        if (teamError) {
+          // Check if it's a unique constraint violation
+          if (teamError.code === '23505') {
+            return { 
+              success: false, 
+              error: 'You already have a team for this tournament' 
+            };
+          }
+          
+          return { 
+            success: false, 
+            error: `Error creating team: ${teamError.message}` 
+          };
+        }
+        
+        if (!team || team.length === 0) {
+          return { 
+            success: false, 
+            error: 'Failed to create team: No data returned' 
+          };
+        }
+        
+        // Then add the team players
+        const teamId = team[0].id;
+        const teamPlayers = players.map(player => ({
+          team_id: teamId,
+          player_id: player.id,
+          potential_points: player.potentialPoints
+        }));
+        
+        const { data: playersData, error: playersError } = await supabase
+          .from('team_players')
+          .insert(teamPlayers)
+          .select();
+          
+        if (playersError) {
+          // Try to cleanup the orphaned team
+          const { error: cleanupError } = await supabase
+            .from('teams')
+            .delete()
+            .eq('id', teamId);
+          
+          return { 
+            success: false, 
+            error: `Error adding team players: ${playersError.message}` 
+          };
+        }
+        
+        return { success: true, teamId: teamId };
+      } catch (err) {
+        return { success: false, error: `Unexpected error: ${err.message}` };
+      }
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tournamentId = urlParams.get('tournamentId');
+      
+      // Wrap initialization in async function for better error handling
+      async function initializePage() {
+        try {
+          // Check if user is authenticated
+          const user = await getCurrentUser();
+          
+          if (user) {
+            // Update user section when logged in
+            updateUserSection(user.email);
+            
+            // Initialize the draft page with tournament data
+            if (tournamentId) {
+              await initializeTournament(tournamentId, user);
+            } else {
+              // No tournament ID provided
+              showToast('No tournament selected. Redirecting to tournaments...', 'error');
+              setTimeout(() => {
+                window.location.href = 'tournaments.html';
+              }, 2000);
+            }
+          } else {
+            // Not logged in, redirect to login
+            window.location.href = 'login.html?redirect=draft.html?tournamentId=' + tournamentId;
+          }
+        } catch (err) {
+          console.error('Initialization error:', err);
+          showToast('An unexpected error occurred during page initialization', 'error');
+        }
+      }
+      
+      // Start initialization
+      initializePage();
+    });
+
+    // Helper function to update user section
+    function updateUserSection(email) {
+      try {
+        const userSection = document.querySelector('.user-section');
+        userSection.innerHTML = `
+          <span class="user-email">${email}</span>
+          <button id="logoutBtn" class="logout-btn">Logout</button>
+        `;
+        
+        // Add logout event listener
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+          try {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            } else {
+              showToast('Error logging out: ' + error.message, 'error');
+            }
+          } catch (err) {
+            showToast('Error during logout', 'error');
+          }
+        });
+      } catch (err) {
+        // Non-critical error, continue execution
+      }
+    }
+
+    // Function to initialize tournament data
+    async function initializeTournament(tournamentId, user) {
+      try {
+        // Fetch tournament info
+        const { data: tournament, error } = await supabase
+          .from('tournaments')
+          .select('*')
+          .eq('id', tournamentId)
+          .single();
+          
+        if (error) {
+          showToast('Error loading tournament data', 'error');
           return;
         }
         
-        // Combine player details with team players
-        const selectedPlayers = teamPlayers.map(tp => {
-          const player = playerDetails.find(p => p.id === tp.player_id);
-          return {
-            id: tp.player_id,
-            potentialPoints: tp.potential_points || (player ? player.potential_points : 0),
-            name: player ? player.name : 'Unknown Player',
-            profile_picture: player ? player.profile_picture : null
-          };
+        if (tournament) {
+          // Store the team size in a global variable or data attribute
+          window.TEAM_SIZE = tournament.team_size || 4; // Default to 4 if not set
+          
+          // Update tournament info on the page
+          updateTournamentInfo(tournament);
+          
+          // Check for existing team
+          await checkExistingTeam(tournamentId, user);
+          
+          // Load available players
+          await loadAvailablePlayers(tournamentId);
+          
+          // Setup draft buttons and search functionality
+          setupDraftButtons();
+          setupSearchFilter();
+          
+          // Handle form submission
+          setupTeamSubmission(tournamentId, user);
+        } else {
+          showToast('Tournament not found', 'error');
+        }
+      } catch (err) {
+        showToast('Error loading tournament data', 'error');
+        throw err; // Rethrow to be caught by the main error handler
+      }
+    }
+
+    // Update tournament info on the page
+    function updateTournamentInfo(tournament) {
+      try {
+        document.querySelector('#tournamentInfo h2').textContent = tournament.name;
+        
+        // Update team size info from tournament settings
+        const teamSize = tournament.team_size || 4; // Default to 4 if not set
+        const tournamentDateString = `${formatDate(tournament.start_date)} • Top ${tournament.top_players_count || 4} Finishers Earn Points • Draft ${teamSize} Players`;
+        document.querySelector('#tournamentInfo p').textContent = tournamentDateString;
+        
+        // Update the helper text that mentions team size
+        document.querySelector('#tournamentInfo p[style="font-size: 0.8rem; text-align: center; color: rgba(255,255,255,0.7);"]').textContent = 
+          `You must draft exactly ${teamSize} players to submit your team`;
+        
+        // Update timer
+        updateDraftTimer(tournament.draft_close_date);
+      } catch (err) {
+        // Non-critical error, continue execution
+      }
+    }
+
+    // Check if user already has a team for this tournament
+    async function checkExistingTeam(tournamentId, user) {
+      try {
+        // First check if the user has a team for this tournament
+        const { data: teamData, error: teamCheckError } = await supabase
+          .from('teams')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('tournament_id', tournamentId);
+          
+        if (teamCheckError) {
+          showToast('Error checking existing team', 'error');
+          return;
+        }
+        
+        // If team exists, then get all the details including players
+        if (teamData && teamData.length > 0) {
+          const teamId = teamData[0].id;
+          
+          // Get team details
+          const { data: teamDetails, error: teamDetailsError } = await supabase
+            .from('teams')
+            .select('id, team_points')
+            .eq('id', teamId)
+            .single();
+            
+          if (teamDetailsError) {
+            showToast('Error loading team details', 'error');
+            return;
+          }
+          
+          // Get team players
+          const { data: teamPlayers, error: playersError } = await supabase
+            .from('team_players')
+            .select('player_id, potential_points')
+            .eq('team_id', teamId);
+            
+          if (playersError) {
+            showToast('Error loading team players', 'error');
+            return;
+          }
+          
+          // If we have players, get their details
+          if (teamPlayers && teamPlayers.length > 0) {
+            // Get player IDs
+            const playerIds = teamPlayers.map(tp => tp.player_id);
+            
+            // Get player details
+            const { data: playerDetails, error: playerDetailsError } = await supabase
+              .from('players')
+              .select('id, name, profile_picture, rank, potential_points')
+              .in('id', playerIds);
+              
+            if (playerDetailsError) {
+              showToast('Error loading player details', 'error');
+              return;
+            }
+            
+            // Combine player details with team players
+            const selectedPlayers = teamPlayers.map(tp => {
+              const player = playerDetails.find(p => p.id === tp.player_id);
+              return {
+                id: tp.player_id,
+                potentialPoints: tp.potential_points || (player ? player.potential_points : 0),
+                name: player ? player.name : 'Unknown Player',
+                profile_picture: player ? player.profile_picture : null
+              };
+            });
+            
+            // Show toast message and load existing team
+            showToast('Loading your submitted team', 'info');
+            
+            // Load the players into the UI
+            loadExistingTeam(selectedPlayers);
+            
+            // Then switch to view-only mode
+            setTimeout(() => {
+              switchToViewOnlyMode(selectedPlayers);
+            }, 500);
+          }
+        }
+      } catch (err) {
+        showToast('Error checking team status. Starting with empty team.', 'error');
+      }
+    }
+
+    // Function to load available players from the database
+    async function loadAvailablePlayers(tournamentId) {
+      try {
+        // Get players associated with this tournament
+        const { data: tournamentPlayers, error: tpError } = await supabase
+          .from('tournament_players')
+          .select(`
+            player_id,
+            tournament_rank,
+            potential_points,
+            players (*)
+          `)
+          .eq('tournament_id', tournamentId);
+          
+        if (tpError) {
+          showToast('Error loading tournament players', 'error');
+          return;
+        }
+        
+        // Extract player data
+        const players = tournamentPlayers
+          .map(tp => {
+            const player = tp.players;
+            if (player) {
+              // Add tournament specific data to player object
+              player.tournamentRank = tp.tournament_rank;
+              
+              // Use potential_points from tournament_players if available
+              if (tp.tournament_rank !== null && tp.tournament_rank !== undefined) {
+                player.potentialPoints = tp.potential_points || calculatePotentialPoints(tp.tournament_rank);
+              } else {
+                // Display a "Not Ranked" message to the user instead of a point value
+                player.notRanked = true;
+                player.potentialPoints = null;
+              }
+            }
+            return player;
+          })
+          .filter(player => player !== null);
+        
+        if (!players || players.length === 0) {
+          showToast('No players available for this tournament', 'error');
+          return;
+        }
+        
+        // Update player count
+        document.getElementById('playerCount').textContent = `${players.length} players`;
+        
+        // Clear existing players and render new ones
+        renderPlayerCards(players);
+      } catch (err) {
+        showToast('Error loading available players', 'error');
+        throw err;
+      }
+    }
+
+    function renderPlayerCards(players) {
+      try {
+        const playerList = document.getElementById('playerList');
+        playerList.innerHTML = '';
+        
+        players.forEach(player => {
+          const playerCard = document.createElement('div');
+          playerCard.className = 'player-card';
+          playerCard.dataset.playerId = player.id;
+          playerCard.dataset.potentialPoints = player.potentialPoints;
+          playerCard.dataset.profilePicture = player.profile_picture || '';
+          
+          // Create player avatar
+          const avatar = createPlayerAvatar(player, 'large');
+          
+          // Create player info section
+          const playerInfo = document.createElement('div');
+          playerInfo.className = 'player-info';
+          playerInfo.appendChild(avatar);
+          
+          // Add name and potential points or "Not Ranked" message
+          const namePoints = document.createElement('div');
+          if (player.notRanked || player.potentialPoints === null) {
+            namePoints.innerHTML = `
+              <h4 style="margin: 0;">${player.name}</h4>
+              <div class="potential-points-placeholder">Not Ranked</div>
+            `;
+          } else {
+            namePoints.innerHTML = `
+              <h4 style="margin: 0;">${player.name}</h4>
+              <div class="potential-points">${player.potentialPoints} potential points</div>
+            `;
+          }
+          playerInfo.appendChild(namePoints);
+          
+          // Create player stats section
+          const playerStats = document.createElement('div');
+          playerStats.className = 'player-stats';
+          
+          // Format skill level from acronym to full name
+          let skillLevelText = "Unknown";
+          if (player.skill_level) {
+            switch(player.skill_level) {
+              case 'P':
+                skillLevelText = 'Pro';
+                break;
+              case 'E':
+                skillLevelText = 'Elite';
+                break;
+              case 'ACLS':
+                skillLevelText = 'Senior';
+                break;
+              case 'ACLJ':
+                skillLevelText = 'Junior';
+                break;
+              case 'ACLW':
+                skillLevelText = 'Women\'s';
+                break;
+              default:
+                skillLevelText = player.skill_level;
+            }
+          }
+          
+          // Handle null values
+          const ppr = player.player_ppr !== null ? player.player_ppr : '—';
+          const cpi = player.player_cpi !== null ? player.player_cpi : '—';
+          
+          // Use tournament rank if available, otherwise show "Not Ranked"
+          const displayRank = player.tournamentRank !== null ? `#${player.tournamentRank}` : 'Not Ranked';
+          
+          playerStats.innerHTML = `
+            <div class="stat">
+              <span>Rank:</span>
+              <span class="stat-value">${displayRank}</span>
+            </div>
+            <div class="stat">
+              <span>Status:</span>
+              <span class="stat-value">${skillLevelText}</span>
+            </div>
+            <div class="stat">
+              <span>PPR:</span>
+              <span class="stat-value">${ppr}</span>
+            </div>
+            <div class="stat">
+              <span>CPI:</span>
+              <span class="stat-value">${cpi}</span>
+            </div>
+          `;
+          
+          // Only allow drafting players who have been ranked
+          const draftBtn = document.createElement('button');
+          draftBtn.className = 'draft-btn';
+          draftBtn.textContent = '+ DRAFT';
+          
+          // Disable draft button for players who aren't ranked yet
+          if (player.notRanked || player.potentialPoints === null) {
+            draftBtn.disabled = true;
+            draftBtn.title = "Cannot draft players who haven't been ranked";
+            playerCard.classList.add('not-ranked');
+          }
+          
+          // Add badges
+          const badgesHTML = renderBadges(player.badges || []);
+          
+          // Assemble the player card
+          playerCard.appendChild(playerInfo);
+          playerCard.appendChild(playerStats);
+          if (badgesHTML) {
+            const badgesDiv = document.createElement('div');
+            badgesDiv.innerHTML = badgesHTML;
+            playerCard.appendChild(badgesDiv.firstChild);
+          }
+          playerCard.appendChild(draftBtn);
+          
+          playerList.appendChild(playerCard);
         });
-        
-        // Show toast message and load existing team
-        showToast('Loading your submitted team', 'info');
-        debug('Existing team players loaded', selectedPlayers);
-        
-        // Load the players into the UI
-        loadExistingTeam(selectedPlayers);
-        
-        // Then switch to view-only mode
-        setTimeout(() => {
-          switchToViewOnlyMode(selectedPlayers);
-        }, 500);
+      } catch (err) {
+        showToast('Error displaying player cards', 'error');
       }
-    } else {
-      debug('No existing team found', null);
     }
-  } catch (err) {
-    debug('Exception checking existing team', err);
-    showToast('Error checking team status. Starting with empty team.', 'error');
-  }
-}
 
-// Function to load available players from the database
-async function loadAvailablePlayers(tournamentId) {
-  try {
-    // Get players associated with this tournament
-    const { data: tournamentPlayers, error: tpError } = await supabase
-      .from('tournament_players')
-      .select(`
-        player_id,
-        tournament_rank,
-        potential_points,
-        players (*)
-      `)
-      .eq('tournament_id', tournamentId);
-      
-    if (tpError) {
-      debug('Error fetching tournament players', tpError);
-      showToast('Error loading tournament players', 'error');
-      return;
-    }
-    
-    // Extract player data
-    const players = tournamentPlayers
-      .map(tp => {
-        const player = tp.players;
-        if (player) {
-          // Add tournament specific data to player object
-          player.tournamentRank = tp.tournament_rank;
+    // Setup team submission handling
+    function setupTeamSubmission(tournamentId, user) {
+      try {
+        document.getElementById('submitTeam').addEventListener('click', async function() {
+          const selectedPlayers = Array.from(document.querySelectorAll('.team-player')).map(el => ({
+            id: el.dataset.playerId,
+            potentialPoints: parseInt(el.dataset.potentialPoints)
+          }));
           
-          // Use potential_points from tournament_players if available
-          // If tournament_rank is null, potential_points should be null too
-          if (tp.tournament_rank !== null && tp.tournament_rank !== undefined) {
-            player.potentialPoints = tp.potential_points || calculatePotentialPoints(tp.tournament_rank);
+          // Use the team size from tournament settings
+          const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
+          
+          if (selectedPlayers.length === MAX_TEAM_SIZE) {
+            try {
+              showToast('Submitting team...', 'info');
+              
+              const result = await submitTeam(user.id, tournamentId, selectedPlayers);
+              
+              if (result.success) {
+                showToast('Team submitted successfully!');
+                // Switch to view-only mode instead of redirecting
+                switchToViewOnlyMode(selectedPlayers);
+              } else {
+                showToast(`Error submitting team: ${result.error}`, 'error');
+              }
+            } catch (err) {
+              showToast('Error submitting team. Please try again.', 'error');
+            }
           } else {
-            // Display a "Not Ranked" message to the user instead of a point value
-            player.notRanked = true;
-            player.potentialPoints = null;
+            showToast(`Please select exactly ${MAX_TEAM_SIZE} players`, 'error');
           }
-        }
-        return player;
-      })
-      .filter(player => player !== null);
-    
-    if (!players || players.length === 0) {
-      debug('No players found for this tournament', players);
-      showToast('No players available for this tournament', 'error');
-      return;
+        });
+      } catch (err) {
+        // Non-critical error, continue execution
+      }
     }
-    
-    debug('Players loaded', `${players.length} tournament players`);
-    
-    // Update player count
-    document.getElementById('playerCount').textContent = `${players.length} players`;
-    
-    // Clear existing players and render new ones
-    renderPlayerCards(players);
-  } catch (err) {
-    debug('Error loading available players', err);
-    showToast('Error loading available players', 'error');
-    throw err;
-  }
-}
-
-// Find this function in draft.js
-// Find this function in draft.js
-function renderPlayerCards(players) {
-  try {
-    const playerList = document.getElementById('playerList');
-    playerList.innerHTML = '';
-    
-    players.forEach(player => {
-      const playerCard = document.createElement('div');
-      playerCard.className = 'player-card';
-      playerCard.dataset.playerId = player.id;
-      playerCard.dataset.potentialPoints = player.potentialPoints;  // This might be null
-      playerCard.dataset.profilePicture = player.profile_picture || '';
-      
-      // Create player avatar
-      const avatar = createPlayerAvatar(player, 'large');
-      
-      // Create player info section
-      const playerInfo = document.createElement('div');
-      playerInfo.className = 'player-info';
-      playerInfo.appendChild(avatar);
-      
-      // Add name and potential points or "Not Ranked" message
-      const namePoints = document.createElement('div');
-      if (player.notRanked || player.potentialPoints === null) {
-        namePoints.innerHTML = `
-          <h4 style="margin: 0;">${player.name}</h4>
-          <div class="potential-points-placeholder">Not Ranked</div>
-        `;
-      } else {
-        namePoints.innerHTML = `
-          <h4 style="margin: 0;">${player.name}</h4>
-          <div class="potential-points">${player.potentialPoints} potential points</div>
-        `;
-      }
-      playerInfo.appendChild(namePoints);
-      
-      // Create player stats section - MODIFIED THIS SECTION
-      const playerStats = document.createElement('div');
-      playerStats.className = 'player-stats';
-      
-      // Format skill level from acronym to full name
-      let skillLevelText = "Unknown";
-      if (player.skill_level) {
-        switch(player.skill_level) {
-          case 'P':
-            skillLevelText = 'Pro';
-            break;
-          case 'E':
-            skillLevelText = 'Elite';
-            break;
-          case 'ACLS':
-            skillLevelText = 'Senior';
-            break;
-          case 'ACLJ':
-            skillLevelText = 'Junior';
-            break;
-          case 'ACLW':
-            skillLevelText = 'Women\'s';
-            break;
-          default:
-            skillLevelText = player.skill_level;
-        }
-      }
-      
-      // Handle null values
-      const ppr = player.player_ppr !== null ? player.player_ppr : '—';
-      const cpi = player.player_cpi !== null ? player.player_cpi : '—';
-      
-      // Use tournament rank if available, otherwise show "Not Ranked"
-      const displayRank = player.tournamentRank !== null ? `#${player.tournamentRank}` : 'Not Ranked';
-      
-      playerStats.innerHTML = `
-        <div class="stat">
-          <span>Rank:</span>
-          <span class="stat-value">${displayRank}</span>
-        </div>
-        <div class="stat">
-          <span>Status:</span>
-          <span class="stat-value">${skillLevelText}</span>
-        </div>
-        <div class="stat">
-          <span>PPR:</span>
-          <span class="stat-value">${ppr}</span>
-        </div>
-        <div class="stat">
-          <span>CPI:</span>
-          <span class="stat-value">${cpi}</span>
-        </div>
-      `;
-      
-      // Only allow drafting players who have been ranked
-      const draftBtn = document.createElement('button');
-      draftBtn.className = 'draft-btn';
-      draftBtn.textContent = '+ DRAFT';
-      
-      // Disable draft button for players who aren't ranked yet
-      if (player.notRanked || player.potentialPoints === null) {
-        draftBtn.disabled = true;
-        draftBtn.title = "Cannot draft players who haven't been ranked";
-        playerCard.classList.add('not-ranked');
-      }
-      
-      // Add badges
-      const badgesHTML = renderBadges(player.badges || []);
-      
-      // Assemble the player card
-      playerCard.appendChild(playerInfo);
-      playerCard.appendChild(playerStats);
-      if (badgesHTML) {
-        const badgesDiv = document.createElement('div');
-        badgesDiv.innerHTML = badgesHTML;
-        playerCard.appendChild(badgesDiv.firstChild);
-      }
-      playerCard.appendChild(draftBtn);
-      
-      playerList.appendChild(playerCard);
-    });
-  } catch (err) {
-    debug('Error rendering player cards', err);
-    showToast('Error displaying player cards', 'error');
-  }
-}
-
-// Setup team submission handling
-function setupTeamSubmission(tournamentId, user) {
-  try {
-    document.getElementById('submitTeam').addEventListener('click', async function() {
-      const selectedPlayers = Array.from(document.querySelectorAll('.team-player')).map(el => ({
-        id: el.dataset.playerId,
-        potentialPoints: parseInt(el.dataset.potentialPoints)
-      }));
-      
-      // Use the team size from tournament settings
-      const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
-      
-      if (selectedPlayers.length === MAX_TEAM_SIZE) {
-        try {
-          showToast('Submitting team...', 'info');
-          
-          const result = await submitTeam(user.id, tournamentId, selectedPlayers);
-          
-          if (result.success) {
-            debug('Team submission successful', result);
-            showToast('Team submitted successfully!');
-            // Switch to view-only mode instead of redirecting
-            switchToViewOnlyMode(selectedPlayers);
-          } else {
-            debug('Team submission failed', result.error);
-            showToast(`Error submitting team: ${result.error}`, 'error');
-          }
-        } catch (err) {
-          debug('Exception during team submission', err);
-          showToast('Error submitting team. Please try again.', 'error');
-        }
-      } else {
-        showToast(`Please select exactly ${MAX_TEAM_SIZE} players`, 'error');
-      }
-    });
-  } catch (err) {
-    debug('Error setting up team submission', err);
-    // Non-critical error, continue execution
-  }
-}
     
     // Helper function to render player badges
     function renderBadges(badges) {
@@ -1635,7 +1499,6 @@ function setupTeamSubmission(tournamentId, user) {
     }
     
     // Setup draft buttons functionality
-// Setup draft buttons functionality
     function setupDraftButtons() {
       const playerList = document.getElementById('playerList');
       
@@ -1692,7 +1555,8 @@ function setupTeamSubmission(tournamentId, user) {
         
         return;
       }
-          // Remove empty state message if first player
+      
+      // Remove empty state message if first player
       if (teamCount === 0) {
         const emptyMessage = document.getElementById('emptyTeamMessage');
         if (emptyMessage) emptyMessage.remove();
@@ -1771,35 +1635,34 @@ function setupTeamSubmission(tournamentId, user) {
     }
     
     // Update team summary
-// Update team summary
-function updateTeamSummary() {
-  const teamPlayers = document.querySelectorAll('.team-player');
-  const teamCount = teamPlayers.length;
-  
-  // Use the team size from tournament settings
-  const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
-  
-  let totalPoints = 0;
-  teamPlayers.forEach(player => {
-    totalPoints += parseInt(player.dataset.potentialPoints);
-  });
-  
-  // Update UI elements
-  document.getElementById('teamCount').textContent = `${teamCount}/${MAX_TEAM_SIZE} Selected`;
-  
-  // Show total points in header when there are players
-  const totalPointsDisplay = document.getElementById('totalPoints-display');
-  if (teamCount > 0) {
-    totalPointsDisplay.style.display = 'block';
-    document.getElementById('totalPoints').textContent = totalPoints;
-  } else {
-    totalPointsDisplay.style.display = 'none';
-  }
-  
-  // Enable/disable submit button
-  const submitButton = document.getElementById('submitTeam');
-  submitButton.disabled = teamCount !== MAX_TEAM_SIZE;
-}
+    function updateTeamSummary() {
+      const teamPlayers = document.querySelectorAll('.team-player');
+      const teamCount = teamPlayers.length;
+      
+      // Use the team size from tournament settings
+      const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
+      
+      let totalPoints = 0;
+      teamPlayers.forEach(player => {
+        totalPoints += parseInt(player.dataset.potentialPoints);
+      });
+      
+      // Update UI elements
+      document.getElementById('teamCount').textContent = `${teamCount}/${MAX_TEAM_SIZE} Selected`;
+      
+      // Show total points in header when there are players
+      const totalPointsDisplay = document.getElementById('totalPoints-display');
+      if (teamCount > 0) {
+        totalPointsDisplay.style.display = 'block';
+        document.getElementById('totalPoints').textContent = totalPoints;
+      } else {
+        totalPointsDisplay.style.display = 'none';
+      }
+      
+      // Enable/disable submit button
+      const submitButton = document.getElementById('submitTeam');
+      submitButton.disabled = teamCount !== MAX_TEAM_SIZE;
+    }
     
     // Function to set up search and filter
     function setupSearchFilter() {
@@ -1867,14 +1730,6 @@ function updateTeamSummary() {
         toast.style.display = 'none';
       }, 3000);
     }
-    
-    // Add keyboard shortcut to toggle debug overlay (CTRL+SHIFT+D)
-    document.addEventListener('keydown', function(e) {
-      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-        const debugOverlay = document.getElementById('debugOverlay');
-        debugOverlay.classList.toggle('active');
-      }
-    });
   </script>
 </body>
 </html>

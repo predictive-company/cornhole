@@ -18,7 +18,7 @@
       background-attachment: fixed;
     }
     
-    /* Header and Nav - Original Style */
+    /* Header and Nav */
     header {
       background-color: #0d1023;
       padding: 0.7rem 2rem;
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       return;
     }
     
-    // Function to get registered teams count - query from the database
+    // Function to get registered teams count
     async function getRegisteredTeams(tournamentId) {
       try {
         const { data, error, count } = await supabase
@@ -486,14 +486,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         return 0;
       }
     }
-    
-    // Assign feature types by tournament ID - add your tournament IDs here
-    // 1 = Live Streaming, 2 = Premium Prizes, 3 = Stats Tracking, 4 = Featured Event
-    const tournamentFeatures = {
-      "0c6a4d77-16b3-49f9-ba4e-b6de050764cd": 4, // Tournament ID 1 gets Featured Event (option 4)
-      "2": 1, // Tournament ID 2 gets Live Streaming (option 1)
-      "3": 2, // Tournament ID 3 gets Premium Prizes (option 2)
-    };
     
     // Define the available feature options by number
     const featureOptions = [
@@ -533,6 +525,11 @@ document.addEventListener('DOMContentLoaded', async function() {
       const registeredTeams = await getRegisteredTeams(tournament.id);
       
       // Get feature based on tournament ID or use default
+      // Feature mapping: 1=Live Streaming, 2=Premium Prizes, 3=Stats Tracking, 4=Featured Event
+      const tournamentFeatures = {
+        "0c6a4d77-16b3-49f9-ba4e-b6de050764cd": 4
+      };
+      
       // Subtract 1 from feature number to get array index (1-4 becomes 0-3)
       const featureIndex = tournamentFeatures[tournament.id] 
         ? tournamentFeatures[tournament.id] - 1 

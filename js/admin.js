@@ -237,23 +237,24 @@ async function loadTournaments() {
                 }
             }
             
+            // Inside loadTournaments() function, look for the row.innerHTML section
             row.innerHTML = `
-            <td>${tournament.name}</td>
-            <td>${formatDate(tournament.start_date)}</td>
-            <td>${formatDate(tournament.end_date)}</td>
-            <td>${tournament.top_players_count || 4} players</td>
-            <td>${tournament.team_size}</td>
-            <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
-            <td class="actions-cell">
-                <div class="btn-group">
-                    <button class="btn btn-small edit-tournament-btn" data-id="${tournament.id}">Edit</button>
-                    <button class="btn btn-small manage-players-btn" data-id="${tournament.id}">Manage Players</button>
-
-                    ${status === 'completed' ? 
-                        `<button class="btn btn-small player-results-btn" data-id="${tournament.id}">Player Results</button>` : 
-                        ''}
-                </div>
-            </td>
+                <td>${tournament.name}</td>
+                <td>${formatDate(tournament.start_date)}</td>
+                <td>${formatDate(tournament.end_date)}</td>
+                <td>${tournament.top_players_count || 4} players</td>
+                <td>${tournament.team_size}</td>
+                <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                <td class="actions-cell">
+                    <div class="btn-group">
+                        <button class="btn btn-small edit-tournament-btn" data-id="${tournament.id}">Edit</button>
+                        <button class="btn btn-small manage-players-btn" data-id="${tournament.id}">Manage Players</button>
+                        ${status === 'completed' ? 
+                            `<button class="btn btn-small player-results-btn" data-id="${tournament.id}">Player Results</button>
+                            <button class="btn btn-small select-winners-btn" data-id="${tournament.id}">Select Winners</button>` : 
+                            ''}
+                    </div>
+                </td>
             `;
             
             tableBody.appendChild(row);
@@ -262,6 +263,11 @@ async function loadTournaments() {
         // Add event listeners to action buttons
         document.querySelectorAll('.edit-tournament-btn').forEach(btn => {
             btn.addEventListener('click', () => openEditTournamentModal(btn.dataset.id));
+        });
+
+        // Add after the other event listeners in loadTournaments()
+        document.querySelectorAll('.select-winners-btn').forEach(btn => {
+            btn.addEventListener('click', () => openSelectWinnersModal(btn.dataset.id));
         });
         
         document.querySelectorAll('.player-results-btn').forEach(btn => {
@@ -630,6 +636,163 @@ async function handleUpdateTournament(e) {
     } catch (err) {
         console.error('Error in handleUpdateTournament:', err);
         showToast('Failed to update tournament', 'error');
+    }
+}
+
+// Open the winner selection modal
+async function openSelectWinnersModal(tournamentId) {
+    try {
+        // Get all teams for this tournament with their points
+        const { data: teams, error } = await supabase
+            .from('teams')
+            .select('id, user_id, team_points')
+            .eq('tournament_id', tournamentId)
+            .order('team_points', { ascending: false });
+            
+        if (error) {
+            console.error('Error fetching teams:', error);
+            showToast('Failed to load teams', 'error');
+            return;
+        }
+        
+        // Get the tournament details
+        const { data: tournament } = await supabase
+            .from('tournaments')
+            .select('name, winning_team_id')
+            .eq('id', tournamentId)
+            .single();
+        
+        // Now fetch user data for each team
+        const teamsWithUserData = await Promise.all(teams.map(async (team) => {
+            try {
+                const { data: userData } = await supabase
+                    .from('profiles')
+                    .select('username')
+                    .eq('id', team.user_id)
+                    .single();
+                    
+                return {
+                    ...team,
+                    username: userData?.username || 'Unknown User',
+                    isCurrentWinner: tournament?.winning_team_id === team.id
+                };
+            } catch (err) {
+                console.error('Error fetching user data:', err);
+                return {
+                    ...team,
+                    username: 'Unknown User',
+                    isCurrentWinner: tournament?.winning_team_id === team.id
+                };
+            }
+        }));
+        
+        // Get the modal and close button
+        const modal = document.getElementById('selectWinnersModal');
+        const closeBtn = document.getElementById('closeSelectWinnersModal');
+        
+        // Add event listener to close button
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+        
+        // Update modal title to include tournament name
+        modal.querySelector('h2').textContent = `Select Winner for ${tournament.name}`;
+        
+        // Create and populate the table
+        const tableBody = modal.querySelector('tbody');
+        tableBody.innerHTML = '';
+        
+        teamsWithUserData.forEach((team, index) => {
+            const row = document.createElement('tr');
+            row.className = index === 0 ? 'top-team' : '';
+            
+            // Add winner indication
+            if (team.isCurrentWinner) {
+                row.classList.add('current-winner');
+            }
+            
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${team.username}</td>
+                <td>${team.team_points || 0}</td>
+                <td>
+                    <button class="btn ${team.isCurrentWinner ? 'btn-selected' : ''} select-winner-btn" 
+                            data-team-id="${team.id}" 
+                            data-tournament-id="${tournamentId}">
+                        ${team.isCurrentWinner ? 'Current Winner' : (index === 0 ? 'Confirm Winner' : 'Select as Winner')}
+                    </button>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+        
+        // Add event listeners to select buttons
+        document.querySelectorAll('.select-winner-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                confirmWinner(this.dataset.teamId, this.dataset.tournamentId);
+            });
+        });
+        
+        // Add styles for winner table
+        const style = document.createElement('style');
+        style.textContent = `
+            .top-team {
+                background-color: rgba(46, 204, 113, 0.1);
+            }
+            .current-winner {
+                background-color: rgba(52, 152, 219, 0.2);
+            }
+            .btn-selected {
+                background-color: #3498db;
+                color: white;
+            }
+        `;
+        
+        if (!document.getElementById('winner-styles')) {
+            style.id = 'winner-styles';
+            document.head.appendChild(style);
+        }
+        
+        // Show the modal
+        modal.style.display = 'block';
+        
+    } catch (err) {
+        console.error('Error loading teams for winner selection:', err);
+        showToast('Failed to load teams', 'error');
+    }
+}
+
+// Event handler for confirming winner
+async function confirmWinner(teamId, tournamentId) {
+    try {
+        // Confirm with user
+        if (!confirm('Are you sure you want to set this team as the winner? This will be displayed on the tournament results page.')) {
+            return;
+        }
+        
+        // Update tournament with winning team ID
+        const { error } = await supabase
+            .from('tournaments')
+            .update({ 
+                winning_team_id: teamId
+            })
+            .eq('id', tournamentId);
+            
+        if (error) {
+            console.error('Error updating tournament winner:', error);
+            showToast('Failed to confirm winner', 'error');
+            return;
+        }
+        
+        showToast('Winner confirmed successfully');
+        document.getElementById('selectWinnersModal').style.display = 'none';
+        
+        // Refresh tournaments list
+        await loadTournaments();
+        
+    } catch (err) {
+        console.error('Error confirming winner:', err);
+        showToast('Failed to confirm winner', 'error');
     }
 }
 
@@ -5180,6 +5343,16 @@ function setupPlayerImportFunctions() {
 
 // Function to ensure modals exist in the DOM
 function ensureModalsExist() {
+    // Check if winners modal exists and initialize close button
+    const winnersModal = document.getElementById('selectWinnersModal');
+    if (winnersModal) {
+        const closeWinnersModal = document.getElementById('closeSelectWinnersModal');
+        if (closeWinnersModal) {
+            closeWinnersModal.addEventListener('click', () => {
+                winnersModal.style.display = 'none';
+            });
+        }
+    }
     // Create the tournament players modal if it doesn't exist
     if (!document.getElementById('tournamentPlayersModal')) {
         const modal = document.createElement('div');

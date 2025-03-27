@@ -963,6 +963,30 @@
         </div>
     </div>
 
+    <!-- Winner Selection Modal -->
+    <div id="selectWinnersModal" class="modal">
+        <div class="modal-content" style="width: 90%; max-width: 800px;">
+            <span class="close-modal" id="closeSelectWinnersModal">&times;</span>
+            <h2>Select Tournament Winner</h2>
+            <p>Select the winning team for this tournament. The team with the highest points is highlighted.</p>
+            <div id="winnerTeamsContainer">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>User</th>
+                            <th>Team Points</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Teams will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Player Results Modal (will be created dynamically) -->
 
     <div id="toast"></div>

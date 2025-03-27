@@ -650,7 +650,6 @@ async function loadTournamentResults(tournamentId) {
                 .select('points_earned, placement')
                 .eq('player_id', player.id)
                 .eq('tournament_id', tournamentId)
-                .eq('team_id', team.id)
                 .maybeSingle();
               
               // Default values if no entry in player_tournament_points

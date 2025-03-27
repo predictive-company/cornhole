@@ -187,10 +187,11 @@
     }
     
     .how-it-works-container h2 {
-      color: white;
+      color: #4ade80;
       margin-top: 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       padding-bottom: 0.5rem;
+      font-size: 2.0rem;
       margin-bottom: 2rem;
     }
     
@@ -436,68 +437,33 @@
         <div class="step-content">
           <h4>Join a Tournament</h4>
           <p>Browse upcoming tournaments and select one you'd like to join. Each tournament has its own unique pool of players with tournament-specific rankings based on their CPI (Cornhole Player Index).</p>
+          <div class="section">
+            <p><strong>Our system uses tournament-specific rankings rather than global rankings. This means:</strong></p>
+            <ul class="tournament-ranks">
+              <li><strong>Tournament-Specific Competition:</strong> Rankings are calculated specifically for each tournament based on the players participating</li>
+              <li><strong>CPI-Based:</strong> Players are ranked by their Cornhole Player Index (CPI), a statistical measure of player skill from the ACL</li>
+              <li><strong>Fair Competition:</strong> This ensures each tournament has its own competitive balance, regardless of which top players are participating</li>
+              <li><strong>Fresh Opportunities:</strong> Each tournament provides a new chance to draft differently as rankings may change between events</li>
+            </ul>
+          </div>
         </div>
+        
       </div>
       
       <div class="step">
         <div class="step-number">2</div>
         <div class="step-content">
           <h4>Draft Your Team</h4>
-          <p>Select your players to build your dream team. Each player is assigned potential points based on their tournament ranking. The tournament ranking is determined by the player's CPI (Cornhole Player Index) which reflects their current skill level.</p>
+          <p>Select your players to build your dream team. Each player is assigned potential points based on their tournament ranking. The tournament ranking is determined by the player's CPI (Cornhole Player Index) which is created based on their current skill level along with previous performances.</p>
+          <h4>Winning Strategy Tips:</h4>
+          <ul class="strategy-tips">
+            <li><strong>Consider the player's CPI</strong> - Higher CPI indicates solid previous performance</li>
+            <li><strong>Consider PPR (Points Per Round)</strong> - Players with higher PPR tend to score more consistently</li>
+            <li><strong>Look for value picks</strong> - Find underrated players who have more potential than their ranking suggests</li>
+            <li><strong>Track recent performance</strong> - Players on hot streaks might outperform their ranking</li>
+            <li><strong>Find errors</strong> - Think someone is rated lower than they should be? Show everyone what you may know</li>
+          </ul>
           
-          <div class="points-example">
-            <h4>How Points Work</h4>
-            <p>Player points are inverse to their ranking in the tournament. Top-ranked players are safer picks but offer fewer potential points. Lower-ranked players are riskier but offer higher potential rewards!</p>
-            
-            <table class="points-table">
-              <thead>
-                <tr>
-                  <th>Tournament Rank</th>
-                  <th>Potential Points</th>
-                  <th>Strategy</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Rank 1-10</td>
-                  <td>30-50 points</td>
-                  <td>Safe, consistent performers</td>
-                </tr>
-                <tr>
-                  <td>Rank 11-30</td>
-                  <td>50-70 points</td>
-                  <td>Balanced risk/reward</td>
-                </tr>
-                <tr>
-                  <td>Rank 31+</td>
-                  <td>70-100 points</td>
-                  <td>High risk, high reward</td>
-                </tr>
-              </tbody>
-            </table>
-            
-            <div style="margin-top: 1.5rem;">
-              <h5>Example Players:</h5>
-              
-              <div class="player-example">
-                <div class="player-rank">TR: #1</div>
-                <div>Matt Sorrells (CPI: 11.4)</div>
-                <div class="player-points">30 pts</div>
-              </div>
-              
-              <div class="player-example">
-                <div class="player-rank">TR: #20</div>
-                <div>Jamie Davis (CPI: 8.2)</div>
-                <div class="player-points">60 pts</div>
-              </div>
-              
-              <div class="player-example">
-                <div class="player-rank">TR: #50</div>
-                <div>Tyler Johnson (CPI: 5.1)</div>
-                <div class="player-points">86 pts</div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
       
@@ -506,6 +472,16 @@
         <div class="step-content">
           <h4>Submit Your Team</h4>
           <p>Once you've selected your players, submit your team before the draft deadline. You can only submit one team per tournament. Choose wisely, as your selections are final once submitted!</p>
+          <div class="points-example">
+            <h4>How Points Work</h4>
+            <p>Player points are inverse to their ranking in the tournament. Top-ranked players are safer picks but offer fewer potential points. Lower-ranked players are riskier but offer higher potential rewards!</p>
+            
+
+              <p><strong>Final points are awarded based on player placement:</strong></p>
+              <p>Each tournament has a different amount of players that will recieve points for placing. This information will be displayed on the "Tournaments" page and while drafting.</p>
+              <p>If a tournament has multiple brackets, the top players are determined from the overall standings. In a 4-bracket tournament, only the winner of each bracket would place in the top 4.</p>
+           
+          </div>
         </div>
       </div>
       
@@ -514,50 +490,14 @@
         <div class="step-content">
           <h4>Watch the Tournament</h4>
           <p>As the tournament progresses, your players earn points based on their performance and final placement. The better your players perform, the more of their potential points you'll receive!</p>
-          
-          <div class="point-calculation">
-            <h5>Point Calculation</h5>
-            <p>Final points are awarded based on player placement:</p>
-            <ul>
-              <li><strong>1st Place:</strong> 100% of potential points</li>
-              <li><strong>2nd Place:</strong> 75% of potential points</li>
-              <li><strong>3rd Place:</strong> 50% of potential points</li>
-              <li><strong>4th Place:</strong> 25% of potential points</li>
-              <li><strong>Other:</strong> 0% of potential points</li>
-            </ul>
-          </div>
+          <p>Check your "My Profile" page to check your team and see if they earned points for each tournament.</p>
+          <p>You can also view the tournament results which shows both your team and with winning team for a tournament.</p>
         </div>
       </div>
     </div>
     
     <div class="section">
-      <h3>Tournament Rankings vs. Global Rankings</h3>
-      <p>Our system uses tournament-specific rankings ("TR") rather than global rankings. This means:</p>
-      <ul class="tournament-ranks">
-        <li><strong>Tournament-Specific Competition:</strong> Rankings are calculated specifically for each tournament based on the players participating</li>
-        <li><strong>CPI-Based:</strong> Players are ranked by their Cornhole Player Index (CPI), a statistical measure of player skill from the ACL</li>
-        <li><strong>Fair Competition:</strong> This ensures each tournament has its own competitive balance, regardless of which top players are participating</li>
-        <li><strong>Fresh Opportunities:</strong> Each tournament provides a new chance to draft differently as rankings may change between events</li>
-      </ul>
-    </div>
-    
-    <div class="section">
-      <h3>How to Win</h3>
-      <p>The player with the most total points at the end of the tournament wins! Your team's total is the sum of all points earned by your drafted players.</p>
-      
-      <h4>Winning Strategy Tips:</h4>
-      <ul class="strategy-tips">
-        <li><strong>Balance your team</strong> - Mix top players with promising underdogs</li>
-        <li><strong>Check the CPI stats</strong> - Higher CPI indicates more consistent performance</li>
-        <li><strong>Consider PPR (Points Per Round)</strong> - Players with higher PPR tend to score more consistently</li>
-        <li><strong>Look at tournament rankings</strong> - Don't just rely on a player's reputation</li>
-        <li><strong>Track recent performance</strong> - Players on hot streaks might outperform their ranking</li>
-        <li><strong>Look for value picks</strong> - Find underrated players who have more potential than their ranking suggests</li>
-      </ul>
-    </div>
-    
-    <div class="section">
-      <h3>Prizes</h3>
+      <h2>Prizes</h2>
       <p>Tournament winners receive exclusive, premium cornhole bags from top manufacturers! These custom, tournament-edition bags aren't available anywhere else.</p>
       
       <div class="prizes-preview">
