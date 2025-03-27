@@ -5,409 +5,525 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prizes - Cornhole Kings</title>
   <style>
-    :root {
-      --primary: #0d1023;
-      --secondary: #4ade80;
-      --accent: #4ade80;
-      --light: #ecf0f1;
-      --dark: #080a14;
-      --success: #4ade80;
-    }
-    
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #080a14;
-      color: white;
-      overflow-x: hidden;
-      background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-    
-    /* Header and Nav */
-    header {
-      background-color: #0d1023;
-      padding: 0.7rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      width: 100%;
-      box-sizing: border-box;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Left section - Logo */
-    .logo-section {
-      display: flex;
-      align-items: center;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      text-decoration: none;
-      color: white;
-    }
-    
-    .logo h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background-color: #f1c40f;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #0d1023;
-    }
-    
-    /* Middle section - Navigation */
-    .nav-section {
-      display: flex;
-      justify-content: center;
-      flex: 1;
-    }
-    
-    nav {
-      display: flex;
-    }
-    
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0.6rem 1rem;
-      font-weight: 1000;
-      transition: color 0.2s, background-color 0.2s;
-      font-size: 1.1rem;
-    }
-    
-    nav a:hover {
-      color: #22c55e;
-    }
-    
-    nav a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    
-    /* Right section - User info */
-    .user-section {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-    
-    .user-email {
-      color: white;
-      margin-right: 1rem;
-      font-size: 0.9rem;
-    }
-    
-    .logout-btn {
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
-    }
-    
-    .logout-btn:hover {
-      background-color: #22c55e;
-    }
-    
-    .log-in-btn {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      text-decoration: none;
-      margin-right: 0.5rem;
-    }
-    
-    .log-in-btn:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    .sign-up-btn {
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      text-decoration: none;
-    }
-    
-    .sign-up-btn:hover {
-      background-color: #22c55e;
-    }
-    
-    /* Mobile Responsiveness for Header */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        padding: 0.5rem;
-      }
-      
-      .logo-section, .nav-section, .user-section {
-        width: 100%;
-        justify-content: center;
-        margin: 0.5rem 0;
-      }
-      
-      nav {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-    }
-    
-    /* Main content */
-    .intro {
-      text-align: center;
-      margin: 2rem auto;
-      max-width: 800px;
-      padding: 0 1rem;
-    }
-    
-    .intro h2 {
-      color: #4ade80;
-      margin-bottom: 1rem;
-      font-size: 2rem;
-    }
-    
-    .intro p {
-      max-width: 800px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-    
-    /* Featured bags grid */
-    .featured-bags {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 2rem;
-      max-width: 1200px;
-      margin: 0 auto 3rem auto;
-      padding: 0 1rem;
-    }
-    
-    .bag-card {
-      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.3s;
-    }
-    
-    .bag-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-      border-color: rgba(74, 222, 128, 0.3);
-    }
-    
-    .bag-image {
-      height: 200px;
-      background-color: rgba(255, 255, 255, 0.05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .bag-image img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      transition: transform 0.3s;
-    }
-    
-    .bag-card:hover .bag-image img {
-      transform: scale(1.05);
-    }
-    
-    .tournament-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background-color: rgba(74, 222, 128, 0.9);
-      color: #080a14;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: bold;
-    }
-    
-    .bag-details {
-      padding: 1.5rem;
-    }
-    
-    .bag-name {
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: white;
-      margin-top: 0;
-      margin-bottom: 0.5rem;
-    }
-    
-    .bag-manufacturer {
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-    }
-    
-    .manufacturer-logo {
-      width: 20px;
-      height: 20px;
-      margin-right: 0.5rem;
-      background-color: #4ade80;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.7rem;
-      font-weight: bold;
-      color: #0d1023;
-    }
-    
-    .bag-features {
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-    }
-    
-    .bag-features li {
-      margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-    }
-    
-    .bag-features li:before {
-      content: "•";
-      color: #4ade80;
-      margin-right: 0.5rem;
-    }
-    
-    .bag-link {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      text-align: center;
-      margin-top: 1rem;
-    }
-    
-    .bag-link:hover {
-      background-color: #22c55e;
-      transform: translateY(-2px);
-    }
-    
-    .sponsors-section {
-      text-align: center;
-      margin: 3rem auto;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      max-width: 1200px;
-      padding: 2rem 1rem;
-    }
-    
-    .sponsors-section h3 {
-      color: white;
-      margin-bottom: 1.5rem;
-    }
-    
-    .sponsors-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 2rem;
-      margin-top: 1.5rem;
-    }
-    
-    .sponsor-card {
-      width: 150px;
-      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-      padding: 1.5rem;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: all 0.3s;
-    }
-    
-    .sponsor-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-      border-color: rgba(74, 222, 128, 0.3);
-    }
-    
-    .sponsor-logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1rem auto;
-      background-color: #4ade80;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #080a14;
-    }
-    
-    .sponsor-name {
-      font-weight: bold;
-      margin-bottom: 0.25rem;
-    }
-    
-    .sponsor-type {
-      font-size: 0.8rem;
-      color: rgba(255, 255, 255, 0.7);
-    }
-    
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 15px 25px;
-      background-color: rgba(74, 222, 128, 0.9);
-      color: white;
-      border-radius: 6px;
-      display: none;
-      z-index: 1000;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
+:root {
+  --primary: #0d1023;
+  --secondary: #4ade80;
+  --accent: #4ade80;
+  --light: #ecf0f1;
+  --dark: #080a14;
+  --success: #4ade80;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #080a14;
+  color: white;
+  overflow-x: hidden;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  /* Improved font sizing for mobile readability */
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Header and Nav - Fixed Layout */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* Fixed order for header elements */
+  flex-wrap: nowrap;
+}
+
+/* Left section - Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  order: 0; /* Keep in the middle */
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 0.8rem;
+  font-weight: 1000;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  margin: 2px;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto; /* Ensure it stays right */
+}
+
+.user-email {
+  color: white;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn, .log-in-btn, .sign-up-btn {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+.log-in-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.log-in-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sign-up-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  cursor: pointer;
+}
+
+.sign-up-btn:hover {
+  background-color: #22c55e;
+}
+
+/* Mobile Responsiveness for Header with Fixed Order */
+@media (max-width: 768px) {
+  header {
+    padding: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .logo-section {
+    flex-basis: 70%;
+    order: 0; /* Logo first */
+  }
+  
+  .user-section {
+    flex-basis: 30%;
+    order: 1; /* Login/signup second */
+    justify-content: flex-end;
+  }
+  
+  .nav-section {
+    flex-basis: 100%;
+    order: 2; /* Nav last */
+    margin-top: 0.5rem;
+  }
+  
+  nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  nav a {
+    flex-grow: 1;
+    text-align: center;
+    padding: 0.8rem 0.4rem;
+    margin: 2px;
+    font-size: 0.9rem;
+  }
+  
+  .user-email {
+    display: none; /* Hide email on very small screens */
+  }
+}
+
+/* Very small screens adjustments */
+@media (max-width: 480px) {
+  .logo h1 {
+    font-size: 1.2rem;
+  }
+  
+  .log-in-btn, .sign-up-btn, .logout-btn {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  
+  .logo img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Main content */
+.intro {
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 800px;
+  padding: 0 1rem;
+}
+
+.intro h2 {
+  color: #4ade80;
+  margin-bottom: 1rem;
+  /* Responsive font size */
+  font-size: clamp(1.5rem, 5vw, 2rem);
+}
+
+.intro p {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+  /* Better readability on mobile */
+  font-size: clamp(1rem, 4vw, 1.1rem);
+}
+
+/* Featured bags grid */
+.featured-bags {
+  display: grid;
+  /* Improved responsive grid */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  padding: 0 1rem;
+}
+
+.bag-card {
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  /* Ensure cards stay in view on small screens */
+  max-width: 100%;
+}
+
+.bag-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.bag-image {
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bag-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+
+.bag-card:hover .bag-image img {
+  transform: scale(1.05);
+}
+
+.tournament-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: #080a14;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.bag-details {
+  padding: 1.5rem;
+}
+
+.bag-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.bag-manufacturer {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.manufacturer-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #0d1023;
+}
+
+.bag-features {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bag-features li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+  /* Improved line wrapping on mobile */
+  flex-wrap: wrap;
+}
+
+.bag-features li:before {
+  content: "•";
+  color: #4ade80;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.bag-link {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 1rem;
+  /* Better touch targets */
+  min-height: 44px;
+  min-width: 44px;
+  /* Full width on mobile for better tapping */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bag-link:hover {
+  background-color: #22c55e;
+  transform: translateY(-2px);
+}
+
+.sponsors-section {
+  text-align: center;
+  margin: 3rem auto;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 1200px;
+  padding: 2rem 1rem;
+}
+
+.sponsors-section h3 {
+  color: white;
+  margin-bottom: 1.5rem;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+}
+
+.sponsors-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.sponsor-card {
+  width: 150px;
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.sponsor-logo {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1rem auto;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #080a14;
+}
+
+.sponsor-name {
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.sponsor-type {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: white;
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  /* Mobile improvements */
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* Mobile image loading optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile tap state for better user feedback */
+@media (max-width: 768px) {
+  a:active, button:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
+  
+  /* Adjust padding for mobile cards */
+  .bag-details {
+    padding: 1rem;
+  }
+  
+  .sponsor-card {
+    width: 130px;
+    padding: 1rem;
+  }
+  
+  .sponsor-logo {
+    width: 60px;
+    height: 60px;
+    font-size: 1.2rem;
+  }
+  
+  /* Fix for mobile scrolling */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
   </style>
 </head>
 <body>

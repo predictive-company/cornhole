@@ -5,380 +5,533 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tournaments - Cornhole Kings</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #080a14;
-      color: white;
-      overflow-x: hidden;
-      background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-    
-    /* Header and Nav */
-    header {
-      background-color: #0d1023;
-      padding: 0.7rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    
-    /* Left section - Logo */
-    .logo-section {
-      display: flex;
-      align-items: center;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      text-decoration: none;
-      color: white;
-    }
-    
-    .logo h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background-color: #f1c40f;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #0d1023;
-    }
-    
-    /* Middle section - Navigation */
-    .nav-section {
-      display: flex;
-      justify-content: center;
-      flex: 1;
-    }
-    
-    nav {
-      display: flex;
-    }
-    
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0.6rem 1rem;
-      font-weight: 1000;
-      transition: color 0.2s, background-color 0.2s;
-      font-size: 1.1rem;
-    }
-    
-    nav a:hover {
-      color: #22c55e;
-    }
-    
-    nav a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    
-    /* Right section - User info */
-    .user-section {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-    
-    .user-email {
-      color: white;
-      margin-right: 1rem;
-      font-size: 0.9rem;
-    }
-    
-    .logout-btn {
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
-    }
-    
-    .logout-btn:hover {
-      background-color: #22c55e;
-    }
-    
-    .log-in-btn {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      text-decoration: none;
-      margin-right: 0.5rem;
-    }
-    
-    .log-in-btn:hover {
-      background-color: rgba(255, 255, 255, 0.2);
-    }
-    
-    .sign-up-btn {
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      text-decoration: none;
-    }
-    
-    .sign-up-btn:hover {
-      background-color: #22c55e;
-    }
-    
-    /* Hero Section */
-    .hero-section {
-      text-align: center;
-      padding: 3rem 1rem 1rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
-    .hero-section h1 {
-      font-size: 3.2rem;
-      margin-bottom: 1rem;
-      background: linear-gradient(90deg, #4ade80, #a3e635);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      font-weight: 800;
-    }
-    
-    .hero-section p {
-      font-size: 1.2rem;
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 3rem;
-      line-height: 1.6;
-    }
-    
-    /* Content Styling */
-    .content-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 1rem 3rem;
-    }
-    
-    .tournaments-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 2rem;
-    }
-    
-    .tournament-card {
-      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.3s;
-      position: relative;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .tournament-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-      border-color: rgba(74, 222, 128, 0.3);
-    }
-    
-    .tournament-header {
-      background: linear-gradient(to right, rgba(74, 222, 128, 0.2), transparent);
-      padding: 1.5rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .tournament-card h3 {
-      color: white;
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    
-    .tournament-body {
-      padding: 1.5rem;
-    }
-    
-    .tournament-info {
-      margin-bottom: 1.5rem;
-    }
-    
-    .info-row {
-      display: flex;
-      margin-bottom: 0.7rem;
-      align-items: center;
-    }
-    
-    .info-label {
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 0.9rem;
-      width: 120px;
-    }
-    
-    .info-value {
-      color: white;
-      font-weight: 500;
-      font-size: 0.95rem;
-    }
-    
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #080a14;
+  color: white;
+  overflow-x: hidden;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  /* Improved font sizing for mobile readability */
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Header and Nav - Fixed Layout */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* Fixed order for header elements */
+  flex-wrap: nowrap;
+}
+
+/* Left section - Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  order: 0; /* Keep in the middle */
+}
+
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 0.8rem;
+  font-weight: 1000;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1rem;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  margin: 2px;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+  margin-left: auto; /* Ensure it stays right */
+}
+
+.user-email {
+  color: white;
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logout-btn, .log-in-btn, .sign-up-btn {
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+.log-in-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.log-in-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sign-up-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  cursor: pointer;
+}
+
+.sign-up-btn:hover {
+  background-color: #22c55e;
+}
+
+/* Mobile Responsiveness for Header with Fixed Order */
+@media (max-width: 768px) {
+  header {
+    padding: 0.5rem;
+    flex-wrap: wrap;
+  }
+  
+  .logo-section {
+    flex-basis: 70%;
+    order: 0; /* Logo first */
+  }
+  
+  .user-section {
+    flex-basis: 30%;
+    order: 1; /* Login/signup second */
+    justify-content: flex-end;
+  }
+  
+  .nav-section {
+    flex-basis: 100%;
+    order: 2; /* Nav last */
+    margin-top: 0.5rem;
+  }
+  
+  nav {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  nav a {
+    flex-grow: 1;
+    text-align: center;
+    padding: 0.8rem 0.4rem;
+    margin: 2px;
+    font-size: 0.9rem;
+  }
+  
+  .user-email {
+    display: none; /* Hide email on very small screens */
+  }
+}
+
+/* Very small screens adjustments */
+@media (max-width: 480px) {
+  .logo h1 {
+    font-size: 1.2rem;
+  }
+  
+  .log-in-btn, .sign-up-btn, .logout-btn {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  
+  .logo img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 3rem 1rem 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-section h1 {
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #4ade80, #a3e635);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+
+.hero-section p {
+  font-size: clamp(1rem, 4vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* Content Styling */
+.content-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem 3rem;
+}
+
+.tournaments-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.tournament-card {
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tournament-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.tournament-header {
+  background: linear-gradient(to right, rgba(74, 222, 128, 0.2), transparent);
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tournament-card h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.4rem;
+  /* Better text wrapping on mobile */
+  word-wrap: break-word;
+}
+
+.tournament-body {
+  padding: 1.5rem;
+}
+
+.tournament-info {
+  margin-bottom: 1.5rem;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 0.7rem;
+  align-items: center;
+  /* Better flexibility for mobile */
+  flex-wrap: wrap;
+}
+
+.info-label {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  width: 120px;
+  /* Ensure labels stay fixed width on desktop but can flex on mobile */
+  flex-shrink: 0;
+}
+
+.info-value {
+  color: white;
+  font-weight: 500;
+  font-size: 0.95rem;
+  /* Better overflow handling */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.feature-badge {
+  display: flex;
+  align-items: center;
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  /* Better wrapping on mobile */
+  flex-wrap: wrap;
+}
+
+.feature-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #4ade80;
+  color: #080a14;
+  border-radius: 50%;
+  margin-right: 1rem;
+  font-weight: bold;
+  /* Better sizing for mobile */
+  min-width: 40px;
+  flex-shrink: 0;
+}
+
+.feature-content {
+  flex: 1;
+  /* Ensure proper spacing when wrapped */
+  min-width: 200px;
+}
+
+.feature-title {
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+  color: #4ade80;
+}
+
+.feature-description {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.tournament-action {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.action-button {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  text-align: center;
+  min-width: 200px;
+  /* Better sizing for mobile */
+  max-width: 100%;
+  box-sizing: border-box;
+  /* Better touch targets */
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.action-button:hover {
+  background-color: #22c55e;
+  transform: translateY(-2px);
+}
+
+.action-button.disabled {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.action-button.disabled:hover {
+  transform: none;
+}
+
+.participants-count {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.participants-count .count {
+  color: white;
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+
+/* Toast notification */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 1rem 1.5rem;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: white;
+  border-radius: 10px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+  /* Mobile improvements */
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .tournaments-list {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    padding: 2rem 1rem 1rem;
+  }
+  
+  .tournament-header, .tournament-body {
+    padding: 1.2rem;
+  }
+  
+  .info-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .info-label {
+    margin-bottom: 0.2rem;
+    width: 100%;
+  }
+  
+  .info-value {
+    padding-left: 0.5rem;
+  }
+  
+  /* Better feature badge layout on mobile */
+  @media (max-width: 480px) {
     .feature-badge {
-      display: flex;
-      align-items: center;
-      background-color: rgba(74, 222, 128, 0.1);
-      border: 1px solid rgba(74, 222, 128, 0.3);
-      border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
+      flex-direction: column;
+      align-items: flex-start;
     }
     
     .feature-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 40px;
-      height: 40px;
-      background-color: #4ade80;
-      color: #080a14;
-      border-radius: 50%;
-      margin-right: 1rem;
-      font-weight: bold;
+      margin-right: 0;
+      margin-bottom: 1rem;
+      align-self: center;
     }
     
     .feature-content {
-      flex: 1;
-    }
-    
-    .feature-title {
-      font-weight: bold;
-      margin-bottom: 0.3rem;
-      color: #4ade80;
-    }
-    
-    .feature-description {
-      color: rgba(255, 255, 255, 0.8);
-      font-size: 0.9rem;
-      margin: 0;
-    }
-    
-    .tournament-action {
-      margin-top: 1.5rem;
+      width: 100%;
       text-align: center;
     }
-    
-    .action-button {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      text-align: center;
-      width: auto;
-      min-width: 260px;
-    }
-    
-    .action-button:hover {
-      background-color: #22c55e;
-      transform: translateY(-2px);
-    }
-    
-    .action-button.disabled {
-      background-color: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.5);
-      cursor: not-allowed;
-    }
-    
-    .action-button.disabled:hover {
-      transform: none;
-    }
-    
-    .participants-count {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 6px;
-      padding: 0.5rem 0.8rem;
-      font-size: 0.9rem;
-      color: rgba(255, 255, 255, 0.8);
-      display: block;
-      text-align: center;
-      margin-top: 1rem;
-    }
-    
-    .participants-count .count {
-      color: white;
-      font-weight: 600;
-      margin-left: 0.3rem;
-    }
-    
-    /* Toast notification */
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 1rem 1.5rem;
-      background-color: rgba(74, 222, 128, 0.9);
-      color: white;
-      border-radius: 10px;
-      display: none;
-      z-index: 1000;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      font-weight: 500;
-    }
-    
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-      header {
-        flex-direction: column;
-        padding: 0.5rem;
-      }
-      
-      .logo-section, .nav-section, .user-section {
-        width: 100%;
-        justify-content: center;
-        margin: 0.5rem 0;
-      }
-      
-      nav {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      
-      .tournaments-list {
-        grid-template-columns: 1fr;
-      }
-      
-      .hero-section h1 {
-        font-size: 2.5rem;
-      }
-    }
+  }
+  
+  /* Full width buttons on mobile */
+  .action-button {
+    width: 100%;
+  }
+  
+  /* Mobile tap state for better user feedback */
+  a:active, button:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
+  
+  /* Fix for mobile scrolling */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Mobile image loading optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
   </style>
 </head>
 <body>
