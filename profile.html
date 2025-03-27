@@ -726,20 +726,19 @@ async function updateUserInterface(user) {
   }
 }
 
+// Enhanced function to load user teams with tournament results
 async function loadUserTeams(user) {
   const teamsContainer = document.getElementById('userTeams');
   
   try {
-    // Fetch basic team data
+    // First, fetch basic team data - only select fields that definitely exist
     const { data: teams, error: teamsError } = await supabase
       .from('teams')
       .select(`
         id,
         created_at,
         tournament_id,
-        team_points,
-        tournaments (name, status, start_date),
-        user_id
+        team_points
       `)
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
@@ -755,65 +754,120 @@ async function loadUserTeams(user) {
       return;
     }
     
-    // Process each team
+    console.log(`Found ${teams.length} teams for user`);
+    
+    // Create an array to hold all processed teams
     const processedTeams = [];
     
+    // Process each team sequentially to avoid race conditions
     for (const team of teams) {
       try {
-        // Fetch player tournament points for this team
-        const { data: playerPoints, error: pointsError } = await supabase
-          .from('player_tournament_points')
-          .select('player_id, points_earned')
-          .eq('tournament_id', team.tournament_id)
-          .eq('team_id', team.id);
+        // Get tournament details
+        const { data: tournament, error: tournamentError } = await supabase
+          .from('tournaments')
+          .select('name, start_date, status')
+          .eq('id', team.tournament_id)
+          .single();
         
-        if (pointsError) {
-          console.error(`Error fetching points for team ${team.id}:`, pointsError);
-          continue;
+        if (tournamentError) {
+          console.error(`Error fetching tournament for team ${team.id}:`, tournamentError);
+          // Continue anyway, we'll just use placeholder text
         }
         
-        // Calculate total team points
-        const teamPoints = playerPoints.reduce((sum, player) => 
-          sum + (player.points_earned || 0), 0);
-        
-        // Update team points in the database
-        const { error: updateError } = await supabase
-          .from('teams')
-          .update({ team_points: teamPoints })
-          .eq('id', team.id);
-        
-        if (updateError) {
-          console.error(`Error updating team points for team ${team.id}:`, updateError);
-        }
-        
-        // Fetch team players with details
+        // Get team players with potential_points
         const { data: teamPlayers, error: playersError } = await supabase
           .from('team_players')
-          .select('player_id, players (name), potential_points')
+          .select('player_id, potential_points')
           .eq('team_id', team.id);
+
+        if (playersError) {
+          console.error(`Error fetching players for team ${team.id}:`, playersError);
+          // Continue anyway, we'll just show empty players list
+        }
+
+        // Prepare players data
+        let players = [];
+        let totalPointsEarned = 0;
+        let totalPotentialPoints = 0;
+
+        if (teamPlayers && teamPlayers.length > 0) {
+          // Get all player IDs
+          const playerIds = teamPlayers.map(tp => tp.player_id);
+          
+          // Fetch player details
+          const { data: playerDetails, error: playerDetailsError } = await supabase
+            .from('players')
+            .select('id, name, profile_picture, rank')
+            .in('id', playerIds);
+          
+          if (playerDetailsError) {
+            console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
+          }
+          
+          // Get player tournament points
+          const { data: playerPoints, error: pointsError } = await supabase
+            .from('player_tournament_points')
+            .select('player_id, points_earned, placement')
+            .eq('tournament_id', team.tournament_id)
+            .in('player_id', playerIds);
+            
+          if (pointsError) {
+            console.error(`Error fetching player points for tournament ${team.tournament_id}:`, pointsError);
+          }
+          
+          // Calculate total potential points from team_players data
+          totalPotentialPoints = teamPlayers.reduce((sum, tp) => 
+            sum + (tp.potential_points || 0), 0);
+          
+          // Combine player details with team players
+          players = teamPlayers.map(tp => {
+            const player = playerDetails?.find(p => p.id === tp.player_id) || { 
+              name: 'Unknown Player'
+            };
+            
+            // Use potential_points from team_players
+            const potentialPoints = tp.potential_points || 0;
+            
+            // Find player points from player_tournament_points
+            const playerResult = playerPoints?.find(pp => pp.player_id === tp.player_id);
+            const hasPlaced = playerResult && playerResult.placement > 0 && playerResult.placement <= 4;
+            const pointsEarned = hasPlaced ? (playerResult.points_earned || 0) : 0;
+            
+            // Add to total points earned
+            totalPointsEarned += pointsEarned;
+            
+            return {
+              ...tp,
+              potential_points: potentialPoints,
+              player_details: {
+                ...player,
+                hasPlaced,
+                pointsEarned,
+                placement: playerResult?.placement
+              }
+            };
+          });
+          
+          // Update team points calculation
+          team.total_potential_points = totalPotentialPoints;
+          team.total_points_earned = totalPointsEarned;
+        }
         
-        // Create players array with points
-        const players = teamPlayers?.map(tp => ({
-          id: tp.player_id,
-          name: tp.players?.name || 'Unknown',
-          potential_points: tp.potential_points,
-          tournament_points: playerPoints.find(p => p.player_id === tp.player_id)?.points_earned || 0
-        })) || [];
-        
+        // Assemble complete team data
         processedTeams.push({
           ...team,
-          team_points: teamPoints,
-          players: players
+          tournament: tournament || { name: 'Unknown Tournament', start_date: null, status: 'unknown' },
+          players: players,
+          isCompleted: tournament?.status === 'completed'
         });
-        
       } catch (err) {
         console.error(`Error processing team ${team.id}:`, err);
+        // Continue to next team
       }
     }
     
-    // Render teams
+    // Now render all teams to the DOM
     renderTeams(processedTeams, teamsContainer);
-    
   } catch (err) {
     console.error('Error loading user teams:', err);
     teamsContainer.innerHTML = '<p>Error loading teams. Please try again later.</p>';
