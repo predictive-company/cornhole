@@ -397,6 +397,13 @@
       position: relative;
       overflow: hidden;
     }
+
+    .prizes p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: 0 auto 2rem auto;
+      color: rgba(255, 255, 255, 0.8);
+    }
     
     .prize-image {
       max-width: 250px;
@@ -709,27 +716,33 @@
     </div>
   </section>
   
-  <!-- UPDATED PRIZES SECTION WITH MULTIPLE PRIZES -->
   <section class="prizes">
-    <h2 class="section-title">FEATURED PRIZES</h2>
+    <h2 class="section-title">Win Cornhole Bags, Merch, and More</h2>
+    <p>Fantasy tournament winners receive high quality gear from our premium sponsors. We've partnered with the top companies in the business to bring you amazing prizes. Prizes change each event, and can range from company merch to exclusive cornhole bags that are not available for purchase anywhere!</p>
     
     <div class="prizes-grid">
       <div class="prize-card">
-        <img src="img/logic-bags.png" alt="Logic Cornhole Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+        <div class="bag-image">
+          <img src="img/prism-red.png" alt="Logic Prism Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+          <div class="tournament-badge">Cornhole Bags</div>
+        </div>
         <h3>Logic Cornhole</h3>
-        <p>Limited-edition, pro-grade cornhole bags with tournament branding. Only available to winners!</p>
       </div>
       
       <div class="prize-card">
-        <img src="img/brotherhood-bags.png" alt="Brotherhood Cornhole Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
-        <h3>Brotherhood Cornhole</h3>
-        <p>Professional-grade bags used by champions, with special edition design and premium feel.</p>
+        <div class="bag-image">
+          <img src="img/lucky-jersey.png" alt="Lucky Cornhole Jersey" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+          <div class="tournament-badge">Jerseys</div>
+        </div>
+        <h3>Lucky Bags</h3>
       </div>
       
       <div class="prize-card">
-        <img src="img/bg-bags.png" alt="BG Cornhole Bags" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
-        <h3>BG Cornhole</h3>
-        <p>Tournament-exclusive bags with superior grip and durability features for competitive play.</p>
+        <div class="bag-image">
+          <img src="img/ultra-break-in-kit.png" alt="Ultra Break-in Solution" class="prize-image" onerror="this.src='/api/placeholder/250/200'">
+          <div class="tournament-badge">Break-In Kits</div>
+        </div>
+        <h3>Ultra Cornhole</h3>
       </div>
     </div>
     
