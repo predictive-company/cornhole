@@ -285,6 +285,28 @@
       border-left: 5px solid #3498db;
     }
     
+    /* Winner tag */
+    .winner-tag {
+      background-color: #f1c40f;
+      color: #080a14;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      margin-left: 1rem;
+    }
+    
+    /* Your team tag */
+    .your-team-tag {
+      background-color: #4ade80;
+      color: #080a14;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      margin-left: 1rem;
+    }
+    
     /* Back to profile button */
     .back-button {
       display: inline-block;
@@ -382,7 +404,7 @@
     </div>
     
     <div class="results-section">
-      <h3>Team Rankings</h3>
+      <h3>Team Results</h3>
       <div id="teamResults" class="team-results">
         <div class="loading-container">
           <div class="loading-spinner"></div>
@@ -502,8 +524,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     
     // Load tournament info and results
-    await loadTournamentInfo(tournamentId);
-    await loadTournamentResults(tournamentId);
+    const tournamentInfo = await loadTournamentInfo(tournamentId);
+    
+    if (tournamentInfo) {
+      await loadTournamentResults(tournamentId, tournamentInfo.winning_team_id, user.id);
+    }
     
   } catch (err) {
     console.error('Error initializing results page:', err);
@@ -526,12 +551,12 @@ async function loadTournamentInfo(tournamentId) {
     if (error) {
       console.error('Error fetching tournament:', error);
       tournamentInfoContainer.innerHTML = `<p>Error loading tournament information.</p>`;
-      return;
+      return null;
     }
     
     if (!tournament) {
       tournamentInfoContainer.innerHTML = `<p>Tournament not found.</p>`;
-      return;
+      return null;
     }
     
     // Check if tournament is completed
@@ -543,7 +568,7 @@ async function loadTournamentInfo(tournamentId) {
         <p>Tournament dates: ${formatDate(tournament.start_date)} to ${formatDate(tournament.end_date)}</p>
       `;
       document.getElementById('teamResults').innerHTML = '';
-      return;
+      return null;
     }
     
     // Display tournament info
@@ -554,22 +579,58 @@ async function loadTournamentInfo(tournamentId) {
       <p>Team size: ${tournament.team_size} players</p>
     `;
     
+    return tournament;
+    
   } catch (err) {
     console.error('Error loading tournament info:', err);
     tournamentInfoContainer.innerHTML = `<p>Error loading tournament information.</p>`;
+    return null;
   }
 }
 
-async function loadTournamentResults(tournamentId) {
+async function loadTournamentResults(tournamentId, winningTeamId, currentUserId) {
   const teamResultsContainer = document.getElementById('teamResults');
   
   try {
-    // Fetch teams for this tournament with team_points for sorting
+    // Get the current user's team for this tournament
+    const { data: userTeam, error: userTeamError } = await supabase
+      .from('teams')
+      .select('id')
+      .eq('tournament_id', tournamentId)
+      .eq('user_id', currentUserId)
+      .maybeSingle();
+      
+    if (userTeamError) {
+      console.error('Error fetching user team:', userTeamError);
+    }
+    
+    // Array to store team IDs we want to display
+    const teamsToFetch = [];
+    
+    // Add user's team if they have one
+    if (userTeam && userTeam.id) {
+      teamsToFetch.push(userTeam.id);
+    }
+    
+    // Add winning team if it exists and is different from user's team
+    if (winningTeamId && (!userTeam || userTeam.id !== winningTeamId)) {
+      teamsToFetch.push(winningTeamId);
+    }
+    
+    // If no teams to fetch, show message
+    if (teamsToFetch.length === 0) {
+      teamResultsContainer.innerHTML = `
+        <p>You don't have a team in this tournament, and no winning team has been declared yet.</p>
+      `;
+      return;
+    }
+    
+    // Fetch the teams we want to display
     const { data: teams, error: teamsError } = await supabase
       .from('teams')
       .select('id, user_id, team_points, winnings')
-      .eq('tournament_id', tournamentId)
-      .order('team_points', { ascending: false }); // Sort by team points
+      .in('id', teamsToFetch)
+      .order('team_points', { ascending: false });
       
     if (teamsError) {
       console.error('Error fetching teams:', teamsError);
@@ -581,21 +642,7 @@ async function loadTournamentResults(tournamentId) {
       teamResultsContainer.innerHTML = `<p>No teams found for this tournament.</p>`;
       return;
     }
-    
-    // Get team placements from tournament_results
-    const { data: teamResults, error: resultsError } = await supabase
-      .from('tournament_results')
-      .select('team_id, placement')
-      .eq('tournament_id', tournamentId);
-      
-    // Create a map for easier lookup
-    const teamPlacementMap = {};
-    if (!resultsError && teamResults) {
-      teamResults.forEach(result => {
-        teamPlacementMap[result.team_id] = result.placement;
-      });
-    }
-    
+
     // Process each team to get user and player details
     const processedTeams = [];
     
@@ -612,25 +659,25 @@ async function loadTournamentResults(tournamentId) {
           console.error(`Error fetching user for team ${team.id}:`, userError);
         }
         
-        // Get team placement from our map
-        const teamPlacement = teamPlacementMap[team.id] || null;
-        
-        // Get team players with their potential_points from team_players table
-        const { data: teamPlayers, error: playersError } = await supabase
+        // SIMPLIFY: Just get team_players records for this team
+        const { data: teamPlayerRecords, error: teamPlayersError } = await supabase
           .from('team_players')
           .select('player_id, potential_points')
           .eq('team_id', team.id);
           
-        if (playersError) {
-          console.error(`Error fetching players for team ${team.id}:`, playersError);
+        if (teamPlayersError) {
+          console.error(`Error fetching team_players for team ${team.id}:`, teamPlayersError);
         }
         
-        // Get player details
+        // Extract player IDs
+        const playerIds = teamPlayerRecords ? teamPlayerRecords.map(tp => tp.player_id) : [];
+        
+        // Prepare players array
         const players = [];
         
-        if (teamPlayers && teamPlayers.length > 0) {
-          const playerIds = teamPlayers.map(tp => tp.player_id);
-          
+        // If we have player IDs, get their names directly from players table
+        if (playerIds.length > 0) {
+          // Get basic player details
           const { data: playerDetails, error: playerDetailsError } = await supabase
             .from('players')
             .select('id, name')
@@ -638,13 +685,14 @@ async function loadTournamentResults(tournamentId) {
             
           if (playerDetailsError) {
             console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
-          } else if (playerDetails) {
+          } else if (playerDetails && playerDetails.length > 0) {
+            // For each player, create a player object
             for (const player of playerDetails) {
-              // Find the team_player entry to get potential_points
-              const teamPlayer = teamPlayers.find(tp => tp.player_id === player.id);
+              // Find the corresponding team_player entry to get potential_points
+              const teamPlayer = teamPlayerRecords.find(tp => tp.player_id === player.id);
               const potentialPoints = teamPlayer ? teamPlayer.potential_points : 0;
               
-              // Get player tournament points directly from player_tournament_points table
+              // Get player tournament points if they exist
               const { data: tournamentPointsData, error: pointsError } = await supabase
                 .from('player_tournament_points')
                 .select('points_earned, placement')
@@ -657,13 +705,13 @@ async function loadTournamentResults(tournamentId) {
               let playerPlacement = null;
               
               if (!pointsError && tournamentPointsData) {
-                // Player has an entry in player_tournament_points
                 tournamentPoints = tournamentPointsData.points_earned || 0;
                 playerPlacement = tournamentPointsData.placement || null;
               }
               
               players.push({
-                ...player,
+                id: player.id,
+                name: player.name,
                 potential_points: potentialPoints,
                 tournament_points: tournamentPoints,
                 placement: playerPlacement
@@ -672,20 +720,19 @@ async function loadTournamentResults(tournamentId) {
           }
         }
         
+        // Add team to processed teams
         processedTeams.push({
           ...team,
           user: user || { username: 'Unknown User', email: '' },
           players: players,
-          placement: teamPlacement
+          isWinningTeam: team.id === winningTeamId,
+          isUserTeam: team.id === (userTeam ? userTeam.id : null)
         });
         
       } catch (err) {
         console.error(`Error processing team ${team.id}:`, err);
       }
     }
-    
-    // Log processed teams for debugging
-    console.log('Processed teams for rendering:', processedTeams);
     
     // Render teams
     renderTeamResults(processedTeams, teamResultsContainer);
@@ -705,8 +752,22 @@ function renderTeamResults(teams, container) {
     return;
   }
   
+  // Sort teams: Put winning team first, then user team (if it's not the winning team)
+  teams.sort((a, b) => {
+    // Winning team always first
+    if (a.isWinningTeam && !b.isWinningTeam) return -1;
+    if (!a.isWinningTeam && b.isWinningTeam) return 1;
+    
+    // Then user team
+    if (a.isUserTeam && !b.isUserTeam) return -1;
+    if (!a.isUserTeam && b.isUserTeam) return 1;
+    
+    // Otherwise sort by points
+    return (b.team_points || 0) - (a.team_points || 0);
+  });
+  
   // Create and add team result cards
-  teams.forEach((team, index) => {
+  teams.forEach((team) => {
     const teamCard = document.createElement('div');
     
     // Use placement from tournament_results
@@ -727,9 +788,20 @@ function renderTeamResults(teams, container) {
       `;
     }
     
+    // Add winning team tag
+    let teamTags = '';
+    if (team.isWinningTeam) {
+      teamTags += `<span class="winner-tag">TOURNAMENT WINNER</span>`;
+    }
+    
+    // Add "your team" tag if applicable
+    if (team.isUserTeam) {
+      teamTags += `<span class="your-team-tag">YOUR TEAM</span>`;
+    }
+    
     header.innerHTML = `
       ${placementHTML}
-      <div class="team-user">${team.user.username}</div>
+      <div class="team-user">${team.user.username} ${teamTags}</div>
       <div class="team-points">${team.team_points || 0} points</div>
     `;
     
@@ -754,7 +826,12 @@ function renderTeamResults(teams, container) {
           return a.placement - b.placement;
         }
         
-        // Sort by points if no placement
+        // Sort by potential points if no placement or tournament points
+        if ((a.tournament_points || 0) === 0 && (b.tournament_points || 0) === 0) {
+          return (b.potential_points || 0) - (a.potential_points || 0);
+        }
+        
+        // Sort by tournament points if no placement
         return (b.tournament_points || 0) - (a.tournament_points || 0);
       });
       
@@ -765,7 +842,6 @@ function renderTeamResults(teams, container) {
         // Player placement indicator
         let playerPlacementHTML = '';
         if (player.placement && player.placement > 0 && player.placement <= 4) {
-          const placementClass = getPlacementClass(player.placement);
           const placementIcon = player.placement === 1 ? '🥇' : player.placement === 2 ? '🥈' : player.placement === 3 ? '🥉' : '🏅';
           
           playerPlacementHTML = `<span class="placement-icon" title="${getOrdinal(player.placement)} Place">${placementIcon}</span>`;
@@ -774,103 +850,6 @@ function renderTeamResults(teams, container) {
         playerItem.innerHTML = `
           <div>${player.name} ${playerPlacementHTML}</div>
           <div>${player.tournament_points || 0} points earned <span style="color: #4ade80;">(${player.potential_points || 0} potential)</span></div>
-        `;
-        
-        playerList.appendChild(playerItem);
-      });
-      
-      playersSection.appendChild(playerList);
-    } else {
-      playersSection.innerHTML = `<p>No player information available</p>`;
-    }
-    
-    teamCard.appendChild(playersSection);
-    container.appendChild(teamCard);
-  });
-}
-
-function renderTeamResults(teams, container) {
-  // Clear container
-  container.innerHTML = '';
-  
-  if (!teams || teams.length === 0) {
-    container.innerHTML = `<p>No team results available.</p>`;
-    return;
-  }
-  
-  // Create and add team result cards
-  teams.forEach((team, index) => {
-    const teamCard = document.createElement('div');
-    
-    // Use placement from tournament_results
-    teamCard.className = `team-result-card ${getPlacementClass(team.placement)}`;
-    
-    // Create header
-    const header = document.createElement('div');
-    header.className = 'team-result-header';
-    
-    // Placement indicator if team has a placement value
-    let placementHTML = '';
-    if (team.placement && team.placement > 0 && team.placement <= 4) {
-      placementHTML = `
-        <div class="placement-indicator">
-          <div class="placement-badge ${getPlacementClass(team.placement)}">${team.placement}</div>
-          <span>${getOrdinal(team.placement)} Place</span>
-        </div>
-      `;
-    }
-    
-    header.innerHTML = `
-      ${placementHTML}
-      <div class="team-user">${team.user.username}</div>
-      <div class="team-points">${team.team_points || 0} points</div>
-    `;
-    
-    teamCard.appendChild(header);
-    
-    // Create players section
-    const playersSection = document.createElement('div');
-    playersSection.className = 'team-players';
-    
-    if (team.players && team.players.length > 0) {
-      const playerList = document.createElement('div');
-      playerList.className = 'player-list';
-      
-      // Sort players by placement (players with placement first) then by points
-      team.players.sort((a, b) => {
-        // Players with placement first
-        if (a.placement && !b.placement) return -1;
-        if (!a.placement && b.placement) return 1;
-        
-        // Sort by placement
-        if (a.placement && b.placement) {
-          return a.placement - b.placement;
-        }
-        
-        // Sort by points if no placement
-        return (b.tournament_points || 0) - (a.tournament_points || 0);
-      });
-      
-      team.players.forEach(player => {
-        const playerItem = document.createElement('div');
-        playerItem.className = 'player-item';
-        
-        // Player placement indicator
-        let playerPlacementHTML = '';
-        if (player.placement && player.placement > 0 && player.placement <= 4) {
-          const placementClass = getPlacementClass(player.placement);
-          const placementIcon = player.placement === 1 ? '🥇' : player.placement === 2 ? '🥈' : player.placement === 3 ? '🥉' : '🏅';
-          
-          playerPlacementHTML = `<span class="placement-icon" title="${getOrdinal(player.placement)} Place">${placementIcon}</span>`;
-        }
-        
-        // Calculate points to show - use tournament_points or calculate based on team placement
-        let pointsToShow = player.tournament_points || 0;
-        
-        // Show points for the player
-        playerItem.innerHTML = `
-          <div>${player.name} ${playerPlacementHTML}</div>
-          <div>${pointsToShow} points earned <span style="color: #4ade80;">(${player.potential_points || 0} potential)</span></div>
         `;
         
         playerList.appendChild(playerItem);

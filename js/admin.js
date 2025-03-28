@@ -297,7 +297,6 @@ async function loadTournaments() {
     }
 }
 
-// Add CSS for the player results interface
 function addPlayerResultsStyles() {
     const style = document.createElement('style');
     style.textContent = `
@@ -305,6 +304,14 @@ function addPlayerResultsStyles() {
         #playerResultsModal .modal-content {
             max-height: 90vh;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            max-width: 90%;
+        }
+        
+        #playerResultsContainer {
+            overflow-y: auto;
+            max-height: calc(80vh - 100px); /* Adjust for header and buttons */
         }
         
         #playerResultsContainer table {
@@ -330,61 +337,31 @@ function addPlayerResultsStyles() {
             border-color: #cd7f32;
         }
 
-        /* Tournament players modal styles */
-        #tournamentPlayersModal .modal-content {
-            max-width: 90%;
-            min-width: 800px;
-        }
-        
-        .tab-button {
-            padding: 8px 16px;
-            border: none;
-            background-color: #2c3e50;
-            color: white;
-            cursor: pointer;
-            border-radius: 4px 4px 0 0;
-            margin-right: 4px;
-        }
-        
-        .tab-button.active {
-            background-color: #3498db;
-            font-weight: bold;
-        }
-        
-        .tab-content {
-            display: none;
-            padding: 15px;
-            background-color: #1a1a2e;
-            border-radius: 0 4px 4px 4px;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .search-box {
-            margin-bottom: 15px;
-        }
-        
-        .search-box input {
+        /* Make sure the modal is properly positioned */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #3a3a5a;
-            background-color: #1f1f3a;
-            color: white;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px 0;
         }
         
-        .status-new {
-            color: #2ecc71;
-        }
-        
-        .status-existing {
-            color: #3498db;
-        }
-        
-        .status-duplicate {
-            color: #e74c3c;
+        /* Ensure buttons are visible */
+        #savePlayerResultsBtnContainer {
+            position: sticky;
+            bottom: 0;
+            background-color: #1a1a2e;
+            padding: 15px;
+            margin-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
         }
     `;
     document.head.appendChild(style);
