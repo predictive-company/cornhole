@@ -407,68 +407,98 @@ nav a.active {
   transform: translateY(-2px);
 }
 
+/* SIMPLIFIED SPONSORS SECTION */
 .sponsors-section {
+  position: relative;
   text-align: center;
   margin: 3rem auto;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3rem 1rem;
   max-width: 1200px;
-  padding: 2rem 1rem;
+  background: linear-gradient(to bottom, rgba(13, 16, 35, 0.3), rgba(8, 10, 20, 0.8));
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.sponsors-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('img/cornhole-pattern.png');
+  background-size: 300px;
+  background-repeat: repeat;
+  opacity: 0.05;
+  z-index: -1;
 }
 
 .sponsors-section h3 {
   color: white;
-  margin-bottom: 1.5rem;
-  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+}
+
+.sponsors-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background-color: #4ade80;
+  border-radius: 2px;
+}
+
+.sponsors-section p {
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 700px;
+  margin: 1.5rem auto;
+  font-size: clamp(1rem, 3vw, 1.1rem);
 }
 
 .sponsors-list {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  gap: 2rem;
+  margin-top: 3rem;
+  position: relative;
 }
 
 .sponsor-card {
-  width: 150px;
-  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-  padding: 1.5rem;
+  width: 200px;
+  background: rgba(13, 16, 35, 0.6);
+  padding: 2rem 1.5rem;
   border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s;
+}
+
+.sponsor-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
 }
 
 .sponsor-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
   border-color: rgba(74, 222, 128, 0.3);
-}
-
-.sponsor-logo {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 1rem auto;
-  background-color: #4ade80;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #080a14;
-  overflow: hidden;
-  transition: transform 0.3s;
-}
-
-.sponsor-name {
-  font-weight: bold;
-  margin-bottom: 0.25rem;
-}
-
-.sponsor-type {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  background: rgba(13, 16, 35, 0.7);
 }
 
 .sponsor-link {
@@ -479,6 +509,25 @@ nav a.active {
   height: 100%;
 }
 
+.sponsor-logo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem auto;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #0d1023;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
 .sponsor-logo img {
   width: 100%;
   height: 100%;
@@ -487,7 +536,79 @@ nav a.active {
 }
 
 .sponsor-card:hover .sponsor-logo {
-  transform: scale(1.1);
+  background-color: #22c55e;
+}
+
+.sponsor-name {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.sponsor-card:hover .sponsor-name {
+  color: #4ade80;
+}
+
+.sponsor-type {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+/* Hexagon grid for additional style */
+.hex-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.hex {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(74, 222, 128, 0.03);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  opacity: 0.2;
+}
+
+@media (max-width: 768px) {
+  .sponsor-card {
+    width: 160px;
+    padding: 1.5rem 1rem;
+  }
+  
+  .sponsor-logo {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  
+  .sponsor-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sponsors-list {
+    gap: 1rem;
+  }
+  
+  .sponsor-card {
+    width: 140px;
+    padding: 1.25rem 0.75rem;
+  }
+  
+  .sponsor-logo {
+    width: 70px;
+    height: 70px;
+  }
 }
 
 #toast {
@@ -525,16 +646,6 @@ img {
   /* Adjust padding for mobile cards */
   .bag-details {
     padding: 1rem;
-  }
-  
-  .sponsor-card {
-    width: 130px;
-    padding: 1rem;
-  }
-  
-  .sponsor-logo {
-    width: 60px;
-    height: 60px;
   }
   
   /* Fix for mobile scrolling */
@@ -598,107 +709,127 @@ img {
   <!-- Bag 2 -->
   <div class="bag-card">
     <div class="bag-image">
-      <img src="https://mysqlvm.blob.core.windows.net/cornhole-images/slider-bags.png" alt="Slider X Tournament Edition Bags" onerror="this.src='img/bag-placeholder.jpg'">
-      <div class="tournament-badge">Florida Open</div>
+      <img src="img/wizardL-blue.png" alt="Wizard L Bags" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">Michigan Open</div>
     </div>
     <div class="bag-details">
-      <h3 class="bag-name">Slider X Tournament Edition</h3>
+      <h3 class="bag-name">BG Wizard L</h3>
       <div class="bag-manufacturer">
-        <div class="manufacturer-logo">S</div>
-        <span>Slick Cornhole Co.</span>
+        <span>Win these bags by having the top scoring team from the Michigan Open Pro Singles Tournament</span>
       </div>
       <ul class="bag-features">
-        <li>Specialized for sliding technique</li>
-        <li>Premium microfiber side</li>
-        <li>Advanced blocking side</li>
-        <li>Waterproof construction</li>
-        <li>Florida Open exclusive colorway</li>
+        <li>Speed rating: 5/7</li>
+        <li>ACL PRO Stamp</li>
+        <li>Herringbone Carpet</li>
+        <li>One of the most popular bags in the game.</li>
       </ul>
-      <a href="https://www.slickcornholeco.com?utm_source=cornholekings&utm_medium=referral&utm_campaign=prizes&utm_content=florida_open" class="bag-link" target="_blank" data-manufacturer="Slick Cornhole Co." data-tournament="Florida Open">View Website</a>
+      <a href="https://bgcornhole.com/collections/acl-approved-bags" class="bag-link" target="_blank" data-manufacturer="BG Cornhole" data-tournament="Michigan Open">View Website</a>
     </div>
   </div>
 
   <!-- Bag 3 -->
   <div class="bag-card">
     <div class="bag-image">
-      <img src="https://mysqlvm.blob.core.windows.net/cornhole-images/precision-bags.png" alt="Precision Pro Tournament Edition Bags" onerror="this.src='img/bag-placeholder.jpg'">
-      <div class="tournament-badge">Midwest Championship</div>
+      <img src="img/lucky-jersey.png" alt="Lucky Cornhole Jersey" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">Kawasaki Kids Tournament</div>
     </div>
     <div class="bag-details">
-      <h3 class="bag-name">Precision Pro Tournament Edition</h3>
+      <h3 class="bag-name">Lucky Bags Jersey</h3>
       <div class="bag-manufacturer">
-        <div class="manufacturer-logo">B</div>
-        <span>BagMaster Elite</span>
+        <span>Finish in the top 4 users of the Kawaksaki kids tournament on 4/2/25</span>
       </div>
       <ul class="bag-features">
-        <li>Perfect weight distribution technology</li>
-        <li>Championship-grade materials</li>
-        <li>Enhanced control for accuracy</li>
-        <li>Temperature-resistant filling</li>
-        <li>Exclusive Midwest Championship design</li>
+        <li>10 different colorways</li>
+        <li>Customized with your first name and last name on the back.</li>
+        <li>Perfect blend of comfort, style, and performance.</li>
       </ul>
-      <a href="https://www.bagmasterelite.com?utm_source=cornholekings&utm_medium=referral&utm_campaign=prizes&utm_content=midwest_championship" class="bag-link" target="_blank" data-manufacturer="BagMaster Elite" data-tournament="Midwest Championship">View Website</a>
+      <a href="https://luckycornhole.com/categories/ols/products/lucky-bags-solid-colorway-jersey" class="bag-link" target="_blank" data-manufacturer="Lucky Bags" data-tournament="Kawasaki Kids">View Website</a>
     </div>
   </div>
 
   <!-- Bag 4 -->
   <div class="bag-card">
     <div class="bag-image">
-      <img src="https://mysqlvm.blob.core.windows.net/cornhole-images/pro-series-bags.png" alt="Pro Series Tournament Edition Bags" onerror="this.src='img/bag-placeholder.jpg'">
-      <div class="tournament-badge">Vegas Invitational</div>
+      <img src="img/ultra-break-in-kit.png" alt="Ultra Break-in Solution" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">San Diego Regional #8</div>
     </div>
     <div class="bag-details">
-      <h3 class="bag-name">Pro Series Tournament Edition</h3>
+      <h3 class="bag-name">Ultra Break-In Solution</h3>
       <div class="bag-manufacturer">
-        <div class="manufacturer-logo">R</div>
-        <span>Reynolds Bags</span>
+        <span>Finish in the top 2 users of ACL Regional #8</span>
       </div>
       <ul class="bag-features">
-        <li>Used by professional players</li>
-        <li>Dual-sided performance</li>
-        <li>Balanced weight for perfect throws</li>
-        <li>Proprietary resin blend</li>
-        <li>Limited Vegas Invitational edition</li>
+        <li>Conditioner, Soap, an Ultra micro-fiber towel</li>
+        <li>5 Step cornhole bag Break-In instruction card</li>
+        <li>Get your bags perfectly broken-in knowing you are doing it safely and quickly with our specially formulated products that will leave your bag flexible and feeling great.</li>
       </ul>
-      <a href="https://www.reynoldsbags.com?utm_source=cornholekings&utm_medium=referral&utm_campaign=prizes&utm_content=vegas_invitational" class="bag-link" target="_blank" data-manufacturer="Reynolds Bags" data-tournament="Vegas Invitational">View Website</a>
+      <a href="https://ultracornhole.com/product/cornhole-break-in-solution/" class="bag-link" target="_blank" data-manufacturer="Ultra Cornhole" data-tournament="ACL Regional #8">View Website</a>
     </div>
   </div>
   </div>
   
+  <!-- Simplified sponsors section without badges and with reduced animations -->
   <div class="sponsors-section">
     <h3>Our Bag Sponsors</h3>
     <p>We partner with the top cornhole bag manufacturers to bring you premium prizes for every tournament.</p>
     
-    <div class="sponsor-card">
-      <a href="https://www.logiccornhole.com/collections/prism" class="sponsor-link" data-manufacturer="Logic Cornhole" target="_blank">
-        <div class="sponsor-logo">
-          <img src="img/logic.png" alt="Logic Logo" onerror="this.parentNode.textContent='L'">
-        </div>
-        <div class="sponsor-name">Logic Cornhole</div>
-        <div class="sponsor-type">Bag Manufacturer</div>
-      </a>
+    <div class="sponsors-list">
+      <!-- Logic Cornhole -->
+      <div class="sponsor-card">
+        <a href="https://www.logiccornhole.com/collections/prism" class="sponsor-link" data-manufacturer="Logic Cornhole" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/logic.png" alt="Logic Logo" onerror="this.parentNode.textContent='L'">
+          </div>
+          <div class="sponsor-name">Logic Cornhole</div>
+          <div class="sponsor-type">Bag Manufacturer</div>
+        </a>
+      </div>
+      
+      <!-- BG Cornhole -->
+      <div class="sponsor-card">
+        <a href="https://bgcornhole.com/collections/acl-approved-bags" class="sponsor-link" data-manufacturer="BG Cornhole" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/bg.png" alt="BG Cornhole Logo" onerror="this.parentNode.textContent='BG'">
+          </div>
+          <div class="sponsor-name">BG Cornhole</div>
+          <div class="sponsor-type">Bag Manufacturer</div>
+        </a>
+      </div>
+      
+      <!-- Lucky Bags -->
+      <div class="sponsor-card">
+        <a href="https://luckycornhole.com/" class="sponsor-link" data-manufacturer="Lucky Bags" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/lucky.png" alt="Lucky Bags Logo" onerror="this.parentNode.textContent='LB'">
+          </div>
+          <div class="sponsor-name">Lucky Bags</div>
+          <div class="sponsor-type">Bag Manufacturer</div>
+        </a>
+      </div>
+      
+      <!-- Ultra Cornhole -->
+      <div class="sponsor-card">
+        <a href="https://ultracornhole.com/" class="sponsor-link" data-manufacturer="Ultra Cornhole" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/ultra.png" alt="Ultra Logo" onerror="this.parentNode.textContent='U'">
+          </div>
+          <div class="sponsor-name">Ultra Cornhole</div>
+          <div class="sponsor-type">Official Sponsor</div>
+        </a>
+      </div>
     </div>
-      
-      <!-- Sponsor 2 -->
-      <div class="sponsor-card">
-        <div class="sponsor-logo">S</div>
-        <div class="sponsor-name">Slick Cornhole Co.</div>
-        <div class="sponsor-type">Professional Series</div>
-      </div>
-      
-      <!-- Sponsor 3 -->
-      <div class="sponsor-card">
-        <div class="sponsor-logo">B</div>
-        <div class="sponsor-name">BagMaster Elite</div>
-        <div class="sponsor-type">Tournament Supplier</div>
-      </div>
-      
-      <!-- Sponsor 4 -->
-      <div class="sponsor-card">
-        <div class="sponsor-logo">R</div>
-        <div class="sponsor-name">Reynolds Bags</div>
-        <div class="sponsor-type">Official Sponsor</div>
-      </div>
+    
+    <!-- Decorative hexagon background -->
+    <div class="hex-grid">
+      <div class="hex" style="top: 10%; left: 5%;"></div>
+      <div class="hex" style="top: 70%; left: 10%;"></div>
+      <div class="hex" style="top: 40%; left: 20%;"></div>
+      <div class="hex" style="top: 20%; left: 80%;"></div>
+      <div class="hex" style="top: 60%; left: 85%;"></div>
+      <div class="hex" style="top: 30%; left: 50%;"></div>
+      <div class="hex" style="top: 80%; left: 60%;"></div>
+      <div class="hex" style="top: 15%; left: 30%;"></div>
+      <div class="hex" style="top: 50%; left: 70%;"></div>
     </div>
   </div>
   
@@ -716,7 +847,7 @@ img {
                              ? getSupabaseClient() 
                              : supabase;
         
-        // Insert the click data into your Supabase table
+          // Insert the click data into your Supabase table
         const { data, error } = await supabaseClient
           .from('outbound_clicks')
           .insert([
@@ -791,7 +922,7 @@ img {
           });
         });
 
-        // NEW CODE: Add click tracking to all sponsor links
+        // Add click tracking to all sponsor links
         document.querySelectorAll('.sponsor-link').forEach(link => {
           link.addEventListener('click', async function(e) {
             const manufacturer = this.getAttribute('data-manufacturer') || 
@@ -810,6 +941,12 @@ img {
             // Show a toast message
             showToast(`Visiting ${manufacturer} website`, 'info');
           });
+        });
+        
+        // Set static opacities for hexagons instead of animations
+        document.querySelectorAll('.hex').forEach(hex => {
+          // Random fixed opacity between 0.1 and 0.3
+          hex.style.opacity = (Math.random() * 0.2 + 0.1).toFixed(2);
         });
       } catch (err) {
         console.error('Error:', err);
@@ -846,6 +983,6 @@ img {
       });
       sessionStorage.setItem('clickHistory', JSON.stringify(clickHistory));
     }
-</script>
+  </script>
 </body>
 </html>
