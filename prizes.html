@@ -457,6 +457,8 @@ nav a.active {
   font-size: 1.5rem;
   font-weight: bold;
   color: #080a14;
+  overflow: hidden;
+  transition: transform 0.3s;
 }
 
 .sponsor-name {
@@ -467,6 +469,25 @@ nav a.active {
 .sponsor-type {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.sponsor-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sponsor-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sponsor-card:hover .sponsor-logo {
+  transform: scale(1.1);
 }
 
 #toast {
@@ -514,7 +535,6 @@ img {
   .sponsor-logo {
     width: 60px;
     height: 60px;
-    font-size: 1.2rem;
   }
   
   /* Fix for mobile scrolling */
@@ -557,23 +577,21 @@ img {
   <!-- Bag 1 -->
   <div class="bag-card">
     <div class="bag-image">
-      <img src="https://mysqlvm.blob.core.windows.net/cornhole-images/pro-advantage-bags.png" alt="Pro Advantage Tournament Edition Bags" onerror="this.src='img/bag-placeholder.jpg'">
-      <div class="tournament-badge">Nashville Spring Showdown</div>
+      <img src="img/prism-red.png" alt="Logic Prism Bags" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">Bagmania</div>
     </div>
     <div class="bag-details">
-      <h3 class="bag-name">Pro Advantage Tournament Edition</h3>
+      <h3 class="bag-name">Logic Prisms</h3>
       <div class="bag-manufacturer">
-        <div class="manufacturer-logo">A</div>
-        <span>AllCornhole Pro</span>
+        <span>Win these bags by having the top scoring team from the Bagmania Las Vegas Pro Singles Tournament</span>
       </div>
       <ul class="bag-features">
-        <li>Limited-edition tournament design</li>
-        <li>Pro-grade synthetic resin filling</li>
-        <li>Double-stitched durability</li>
-        <li>Competition-standard weight (15-16oz)</li>
-        <li>Custom Nashville Spring Showdown branding</li>
+        <li>Speed rating: 5/9</li>
+        <li>ACL PRO Stamp</li>
+        <li>These hybrid carpet bags allow for hole-friendly action while still reacting when trying to cut or roll.</li>
+        <li>The carpet side breaks in quickly and SlideFlat fill blend makes the bag feel great in hand and on the boards.</li>
       </ul>
-      <a href="https://www.allcornholepro.com?utm_source=cornholekings&utm_medium=referral&utm_campaign=prizes&utm_content=nashville_spring_showdown" class="bag-link" target="_blank" data-manufacturer="AllCornhole Pro" data-tournament="Nashville Spring Showdown">View Website</a>
+      <a href="https://www.logiccornhole.com/collections/prism" class="bag-link" target="_blank" data-manufacturer="Logic Cornhole" data-tournament="Bagmania">View Website</a>
     </div>
   </div>
 
@@ -651,13 +669,15 @@ img {
     <h3>Our Bag Sponsors</h3>
     <p>We partner with the top cornhole bag manufacturers to bring you premium prizes for every tournament.</p>
     
-    <div class="sponsors-list">
-      <!-- Sponsor 1 -->
-      <div class="sponsor-card">
-        <div class="sponsor-logo">A</div>
-        <div class="sponsor-name">AllCornhole Pro</div>
-        <div class="sponsor-type">Premium Bag Manufacturer</div>
-      </div>
+    <div class="sponsor-card">
+      <a href="https://www.logiccornhole.com/collections/prism" class="sponsor-link" data-manufacturer="Logic Cornhole" target="_blank">
+        <div class="sponsor-logo">
+          <img src="img/logic.png" alt="Logic Logo" onerror="this.parentNode.textContent='L'">
+        </div>
+        <div class="sponsor-name">Logic Cornhole</div>
+        <div class="sponsor-type">Bag Manufacturer</div>
+      </a>
+    </div>
       
       <!-- Sponsor 2 -->
       <div class="sponsor-card">
@@ -687,12 +707,6 @@ img {
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Initialize the Supabase client (assuming this is done in auth.js)
-    // If not, you'll need to add this code:
-    // const supabaseUrl = 'YOUR_SUPABASE_URL';
-    // const supabaseKey = 'YOUR_SUPABASE_API_KEY';
-    // const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
     // Function to track outbound clicks
     async function trackOutboundClick(linkDetails) {
       try {
@@ -712,6 +726,7 @@ img {
               tournament: linkDetails.tournament,
               destination_url: linkDetails.destination,
               user_id: linkDetails.userId || null,
+              link_type: linkDetails.linkType || 'bag', // Added link_type field
               timestamp: new Date().toISOString()
             }
           ]);
@@ -764,7 +779,8 @@ img {
               manufacturer: manufacturer,
               tournament: tournament,
               destination: this.href,
-              userId: user ? user.id : null
+              userId: user ? user.id : null,
+              linkType: 'bag'
             });
             
             // Show a toast message
@@ -772,6 +788,27 @@ img {
             
             // We don't prevent default since we want the link to open in a new tab
             // e.preventDefault() would stop the link from working
+          });
+        });
+
+        // NEW CODE: Add click tracking to all sponsor links
+        document.querySelectorAll('.sponsor-link').forEach(link => {
+          link.addEventListener('click', async function(e) {
+            const manufacturer = this.getAttribute('data-manufacturer') || 
+                               this.querySelector('.sponsor-name').textContent;
+                               
+            // Track the click
+            await trackOutboundClick({
+              bagName: 'N/A', // Not applicable for sponsor links
+              manufacturer: manufacturer,
+              tournament: 'All', // Generic value
+              destination: this.href,
+              userId: user ? user.id : null,
+              linkType: 'sponsor' // Add link type to differentiate in analytics
+            });
+            
+            // Show a toast message
+            showToast(`Visiting ${manufacturer} website`, 'info');
           });
         });
       } catch (err) {
@@ -809,6 +846,6 @@ img {
       });
       sessionStorage.setItem('clickHistory', JSON.stringify(clickHistory));
     }
-  </script>
+</script>
 </body>
 </html>
