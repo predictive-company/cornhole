@@ -643,11 +643,33 @@ async function loadTournamentResults(tournamentId, winningTeamId, currentUserId)
       return;
     }
 
+    // First, get ALL team_players for this tournament to reference later
+    const { data: allTournamentTeamPlayers, error: allTpError } = await supabase
+      .from('team_players')
+      .select('player_id, potential_points, team_id')
+      .eq('tournament_id', tournamentId);
+      
+    if (allTpError) {
+      console.error('Error fetching all team players for tournament:', allTpError);
+    }
+    
+    // Create a map of player_id -> potential_points from all team_players
+    const playerPotentialPointsMap = {};
+    if (allTournamentTeamPlayers && allTournamentTeamPlayers.length > 0) {
+      allTournamentTeamPlayers.forEach(tp => {
+        if (tp.player_id) {
+          playerPotentialPointsMap[tp.player_id] = tp.potential_points;
+        }
+      });
+    }
+    
     // Process each team to get user and player details
     const processedTeams = [];
     
     for (const team of teams) {
       try {
+        console.log(`Processing team ${team.id} (winning team: ${team.id === winningTeamId})`);
+        
         // Get user details for this team
         const { data: user, error: userError } = await supabase
           .from('profiles')
@@ -659,63 +681,153 @@ async function loadTournamentResults(tournamentId, winningTeamId, currentUserId)
           console.error(`Error fetching user for team ${team.id}:`, userError);
         }
         
-        // SIMPLIFY: Just get team_players records for this team
-        const { data: teamPlayerRecords, error: teamPlayersError } = await supabase
-          .from('team_players')
-          .select('player_id, potential_points')
-          .eq('team_id', team.id);
+        let players = [];
+        
+        // If this is the winning team, try to get players from player_tournament_points directly
+        if (team.id === winningTeamId) {
+          console.log(`Looking up players for winning team ${team.id} from player_tournament_points`);
           
-        if (teamPlayersError) {
-          console.error(`Error fetching team_players for team ${team.id}:`, teamPlayersError);
-        }
-        
-        // Extract player IDs
-        const playerIds = teamPlayerRecords ? teamPlayerRecords.map(tp => tp.player_id) : [];
-        
-        // Prepare players array
-        const players = [];
-        
-        // If we have player IDs, get their names directly from players table
-        if (playerIds.length > 0) {
-          // Get basic player details
-          const { data: playerDetails, error: playerDetailsError } = await supabase
-            .from('players')
-            .select('id, name')
-            .in('id', playerIds);
+          // Get players associated with this team in the tournament
+          const { data: tournamentPlayers, error: tpError } = await supabase
+            .from('player_tournament_points')
+            .select(`
+              player_id,
+              points_earned,
+              placement
+            `)
+            .eq('tournament_id', tournamentId)
+            .eq('team_id', team.id);
+          
+          if (tpError) {
+            console.error(`Error fetching tournament players for winning team:`, tpError);
+          }
+          
+          console.log(`Found ${tournamentPlayers?.length || 0} tournament players for winning team`);
+          
+          // If players found, get their details from players table
+          if (tournamentPlayers && tournamentPlayers.length > 0) {
+            const playerIds = tournamentPlayers.map(tp => tp.player_id);
             
-          if (playerDetailsError) {
-            console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
-          } else if (playerDetails && playerDetails.length > 0) {
-            // For each player, create a player object
-            for (const player of playerDetails) {
-              // Find the corresponding team_player entry to get potential_points
-              const teamPlayer = teamPlayerRecords.find(tp => tp.player_id === player.id);
-              const potentialPoints = teamPlayer ? teamPlayer.potential_points : 0;
+            // Get player names and potential points
+            const { data: playerDetails, error: pdError } = await supabase
+              .from('players')
+              .select('id, name, potential_points')
+              .in('id', playerIds);
               
-              // Get player tournament points if they exist
-              const { data: tournamentPointsData, error: pointsError } = await supabase
-                .from('player_tournament_points')
-                .select('points_earned, placement')
-                .eq('player_id', player.id)
-                .eq('tournament_id', tournamentId)
-                .maybeSingle();
-              
-              // Default values if no entry in player_tournament_points
-              let tournamentPoints = 0;
-              let playerPlacement = null;
-              
-              if (!pointsError && tournamentPointsData) {
-                tournamentPoints = tournamentPointsData.points_earned || 0;
-                playerPlacement = tournamentPointsData.placement || null;
+            if (pdError) {
+              console.error(`Error fetching player details for winning team:`, pdError);
+            }
+            
+            console.log(`Found ${playerDetails?.length || 0} player details for winning team`);
+            
+            // Create player entries for each player
+            if (playerDetails && playerDetails.length > 0) {
+              for (const player of playerDetails) {
+                // Get the tournament points info
+                const tpInfo = tournamentPlayers.find(tp => tp.player_id === player.id);
+                
+                // FIXED: Use the points earned as potential points
+                // since that's what the player would've earned at 100%
+                const potentialPoints = tpInfo?.points_earned || 0;
+                
+                // For debugging
+                console.log(`Player ${player.name} - Points earned: ${tpInfo?.points_earned}, Potential: ${potentialPoints}`);
+                
+                players.push({
+                  id: player.id,
+                  name: player.name,
+                  potential_points: potentialPoints,
+                  tournament_points: tpInfo?.points_earned || 0,
+                  placement: tpInfo?.placement || null
+                });
               }
-              
-              players.push({
-                id: player.id,
-                name: player.name,
-                potential_points: potentialPoints,
-                tournament_points: tournamentPoints,
-                placement: playerPlacement
+            } else {
+              // If we couldn't get player names, use just the IDs
+              tournamentPlayers.forEach((tp, index) => {
+                players.push({
+                  id: tp.player_id,
+                  name: `Player ${index + 1}`,
+                  potential_points: tp.points_earned || 0, // Use points earned as potential
+                  tournament_points: tp.points_earned || 0,
+                  placement: tp.placement || null
+                });
               });
+            }
+          } else {
+            // If we still don't have players, create a single placeholder
+            players = [
+              {
+                id: 'placeholder-1',
+                name: 'Tournament Winner',
+                potential_points: team.team_points || 0, 
+                tournament_points: team.team_points || 0,
+                placement: 1,
+                isPlaceholder: true
+              }
+            ];
+          }
+        } else {
+          // For regular teams (user's team), use the standard process
+          // Get team players with their potential_points from team_players table
+          const { data: teamPlayers, error: playersError } = await supabase
+            .from('team_players')
+            .select('player_id, potential_points')
+            .eq('team_id', team.id);
+            
+          if (playersError) {
+            console.error(`Error fetching players for team ${team.id}:`, playersError);
+          }
+          
+          console.log(`Found ${teamPlayers?.length || 0} team players for team ${team.id}`);
+          
+          // Get player details if we have team_players records
+          if (teamPlayers && teamPlayers.length > 0) {
+            // Get player IDs
+            const playerIds = teamPlayers.map(tp => tp.player_id);
+            
+            // Get player details
+            const { data: playerDetails, error: playerDetailsError } = await supabase
+              .from('players')
+              .select('id, name')
+              .in('id', playerIds);
+              
+            if (playerDetailsError) {
+              console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
+            }
+            
+            console.log(`Found ${playerDetails?.length || 0} player details for team ${team.id}`);
+            
+            // Process player details
+            if (playerDetails && playerDetails.length > 0) {
+              for (const player of playerDetails) {
+                const teamPlayer = teamPlayers.find(tp => tp.player_id === player.id);
+                const potentialPoints = teamPlayer ? teamPlayer.potential_points : 0;
+                
+                // Get player tournament points
+                const { data: pointsData, error: pointsError } = await supabase
+                  .from('player_tournament_points')
+                  .select('points_earned, placement')
+                  .eq('player_id', player.id)
+                  .eq('tournament_id', tournamentId)
+                  .maybeSingle();
+                
+                // Default values
+                let tournamentPoints = 0;
+                let playerPlacement = null;
+                
+                if (!pointsError && pointsData) {
+                  tournamentPoints = pointsData.points_earned || 0;
+                  playerPlacement = pointsData.placement || null;
+                }
+                
+                players.push({
+                  id: player.id,
+                  name: player.name,
+                  potential_points: potentialPoints,
+                  tournament_points: tournamentPoints,
+                  placement: playerPlacement
+                });
+              }
             }
           }
         }
@@ -733,6 +845,8 @@ async function loadTournamentResults(tournamentId, winningTeamId, currentUserId)
         console.error(`Error processing team ${team.id}:`, err);
       }
     }
+    
+    console.log('Processed teams:', processedTeams);
     
     // Render teams
     renderTeamResults(processedTeams, teamResultsContainer);
