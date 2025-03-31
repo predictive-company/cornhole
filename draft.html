@@ -32,6 +32,14 @@
       box-sizing: border-box;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    /* Target only the default ACL logo image */
+    img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Final Logo ACL.png"] {
+      object-fit: contain; /* This makes the image fit within its container */
+      object-position: center; /* Center the image */
+      padding: 5px; /* Add some padding to create space around the image */
+      box-sizing: border-box; /* Ensure padding doesn't increase the overall size */
+    }
     
     /* Left section - Logo */
     .logo-section {
@@ -880,7 +888,7 @@
     // Function to create a player avatar (image or fallback)
     function createPlayerAvatar(player, size = 'large') {
       const initials = getInitials(player.name);
-      const defaultImageUrl = 'https://mysqlvm.blob.core.windows.net/pro-players/acl-pro-logo-default.svg';
+      const defaultImageUrl = 'https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Final Logo ACL.png';
       const imageUrl = player.profile_picture || defaultImageUrl;
       
       // Determine CSS class based on size
