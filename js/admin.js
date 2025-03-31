@@ -4453,6 +4453,13 @@ function parsePlayerImportData() {
         
         console.log(`Detected import type: ${importType}`);
         
+        // Log a sample player with photo to verify we're capturing it
+        const playerWithPhoto = playersData.find(p => p.playerPhoto);
+        if (playerWithPhoto) {
+            console.log('Sample player with photo:', playerWithPhoto);
+            console.log('Photo URL:', playerWithPhoto.playerPhoto);
+        }
+        
         // Filter out players with names starting with "Bye User"
         playersData = playersData.filter(player => {
             // Check for direct firstname/lastname combination
@@ -4498,7 +4505,7 @@ function parsePlayerImportData() {
                 rank: temporaryRank,
                 potential_points: calculatePotentialPoints(temporaryRank),
                 actual_points: 0,
-                profile_picture: null,  // Changed from photoimage to profile_picture
+                profile_picture: null,
                 created_at: new Date().toISOString(),
                 status: 'new',
                 importType: importType // Track the source of this data
@@ -4537,8 +4544,12 @@ function parsePlayerImportData() {
                 playerData.player_cpi = cpiValue;
             }
             
-            // Extract photo URL if available - changed to map photoimage to profile_picture
-            if (player.photoimage) {
+            // IMPORTANT: Extract photo URL with proper source field mapping
+            if (player.playerPhoto) {
+                console.log(`Found playerPhoto for ${playerData.name}:`, player.playerPhoto);
+                playerData.profile_picture = player.playerPhoto;
+            } else if (player.photoimage) {
+                console.log(`Found photoimage for ${playerData.name}:`, player.photoimage);
                 playerData.profile_picture = player.photoimage;
             }
             
@@ -4978,6 +4989,14 @@ async function importPlayersGlobal() {
         let failCount = 0;
         
         for (const player of players) {
+            // Log raw player data to see what photo fields are available
+            console.log('Raw player data:', {
+                id: player.id,
+                name: player.name,
+                playerPhoto: player.playerPhoto,
+                profile_picture: player.profile_picture
+            });
+            
             // If existing player, update instead of create
             if (player.status === 'existing' && player.id) {
                 // Create update object with only the fields we want to update
@@ -5009,15 +5028,22 @@ async function importPlayersGlobal() {
                     updateData.player_cpi = player.player_cpi;
                 }
                 
-                // Update photo URL if available - changed to profile_picture
-                if (player.profile_picture) {
+                // IMPORTANT: Update photo URL with clear priority logic
+                // First check playerPhoto (from original JSON)
+                if (player.playerPhoto) {
+                    console.log(`Found playerPhoto for ${player.name}:`, player.playerPhoto);
+                    updateData.profile_picture = player.playerPhoto;
+                }
+                // Then check profile_picture (might have been set during parsing)
+                else if (player.profile_picture) {
+                    console.log(`Found profile_picture for ${player.name}:`, player.profile_picture);
                     updateData.profile_picture = player.profile_picture;
                 }
                 
+                console.log(`Updating player ${player.id}:`, updateData);
+                
                 // Only perform update if we have fields to update
                 if (Object.keys(updateData).length > 0) {
-                    console.log(`Updating player ${player.id}:`, updateData);
-                    
                     try {
                         const { data, error } = await supabase
                             .from('players')
@@ -5029,6 +5055,7 @@ async function importPlayersGlobal() {
                             failCount++;
                         } else {
                             updateCount++;
+                            console.log(`Successfully updated player ${player.id}`);
                         }
                     } catch (updateError) {
                         console.error('Error updating player:', updateError);
@@ -5045,6 +5072,16 @@ async function importPlayersGlobal() {
                     (player.skill_level.length > 10 ? player.skill_level.substring(0, 10) : player.skill_level) 
                     : 'P';
 
+                // Explicitly handle photo URL with priority logic
+                let photoUrl = null;
+                if (player.playerPhoto) {
+                    console.log(`New player ${player.name} has playerPhoto:`, player.playerPhoto);
+                    photoUrl = player.playerPhoto;
+                } else if (player.profile_picture) {
+                    console.log(`New player ${player.name} has profile_picture:`, player.profile_picture);
+                    photoUrl = player.profile_picture;
+                }
+
                 // Create the player object with all required fields
                 const newPlayer = {
                     name: player.name,
@@ -5055,7 +5092,7 @@ async function importPlayersGlobal() {
                     rank: player.rank || 999,
                     potential_points: player.potential_points || calculatePotentialPoints(player.rank || 999),
                     actual_points: 0, // Always start with 0 points
-                    profile_picture: player.profile_picture || null,  // Changed from photoimage to profile_picture
+                    profile_picture: photoUrl,  // Use the photo URL we determined above
                     created_at: new Date().toISOString()
                 };
                 
@@ -5072,6 +5109,7 @@ async function importPlayersGlobal() {
                         failCount++;
                     } else {
                         successCount++;
+                        console.log(`Successfully created player ${player.name}`);
                     }
                 } catch (createError) {
                     console.error('Error creating player:', createError);
