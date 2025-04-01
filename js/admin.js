@@ -5356,6 +5356,802 @@ function setupPlayerImportFunctions() {
     }
 }
 
+
+function addBracketTab() {
+    const tabButtons = document.querySelector('#tournamentPlayersModal .tab-buttons');
+    if (tabButtons && !document.querySelector('[data-tab="importBracket"]')) {
+      const importBracketButton = document.createElement('button');
+      importBracketButton.className = 'tab-button';
+      importBracketButton.dataset.tab = 'importBracket';
+      importBracketButton.textContent = 'Import Bracket';
+      importBracketButton.onclick = function() {
+        console.log("Import bracket tab clicked");
+        // Make the tab active
+        document.querySelectorAll('#tournamentPlayersModal .tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('#tournamentPlayersModal .tab-content').forEach(content => content.classList.remove('active'));
+        importBracketButton.classList.add('active');
+        document.getElementById('importBracketTab').classList.add('active');
+      };
+      tabButtons.appendChild(importBracketButton);
+  
+      // Create the tab content for import bracket
+      const modal = document.getElementById('tournamentPlayersModal');
+      const tabContents = modal.querySelector('.modal-content');
+      
+      const importBracketTab = document.createElement('div');
+      importBracketTab.id = 'importBracketTab';
+      importBracketTab.className = 'tab-content';
+      importBracketTab.innerHTML = `
+        <div class="admin-card">
+          <h3>Import Bracket Data</h3>
+          <p>Paste bracket data in JSON format below. This will add players from the bracket to the tournament.</p>
+          <div class="form-group">
+            <label for="bracketLetter">Bracket Letter:</label>
+            <input type="text" id="bracketLetter" placeholder="A, B, C, etc." maxlength="5">
+            <p class="helper-text">If the bracket letter is already in the JSON event name (e.g., "- A"), you can leave this blank.</p>
+          </div>
+          <textarea id="bracketJsonImport" class="code-input" rows="10" placeholder='Paste JSON bracket data here...'></textarea>
+          <button id="parseBracketImportBtn" class="btn" style="margin-top: 10px;">Parse Bracket Data</button>
+          
+          <div id="parseBracketResults" style="display: none; margin-top: 20px;">
+            <h4>Players in this Bracket</h4>
+            <p id="parseBracketSummary"></p>
+            <div style="max-height: 400px; overflow-y: auto;">
+              <table class="admin-table" id="parsedBracketTable">
+                <thead>
+                  <tr>
+                    <th>ACL ID</th>
+                    <th>Name</th>
+                    <th>Skill Level</th>
+                    <th>Bracket</th>
+                    <th>Photo</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Parsed players will appear here -->
+                </tbody>
+              </table>
+            </div>
+            <button id="importBracketBtn" class="btn" style="margin-top: 10px;">Import Bracket Players</button>
+          </div>
+        </div>
+      `;
+      
+      tabContents.appendChild(importBracketTab);
+    }
+  }
+  
+  function setupBracketImport(tournamentId) {
+    // First, add the tab if it doesn't exist
+    addBracketTab();
+    
+    // Directly set onclick handlers for the buttons
+    const parseBracketBtn = document.getElementById('parseBracketImportBtn');
+    if (parseBracketBtn) {
+      console.log("Setting up parse bracket button");
+      parseBracketBtn.onclick = function() {
+        console.log("Parse bracket button clicked");
+        parseBracketData(tournamentId);
+      };
+    } else {
+      console.log("Parse bracket button not found");
+    }
+    
+    const importBracketBtn = document.getElementById('importBracketBtn');
+    if (importBracketBtn) {
+      console.log("Setting up import bracket button");
+      importBracketBtn.onclick = function() {
+        console.log("Import bracket button clicked");
+        importBracketPlayers(tournamentId);
+      };
+    } else {
+      console.log("Import bracket button not found");
+    }
+  }
+  
+  // Function to parse bracket data from JSON
+  async function parseBracketData(tournamentId) {
+    const jsonInput = document.getElementById('bracketJsonImport');
+    const bracketLetterInput = document.getElementById('bracketLetter');
+    const summaryElement = document.getElementById('parseBracketSummary');
+    const resultsContainer = document.getElementById('parseBracketResults');
+    const tableBody = document.querySelector('#parsedBracketTable tbody');
+    
+    if (!jsonInput || !summaryElement || !resultsContainer || !tableBody) {
+      showToast('Error: Import interface elements not found', 'error');
+      return;
+    }
+    
+    const jsonText = jsonInput.value.trim();
+    const bracketLetterOverride = bracketLetterInput.value.trim();
+    
+    if (!jsonText) {
+      showToast('Please paste bracket data first', 'error');
+      return;
+    }
+    
+    try {
+      // Try to parse the JSON
+      const jsonData = JSON.parse(jsonText);
+      console.log('Bracket JSON parse successful:', jsonData);
+      
+      // Extract bracket letter from event name if present
+      let bracketLetter = bracketLetterOverride;
+      
+      if (!bracketLetter) {
+        // Try to extract from eventInfo or eventName
+        if (jsonData.eventInfo && jsonData.eventInfo.leagueName) {
+          const match = jsonData.eventInfo.leagueName.match(/\s-\s([A-Z])$/);
+          if (match && match[1]) {
+            bracketLetter = match[1];
+          }
+        } else if (jsonData.eventName) {
+          const match = jsonData.eventName.match(/\s-\s([A-Z])$/);
+          if (match && match[1]) {
+            bracketLetter = match[1];
+          }
+        }
+      }
+      
+      if (!bracketLetter) {
+        showToast('Warning: No bracket letter found or specified. Using "?" as placeholder.', 'error');
+        bracketLetter = '?';
+      }
+      
+      // Extract players from bracket details or event data
+      let playersData = [];
+      
+      if (jsonData.bracketDetails && Array.isArray(jsonData.bracketDetails)) {
+        playersData = extractPlayersFromBracketDetails(jsonData.bracketDetails);
+      } else if (jsonData.data && Array.isArray(jsonData.data)) {
+        playersData = jsonData.data;
+      } else {
+        // Try to find players recursively
+        playersData = extractAllPlayers(jsonData);
+      }
+      
+      // Filter out Bye Users
+      playersData = playersData.filter(player => {
+        // Check for direct firstname/lastname combination
+        if (player.firstname === "Bye" && player.lastname && player.lastname.startsWith("User")) {
+          return false;
+        }
+        
+        // Check for full name property
+        if (player.name && player.name.startsWith("Bye User")) {
+          return false;
+        }
+        
+        // Check for fldPlayerFirstName/fldPlayerLastname combination
+        if (player.fldPlayerFirstName === "Bye" && 
+            player.fldPlayerLastname && player.fldPlayerLastname.startsWith("User")) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      // Process the players
+      const parsedPlayers = playersData.map(player => {
+        // Normalize player data
+        let playerData = {
+          acl_player_id: null,
+          name: "Unknown Player",
+          skill_level: 'P',
+          bracket: bracketLetter,
+          profile_picture: null,
+          status: 'new'
+        };
+        
+        // Extract player ID
+        if (player.playerID || player.acl_player_id) {
+          playerData.acl_player_id = player.playerID || player.acl_player_id;
+        } else if (player.playerid) {
+          playerData.acl_player_id = player.playerid;
+        }
+        
+        // Extract name
+        if (player.fldPlayerFirstName && player.fldPlayerLastname) {
+          playerData.name = `${player.fldPlayerFirstName} ${player.fldPlayerLastname}`;
+        } else if (player.firstname && player.lastname) {
+          playerData.name = `${player.firstname} ${player.lastname}`;
+        } else if (player.name) {
+          playerData.name = player.name;
+        }
+        
+        // Extract skill level
+        if (player.playerSkillLevel || player.skill_level) {
+          playerData.skill_level = player.playerSkillLevel || player.skill_level;
+        }
+        
+        // Extract photo URL
+        if (player.playerPhoto) {
+          playerData.profile_picture = player.playerPhoto;
+        } else if (player.photoimage) {
+          playerData.profile_picture = player.photoimage;
+        }
+        
+        return playerData;
+      });
+      
+      // Check for existing players
+      await checkExistingBracketPlayers(parsedPlayers, tournamentId);
+      
+      // Display summary
+      summaryElement.innerHTML = `
+        <strong>Bracket: ${bracketLetter}</strong><br>
+        <strong>Found ${parsedPlayers.length} players in this bracket</strong>
+      `;
+      
+      // Display player rows
+      tableBody.innerHTML = '';
+      
+      parsedPlayers.forEach(player => {
+        const row = document.createElement('tr');
+        
+        // Show photo status
+        const photoStatus = player.profile_picture ? 
+          '<span class="has-photo">Yes</span>' : 
+          '<span class="no-photo">No</span>';
+        
+        row.innerHTML = `
+          <td>${player.acl_player_id || 'N/A'}</td>
+          <td>${player.name || 'Unknown'}</td>
+          <td>${player.skill_level || 'N/A'}</td>
+          <td>${player.bracket}</td>
+          <td>${photoStatus}</td>
+          <td class="status-${player.status}">${player.statusText}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Store the players data for import
+      const importBracketBtn = document.getElementById('importBracketBtn');
+      if (importBracketBtn) {
+        importBracketBtn.dataset.players = JSON.stringify(parsedPlayers);
+        importBracketBtn.dataset.bracketLetter = bracketLetter;
+        importBracketBtn.dataset.tournamentId = tournamentId;
+      }
+      
+      // Show the results section
+      resultsContainer.style.display = 'block';
+      
+    } catch (err) {
+      console.error('Error parsing bracket data:', err);
+      showToast('Error parsing JSON: ' + err.message, 'error');
+    }
+  }
+  
+  // Check if players already exist in the database or tournament
+  async function checkExistingBracketPlayers(players, tournamentId) {
+    try {
+      // Get player IDs for checking
+      const aclPlayerIds = players.map(p => p.acl_player_id).filter(id => id);
+      
+      // Map to store existing player info
+      let existingPlayerMap = {};
+      let existingTournamentPlayerMap = {};
+      
+      // Check global players by ACL ID
+      if (aclPlayerIds.length > 0) {
+        const { data: existingPlayers, error } = await supabase
+          .from('players')
+          .select('*')
+          .in('acl_player_id', aclPlayerIds);
+          
+        if (!error && existingPlayers) {
+          existingPlayers.forEach(player => {
+            if (player.acl_player_id) {
+              existingPlayerMap[player.acl_player_id] = player;
+            }
+          });
+        }
+      }
+      
+      // Also check by player name for players without ACL IDs
+      const playerNames = players.map(p => p.name).filter(name => name && name !== "Unknown Player");
+      
+      if (playerNames.length > 0) {
+        const { data: nameMatches, error } = await supabase
+          .from('players')
+          .select('*')
+          .in('name', playerNames);
+          
+        if (!error && nameMatches) {
+          nameMatches.forEach(player => {
+            if (!player.acl_player_id) {
+              existingPlayerMap[player.name.toLowerCase()] = player;
+            }
+          });
+        }
+      }
+      
+      // Check if players are already in this tournament
+      const { data: tournamentPlayers, error } = await supabase
+        .from('tournament_players')
+        .select(`
+          id,
+          player_id,
+          name,
+          tournament_id,
+          bracket_id,
+          brackets (name)
+        `)
+        .eq('tournament_id', tournamentId);
+        
+      if (!error && tournamentPlayers) {
+        tournamentPlayers.forEach(tp => {
+          existingTournamentPlayerMap[tp.player_id] = {
+            id: tp.id,
+            bracket: tp.brackets ? tp.brackets.name : null,
+            bracket_id: tp.bracket_id
+          };
+        });
+      }
+      
+      // Update status of each player
+      players.forEach(player => {
+        let existingPlayer = null;
+        
+        // Check by ACL ID first
+        if (player.acl_player_id && existingPlayerMap[player.acl_player_id]) {
+          existingPlayer = existingPlayerMap[player.acl_player_id];
+        } 
+        // Then check by name
+        else if (player.name && existingPlayerMap[player.name.toLowerCase()]) {
+          existingPlayer = existingPlayerMap[player.name.toLowerCase()];
+        }
+        
+        if (existingPlayer) {
+          player.id = existingPlayer.id;
+          player.status = 'existing';
+          player.statusText = 'Existing player';
+          
+          // Check if player is in this tournament
+          if (existingTournamentPlayerMap[existingPlayer.id]) {
+            const tpInfo = existingTournamentPlayerMap[existingPlayer.id];
+            
+            if (tpInfo.bracket === player.bracket) {
+              player.status = 'duplicate';
+              player.statusText = `Already in bracket ${player.bracket}`;
+            } else {
+              player.status = 'bracket-change';
+              player.statusText = `In tournament (bracket ${tpInfo.bracket || 'none'})`;
+              player.currentBracketId = tpInfo.bracket_id;
+              player.tournamentPlayerId = tpInfo.id;
+            }
+          } else {
+            player.status = 'new-to-tournament';
+            player.statusText = 'Add to tournament';
+          }
+        } else {
+          player.status = 'new';
+          player.statusText = 'New player';
+        }
+      });
+      
+      return players;
+    } catch (err) {
+      console.error('Error checking existing players:', err);
+      showToast('Error checking players: ' + err.message, 'error');
+      return players;
+    }
+  }
+  
+  // Import bracket players
+  async function importBracketPlayers(tournamentId) {
+    const importBtn = document.getElementById('importBracketBtn');
+    if (!importBtn) {
+      showToast('Error: Import button not found', 'error');
+      return;
+    }
+    
+    const playersJson = importBtn.dataset.players;
+    const bracketLetter = importBtn.dataset.bracketLetter;
+    
+    if (!playersJson || !bracketLetter) {
+      showToast('No player data to import', 'error');
+      return;
+    }
+    
+    try {
+      const players = JSON.parse(playersJson);
+      
+      if (players.length === 0) {
+        showToast('No players to import');
+        return;
+      }
+      
+      // Disable the import button
+      importBtn.disabled = true;
+      importBtn.textContent = 'Importing...';
+      
+      // 1. First, check if the bracket exists or create it
+      let bracketId = await getOrCreateBracket(tournamentId, bracketLetter);
+      
+      // Counter for results
+      let addedCount = 0;
+      let updatedCount = 0;
+      let skippedCount = 0;
+      
+      // 2. Process each player
+      for (const player of players) {
+        try {
+          // Skip players already in this bracket
+          if (player.status === 'duplicate') {
+            skippedCount++;
+            continue;
+          }
+          
+          // For new players, we need to create them first
+          let playerId = player.id;
+          
+          if (player.status === 'new') {
+            const newPlayer = {
+              name: player.name,
+              acl_player_id: player.acl_player_id,
+              skill_level: player.skill_level,
+              profile_picture: player.profile_picture,
+              rank: 999, // Default high rank
+              potential_points: calculatePotentialPoints(999),
+              actual_points: 0,
+              created_at: new Date().toISOString()
+            };
+            
+            const { data, error } = await supabase
+              .from('players')
+              .insert([newPlayer])
+              .select();
+              
+            if (error) {
+              console.error('Error creating player:', error);
+              skippedCount++;
+              continue;
+            }
+            
+            playerId = data[0].id;
+          }
+          
+          // Now handle tournament player entry
+          if (player.status === 'bracket-change') {
+            // Player exists in tournament but needs bracket update
+            const { error } = await supabase
+              .from('tournament_players')
+              .update({ 
+                bracket_id: bracketId 
+              })
+              .eq('id', player.tournamentPlayerId);
+              
+            if (error) {
+              console.error('Error updating player bracket:', error);
+              skippedCount++;
+            } else {
+              updatedCount++;
+            }
+          } else if (player.status === 'new' || player.status === 'existing' || player.status === 'new-to-tournament') {
+            // Add player to tournament with bracket
+            const { error } = await supabase
+              .from('tournament_players')
+              .insert({
+                tournament_id: tournamentId,
+                player_id: playerId,
+                name: player.name,
+                bracket_id: bracketId,
+                created_at: new Date().toISOString()
+              });
+              
+            if (error) {
+              console.error('Error adding player to tournament:', error);
+              skippedCount++;
+            } else {
+              addedCount++;
+            }
+          }
+        } catch (playerError) {
+          console.error('Error processing player:', playerError);
+          skippedCount++;
+        }
+      }
+      
+      // Update tournament ranks
+      await updateTournamentPlayerRanks(tournamentId);
+      
+      // Refresh tournament players view
+      await loadTournamentPlayers(tournamentId);
+      
+      // Show results
+      importBtn.disabled = false;
+      importBtn.textContent = 'Import Bracket Players';
+      
+      // Reset the import form
+      document.getElementById('bracketJsonImport').value = '';
+      document.getElementById('bracketLetter').value = '';
+      document.getElementById('parseBracketResults').style.display = 'none';
+      
+      showToast(`Import complete: ${addedCount} added, ${updatedCount} updated, ${skippedCount} skipped`);
+      
+      // Switch back to the current players tab
+      const currentPlayersTabBtn = document.querySelector('#tournamentPlayersModal .tab-button[data-tab="currentPlayers"]');
+      if (currentPlayersTabBtn) {
+        currentPlayersTabBtn.click();
+      }
+      
+    } catch (err) {
+      console.error('Error importing bracket players:', err);
+      showToast('Error importing players: ' + err.message, 'error');
+      
+      const importBtn = document.getElementById('importBracketBtn');
+      if (importBtn) {
+        importBtn.disabled = false;
+        importBtn.textContent = 'Import Bracket Players';
+      }
+    }
+  }
+  
+  // Get or create a bracket for a tournament
+  async function getOrCreateBracket(tournamentId, bracketLetter) {
+    try {
+      // First, check if the bracket already exists
+      const { data: existingBrackets, error: checkError } = await supabase
+        .from('brackets')
+        .select('id, name')
+        .eq('tournament_id', tournamentId)
+        .eq('name', bracketLetter);
+        
+      if (checkError) {
+        console.error('Error checking existing brackets:', checkError);
+        throw new Error('Error checking existing brackets');
+      }
+      
+      // If bracket exists, return its ID
+      if (existingBrackets && existingBrackets.length > 0) {
+        return existingBrackets[0].id;
+      }
+      
+      // Otherwise, create a new bracket
+      const { data: newBracket, error: createError } = await supabase
+        .from('brackets')
+        .insert({
+          tournament_id: tournamentId,
+          name: bracketLetter,
+          description: `Bracket ${bracketLetter}`,
+          created_at: new Date().toISOString()
+        })
+        .select();
+        
+      if (createError) {
+        console.error('Error creating bracket:', createError);
+        throw new Error('Error creating bracket');
+      }
+      
+      if (!newBracket || newBracket.length === 0) {
+        throw new Error('Failed to create bracket');
+      }
+      
+      return newBracket[0].id;
+    } catch (err) {
+      console.error('Error in getOrCreateBracket:', err);
+      throw err;
+    }
+  }
+  
+  // Enhanced loadTournamentPlayers to show brackets
+  async function loadTournamentPlayersWithBrackets(tournamentId) {
+    try {
+      const tableBody = document.querySelector('#currentPlayersTable tbody');
+      if (!tableBody) {
+        console.error('Current players table body not found');
+        return;
+      }
+      
+      tableBody.innerHTML = '<tr><td colspan="7">Loading players...</td></tr>';
+      
+      // Get players assigned to this tournament with bracket information
+      const { data, error } = await supabase
+        .from('tournament_players')
+        .select(`
+          id,
+          player_id,
+          name,
+          tournament_rank,
+          bracket_id,
+          players (
+            id,
+            acl_player_id,
+            skill_level,
+            player_ppr,
+            player_cpi
+          ),
+          brackets (
+            id,
+            name
+          )
+        `)
+        .eq('tournament_id', tournamentId);
+        
+      if (error) {
+        console.error('Error fetching tournament players:', error);
+        tableBody.innerHTML = '<tr><td colspan="7">Error loading players</td></tr>';
+        return;
+      }
+      
+      // Update count
+      const countElement = document.getElementById('currentPlayersCount');
+      if (countElement) {
+        countElement.textContent = `${data.length} players assigned to this tournament`;
+      }
+      
+      if (data.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="7">No players assigned to this tournament yet</td></tr>';
+        return;
+      }
+      
+      // Display players
+      tableBody.innerHTML = '';
+      data.forEach(item => {
+        const player = item.players;
+        if (!player) return;
+        
+        // Format skill level
+        let skillLevelDisplay = "Unknown";
+        if (player.skill_level) {
+          switch(player.skill_level) {
+            case 'P': skillLevelDisplay = 'Pro'; break;
+            case 'E': skillLevelDisplay = 'Elite'; break;
+            case 'ACLS': skillLevelDisplay = 'Senior'; break;
+            case 'ACLJ': skillLevelDisplay = 'Junior'; break;
+            case 'ACLW': skillLevelDisplay = 'Women\'s'; break;
+            default: skillLevelDisplay = player.skill_level;
+          }
+        }
+        
+        // Get bracket info
+        const bracketName = item.brackets ? item.brackets.name : '-';
+        const bracketStyle = item.brackets ? `badge-bracket-${item.brackets.name}` : '';
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${player.acl_player_id || 'N/A'}</td>
+          <td>${item.name || 'Unknown'}</td>
+          <td>${item.tournament_rank || 'Not ranked'}</td>
+          <td>${skillLevelDisplay}</td>
+          <td>${player.player_ppr !== null ? player.player_ppr.toFixed(1) : '—'}</td>
+          <td>${player.player_cpi !== null ? player.player_cpi.toFixed(1) : '—'}</td>
+          <td><span class="bracket-badge ${bracketStyle}">${bracketName}</span></td>
+          <td>
+            <button class="btn btn-small remove-player-btn" 
+                    data-tournament-id="${tournamentId}" 
+                    data-player-id="${player.id}"
+                    data-record-id="${item.id}">
+              Remove
+            </button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Add event listeners for remove buttons
+      document.querySelectorAll('.remove-player-btn').forEach(btn => {
+        btn.addEventListener('click', () => removePlayerFromTournament(
+          btn.dataset.recordId,
+          btn.dataset.tournamentId,
+          btn.closest('tr')
+        ));
+      });
+      
+      // Add bracket styles
+      addBracketStyles();
+      
+    } catch (err) {
+      console.error('Error loading tournament players with brackets:', err);
+      const tableBody = document.querySelector('#currentPlayersTable tbody');
+      if (tableBody) {
+        tableBody.innerHTML = '<tr><td colspan="7">Error loading players</td></tr>';
+      }
+    }
+  }
+  
+  // Add bracket styles to the document
+  function addBracketStyles() {
+    // Only add styles if they don't already exist
+    if (!document.getElementById('bracket-styles')) {
+      const style = document.createElement('style');
+      style.id = 'bracket-styles';
+      style.textContent = `
+        .bracket-badge {
+          display: inline-block;
+          padding: 3px 8px;
+          border-radius: 12px;
+          background-color: rgba(255, 255, 255, 0.1);
+          font-size: 12px;
+        }
+        
+        .badge-bracket-A {
+          background-color: rgba(46, 204, 113, 0.3);
+          color: #2ecc71;
+        }
+        
+        .badge-bracket-B {
+          background-color: rgba(52, 152, 219, 0.3);
+          color: #3498db;
+        }
+        
+        .badge-bracket-C {
+          background-color: rgba(155, 89, 182, 0.3);
+          color: #9b59b6;
+        }
+        
+        .badge-bracket-D {
+          background-color: rgba(231, 76, 60, 0.3);
+          color: #e74c3c;
+        }
+        
+        .badge-bracket-E {
+          background-color: rgba(241, 196, 15, 0.3);
+          color: #f1c40f;
+        }
+        
+        .badge-bracket-F {
+          background-color: rgba(230, 126, 34, 0.3);
+          color: #e67e22;
+        }
+        
+        #bracketLetter {
+          width: 100px;
+          margin-bottom: 10px;
+        }
+        
+        .helper-text {
+          font-size: 12px;
+          color: rgba(255, 255, 255, 0.6);
+          margin-top: 5px;
+        }
+        
+        .has-photo {
+          color: #2ecc71;
+        }
+        
+        .no-photo {
+          color: #e74c3c;
+        }
+        
+        .status-new {
+          color: #3498db;
+        }
+        
+        .status-existing, .status-new-to-tournament {
+          color: #2ecc71;
+        }
+        
+        .status-duplicate {
+          color: #f1c40f;
+        }
+        
+        .status-bracket-change {
+          color: #e67e22;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  // Modify openTournamentPlayersModal to add bracket functionality
+  const originalOpenTournamentPlayersModal = openTournamentPlayersModal;
+  
+  // Replace the original function with the enhanced version
+  openTournamentPlayersModal = async function(tournamentId) {
+    // Call the original function first
+    await originalOpenTournamentPlayersModal(tournamentId);
+    
+    // Then add our bracket functionality
+    setupBracketImport(tournamentId);
+    
+    // Update the current players tab to show brackets
+    await loadTournamentPlayersWithBrackets(tournamentId);
+  };
+
+
 // Function to ensure modals exist in the DOM
 function ensureModalsExist() {
     // Check if winners modal exists and initialize close button
@@ -5512,6 +6308,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         
         // Setup event listeners
         setupEventListeners();
+
+        // Initialize bracket styles
+        addBracketStyles();
         
         // Load all admin data
         await loadTournaments();
