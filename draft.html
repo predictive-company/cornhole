@@ -371,6 +371,20 @@
       color: rgba(255, 255, 255, 0.7);
     }
     
+    .bracket-label {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background-color: #2ecc71;
+      color: rgb(0, 0, 0);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 1.0rem;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      z-index: 2;
+    }
+
     /* Tournament info with integrated team section */
     .tournament-info {
       max-width: 1200px;
@@ -463,6 +477,26 @@
     input::placeholder {
       color: rgba(255, 255, 255, 0.5);
     }
+
+    /* Add this to your CSS to fix the dropdown appearance */
+    select {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 0.5rem;
+      border-radius: 4px;
+      color: white;
+      appearance: menulist; /* Show the dropdown arrow */
+    }
+
+    select option {
+      background-color: #0d1023;
+      color: white;
+    }
+
+    /* Add this for hover effects on dropdown items */
+    select option:hover {
+      background-color: #2ecc71;
+    }
     
     .player-list {
       max-height: 1000px;
@@ -471,7 +505,32 @@
       grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
     }
-    
+
+    /* Custom scrollbar for the player list */
+    .player-list::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .player-list::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+    }
+
+    .player-list::-webkit-scrollbar-thumb {
+      background: rgba(74, 222, 128, 0.5);
+      border-radius: 10px;
+    }
+
+    .player-list::-webkit-scrollbar-thumb:hover {
+      background: rgba(74, 222, 128, 0.8);
+    }
+
+    /* For Firefox */
+    .player-list {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(74, 222, 128, 0.5) rgba(255, 255, 255, 0.05);
+    }
+        
     .player-card {
       background: linear-gradient(135deg, rgba(41, 128, 185, 0.6), rgba(44, 62, 80, 0.8));
       border-radius: 8px;
@@ -1130,6 +1189,11 @@
           setupDraftButtons();
           setupSearchFilter();
           
+          // Default sort to rank (NEW)
+          const sortSelect = document.getElementById('playerSort');
+          sortSelect.selectedIndex = 0; // Select "Sort By: Rank" option
+          sortPlayers(); // Apply the sort
+          
           // Handle form submission
           setupTeamSubmission(tournamentId, user);
         } else {
@@ -1251,13 +1315,15 @@
     // Function to load available players from the database
     async function loadAvailablePlayers(tournamentId) {
       try {
-        // Get players associated with this tournament
+        // Get players associated with this tournament with bracket information
         const { data: tournamentPlayers, error: tpError } = await supabase
           .from('tournament_players')
           .select(`
             player_id,
             tournament_rank,
             potential_points,
+            bracket_id,
+            brackets (name),
             players (*)
           `)
           .eq('tournament_id', tournamentId);
@@ -1274,6 +1340,9 @@
             if (player) {
               // Add tournament specific data to player object
               player.tournamentRank = tp.tournament_rank;
+              
+              // Add bracket name from the brackets relation
+              player.bracket = tp.brackets ? tp.brackets.name : null;
               
               // Use potential_points from tournament_players if available
               if (tp.tournament_rank !== null && tp.tournament_rank !== undefined) {
@@ -1315,10 +1384,20 @@
           playerCard.dataset.playerId = player.id;
           playerCard.dataset.potentialPoints = player.potentialPoints;
           playerCard.dataset.profilePicture = player.profile_picture || '';
+          playerCard.dataset.rank = player.tournamentRank || 999; // Add rank to dataset for sorting
           
           // Create player avatar
           const avatar = createPlayerAvatar(player, 'large');
           
+          // Add bracket label if available
+          if (player.bracket) {
+            const bracketLabel = document.createElement('div');
+            bracketLabel.className = 'bracket-label';
+            bracketLabel.textContent = `Bracket ${player.bracket}`;
+            playerCard.appendChild(bracketLabel);
+          }
+        
+              
           // Create player info section
           const playerInfo = document.createElement('div');
           playerInfo.className = 'player-info';
@@ -1672,7 +1751,34 @@
       submitButton.disabled = teamCount !== MAX_TEAM_SIZE;
     }
     
-    // Function to set up search and filter
+    // Global sortPlayers function
+    function sortPlayers() {
+      const sortSelect = document.getElementById('playerSort');
+      const sortOption = sortSelect.value.split(': ')[1].toLowerCase();
+      const playerList = document.getElementById('playerList');
+      const playerCards = Array.from(playerList.querySelectorAll('.player-card'));
+      
+      playerCards.sort((a, b) => {
+        if (sortOption === 'rank') {
+          const rankA = parseInt(a.dataset.rank || 999);
+          const rankB = parseInt(b.dataset.rank || 999);
+          return rankA - rankB;
+        } else if (sortOption === 'points') {
+          const pointsA = parseInt(a.dataset.potentialPoints || 0);
+          const pointsB = parseInt(b.dataset.potentialPoints || 0);
+          return pointsB - pointsA;
+        }
+        return 0;
+      });
+      
+      // Remove all current cards
+      playerCards.forEach(card => card.remove());
+      
+      // Add sorted cards back
+      playerCards.forEach(card => playerList.appendChild(card));
+    }
+
+    // Modified setupSearchFilter function
     function setupSearchFilter() {
       const searchInput = document.getElementById('playerSearch');
       const sortSelect = document.getElementById('playerSort');
@@ -1690,31 +1796,6 @@
           const isVisible = playerName.includes(searchTerm);
           card.style.display = isVisible ? 'block' : 'none';
         });
-      }
-      
-      function sortPlayers() {
-        const sortOption = sortSelect.value.split(': ')[1].toLowerCase();
-        const playerList = document.getElementById('playerList');
-        const playerCards = Array.from(playerList.querySelectorAll('.player-card'));
-        
-        playerCards.sort((a, b) => {
-          if (sortOption === 'rank') {
-            const rankA = parseInt(a.querySelector('.stat-value').textContent.replace('#', ''));
-            const rankB = parseInt(b.querySelector('.stat-value').textContent.replace('#', ''));
-            return rankA - rankB;
-          } else if (sortOption === 'points') {
-            const pointsA = parseInt(a.dataset.potentialPoints);
-            const pointsB = parseInt(b.dataset.potentialPoints);
-            return pointsB - pointsA;
-          }
-          return 0;
-        });
-        
-        // Remove all current cards
-        playerCards.forEach(card => card.remove());
-        
-        // Add sorted cards back
-        playerCards.forEach(card => playerList.appendChild(card));
       }
     }
     
