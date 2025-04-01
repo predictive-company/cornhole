@@ -13,7 +13,7 @@ async function signupUser(email, password, metadata = {}) {
       password,
       options: {
         data: metadata, // Store additional user metadata
-        emailRedirectTo: `${window.location.origin}/login.html?verified=true`
+        emailRedirectTo: `https://cornholekings.cincyphotobooth.com/login.html?verified=true`
       }
     });
     
@@ -170,7 +170,7 @@ async function checkAuth() {
 async function resetPassword(email) {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password.html`,
+      redirectTo: `https://cornholekings.cincyphotobooth.com/reset-password.html`,
     });
     
     return { error };

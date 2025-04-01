@@ -257,6 +257,31 @@
       background-color: #2ecc71;
     }
     
+    .bracket-links {
+      display: flex;
+      justify-content: space-around;
+      margin: 0.75rem 0 1rem 0;
+      padding: 0 0.5rem;
+    }
+
+    .bracket-link {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: background-color 0.2s, color 0.2s;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .bracket-link:hover {
+      background-color: #4ade80;
+      color: #080a14;
+      border-color: #4ade80;
+    }
+
     /* Player avatar styles */
     .player-avatar {
       width: 100px;
@@ -773,6 +798,14 @@
         <span id="playerCount">Loading players...</span>
       </div>
       
+      <!-- Added bracket links -->
+      <div class="bracket-links" style="display: flex; justify-content: space-around; margin: 10px 0;">
+        <a href="https://app.iplayacl.com/bracket-stack-viewer/201498" target="_blank" class="bracket-link">Bracket A</a>
+        <a href="https://app.iplayacl.com/bracket-stack-viewer/201499" target="_blank" class="bracket-link">Bracket B</a>
+        <a href="https://app.iplayacl.com/bracket-stack-viewer/201500" target="_blank" class="bracket-link">Bracket C</a>
+        <a href="https://app.iplayacl.com/bracket-stack-viewer/201501" target="_blank" class="bracket-link">Bracket D</a>
+      </div>
+
       <div class="search-filter">
         <input type="text" placeholder="Search players..." style="flex: 1;" id="playerSearch">
         <select id="playerSort">
@@ -1213,7 +1246,7 @@
         
         // Update team size info from tournament settings
         const teamSize = tournament.team_size || 4; // Default to 4 if not set
-        const tournamentDateString = `${formatDate(tournament.start_date)} • Top ${tournament.top_players_count || 4} Finishers Earn Points • Draft ${teamSize} Players`;
+        const tournamentDateString = `${formatDate(tournament.end_date)} • Top ${tournament.top_players_count || 4} Finishers Earn Points • Draft ${teamSize} Players`;
         document.querySelector('#tournamentInfo p').textContent = tournamentDateString;
         
         // Update the helper text that mentions team size
