@@ -777,6 +777,7 @@
         <input type="text" placeholder="Search players..." style="flex: 1;" id="playerSearch">
         <select id="playerSort">
           <option>Sort By: Rank</option>
+          <option>Sort By: Bracket</option>
           <option>Sort By: Points</option>
         </select>
       </div>
@@ -1384,7 +1385,8 @@
           playerCard.dataset.playerId = player.id;
           playerCard.dataset.potentialPoints = player.potentialPoints;
           playerCard.dataset.profilePicture = player.profile_picture || '';
-          playerCard.dataset.rank = player.tournamentRank || 999; // Add rank to dataset for sorting
+          playerCard.dataset.rank = player.tournamentRank || 999;
+          playerCard.dataset.bracket = player.bracket || 'Z'; // Add bracket to dataset for sorting
           
           // Create player avatar
           const avatar = createPlayerAvatar(player, 'large');
@@ -1393,9 +1395,10 @@
           if (player.bracket) {
             const bracketLabel = document.createElement('div');
             bracketLabel.className = 'bracket-label';
-            bracketLabel.textContent = `Bracket ${player.bracket}`;
+            bracketLabel.textContent = `Bracket: ${player.bracket}`;
             playerCard.appendChild(bracketLabel);
           }
+      
         
               
           // Create player info section
@@ -1767,6 +1770,17 @@
           const pointsA = parseInt(a.dataset.potentialPoints || 0);
           const pointsB = parseInt(b.dataset.potentialPoints || 0);
           return pointsB - pointsA;
+        } else if (sortOption === 'bracket') {
+          // Get bracket labels or use 'Z' as default (to sort players without brackets last)
+          const bracketLabelA = a.querySelector('.bracket-label')?.textContent || 'Z';
+          const bracketLabelB = b.querySelector('.bracket-label')?.textContent || 'Z';
+          
+          // Extract just the letter part from "Bracket: X"
+          const bracketA = bracketLabelA.includes(':') ? bracketLabelA.split(':')[1].trim() : bracketLabelA;
+          const bracketB = bracketLabelB.includes(':') ? bracketLabelB.split(':')[1].trim() : bracketLabelB;
+          
+          // Compare brackets alphabetically
+          return bracketA.localeCompare(bracketB);
         }
         return 0;
       });
