@@ -13,7 +13,7 @@ async function signupUser(email, password, metadata = {}) {
       password,
       options: {
         data: metadata, // Store additional user metadata
-        emailRedirectTo: `https://cornholekings.cincyphotobooth.com/login.html?verified=true`
+        emailRedirectTo: `http://cornholekings.net/login.html?verified=true`
       }
     });
     
@@ -159,7 +159,7 @@ async function checkAuth() {
   const user = await getCurrentUser();
   
   if (!user) {
-    window.location.href = 'https://cornholekings.cincyphotobooth.com/login.html?verified=true';
+    window.location.href = 'http://cornholekings.net/login.html?verified=true';
     return null;
   }
   
@@ -170,7 +170,7 @@ async function checkAuth() {
 async function resetPassword(email) {
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `https://cornholekings.cincyphotobooth.com/reset-password.html`,
+      redirectTo: `http://cornholekings.net/reset-password.html`,
     });
     
     return { error };
