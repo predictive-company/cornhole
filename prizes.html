@@ -46,11 +46,6 @@ header {
 }
 
 /* Left section - Logo */
-.logo-section {
-  display: flex;
-  align-items: center;
-}
-
 .logo {
   display: flex;
   align-items: center;
@@ -62,7 +57,7 @@ header {
 
 .logo h1 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2.0rem;
 }
 
 .logo-icon {
@@ -178,8 +173,17 @@ nav a.active {
   
   .logo-section, .nav-section, .user-section {
     width: 100%;
+    display: flex;
     justify-content: center;
     margin: 0.5rem 0;
+  }
+  
+  .logo {
+    justify-content: center; /* Center the logo and text */
+  }
+  
+  .logo h1 {
+    font-size: 2.0rem; /* Maintain the larger font size on mobile */
   }
   
   nav {

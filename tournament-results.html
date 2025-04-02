@@ -18,111 +18,150 @@
       background-attachment: fixed;
     }
     
-    /* Header and Nav */
-    header {
-      background-color: #0d1023;
-      padding: 0.7rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      width: 100%;
-      box-sizing: border-box;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    /* Left section - Logo */
-    .logo-section {
-      display: flex;
-      align-items: center;
-    }
-    
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      text-decoration: none;
-      color: white;
-    }
-    
-    .logo h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    
-    .logo-icon {
-      width: 36px;
-      height: 36px;
-      background-color: #f1c40f;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #0d1023;
-    }
-    
-    /* Middle section - Navigation */
-    .nav-section {
-      display: flex;
-      justify-content: center;
-      flex: 1;
-    }
-    
-    nav {
-      display: flex;
-    }
-    
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 0.6rem 1rem;
-      font-weight: 1000;
-      transition: color 0.2s, background-color 0.2s;
-      font-size: 1.1rem;
-    }
-    
-    nav a:hover {
-      color: #22c55e;
-    }
-    
-    nav a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
-    }
-    
-    /* Right section - User info */
-    .user-section {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-    }
-    
-    .user-email {
-      color: white;
-      margin-right: 1rem;
-      font-size: 0.9rem;
-    }
-    
-    .logout-btn {
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
-    }
-    
-    .logout-btn:hover {
-      background-color: #22c55e;
-    }
+/* Header and Nav */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Left section - Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2.0rem;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+nav {
+  display: flex;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  font-weight: 1000;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-email {
+  color: white;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+/* ADD THIS: Mobile Responsiveness for Header */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .logo-section, .nav-section, .user-section {
+    width: 100%;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+  
+  .logo {
+    justify-content: center; /* Center the logo and text */
+  }
+  
+  nav {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  /* Adjust result cards for mobile */
+  .team-result-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .player-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .player-item div {
+    margin: 0.3rem 0;
+  }
+}
     
     /* Main Container */
     .results-container {
