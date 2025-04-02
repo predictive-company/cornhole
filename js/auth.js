@@ -159,7 +159,7 @@ async function checkAuth() {
   const user = await getCurrentUser();
   
   if (!user) {
-    window.location.href = 'login.html';
+    window.location.href = 'https://cornholekings.cincyphotobooth.com/login.html?verified=true';
     return null;
   }
   
