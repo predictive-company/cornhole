@@ -1041,7 +1041,14 @@
     
     <h2>Loading Tournament...</h2>
     <p>Loading tournament details...</p>
-    
+
+    <div class="bracket-links">
+      <a href="https://app.iplayacl.com/bracket-stack-viewer/201498" target="_blank" class="bracket-link">ACL Bracket A Link</a>
+      <a href="https://app.iplayacl.com/bracket-stack-viewer/201499" target="_blank" class="bracket-link">ACL Bracket B Link</a>
+      <a href="https://app.iplayacl.com/bracket-stack-viewer/201500" target="_blank" class="bracket-link">ACL Bracket C Link</a>
+      <a href="https://app.iplayacl.com/bracket-stack-viewer/201501" target="_blank" class="bracket-link">ACL Bracket D Link</a>
+    </div>
+
     <div class="section-header">
       <h3>Your Team</h3>
       <div class="section-header-info">
@@ -1065,6 +1072,11 @@
   
   <div class="draft-container">
     <div class="players-pool">
+      <div style="background-color: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 8px; padding: 0.75rem; margin: 1rem 0; text-align: center;">
+        <span style="font-weight: bold; color: #4ade80;">Strategy Tip:</span> 
+        While not required, selecting one player from each bracket typically maximizes your chances of earning points!
+      </div>
+  
       <div class="section-header">
         <h3>Available Players</h3>
         <span id="playerCount">Loading players...</span>
@@ -1072,8 +1084,7 @@
       
     <!-- Filter buttons -->
     <div class="filter-buttons" style="display: flex; justify-content: space-around; margin: 10px 0;">
-      <button class="filter-btn active" data-filter="rank">Rank</button>
-      <button class="filter-btn" data-filter="bracket-a">Bracket A</button>
+      <button class="filter-btn active" data-filter="bracket-a">Bracket A</button>
       <button class="filter-btn" data-filter="bracket-b">Bracket B</button>
       <button class="filter-btn" data-filter="bracket-c">Bracket C</button>
       <button class="filter-btn" data-filter="bracket-d">Bracket D</button>
@@ -2074,8 +2085,8 @@
         });
       });
       
-      // Apply initial filter (Rank button is set as active by default in the HTML)
-      filterPlayersByButton('rank');
+      // Apply initial filter (Bracket A is set as active by default)
+      filterPlayersByButton('bracket-a');
     }
 
     // Filter players by search term
@@ -2104,73 +2115,43 @@
       // First apply visibility based on search filter
       const visibleBySearch = playerCards.filter(card => !card.classList.contains('search-hidden'));
       
-      if (filterType === 'rank') {
-        // All players visible when rank is selected (except those filtered by search)
-        playerCards.forEach(card => {
-          const isSearchHidden = card.classList.contains('search-hidden');
-          card.style.display = isSearchHidden ? 'none' : '';
-        });
+      // Extract the letter from the filter type (e.g., "bracket-a" => "A")
+      const bracketLetter = filterType.split('-')[1].toUpperCase();
+      
+      // Show only cards from the selected bracket (that also pass search filter)
+      playerCards.forEach(card => {
+        const bracketLabel = card.querySelector('.bracket-label');
+        const isCorrectBracket = bracketLabel && bracketLabel.textContent.includes(`Bracket: ${bracketLetter}`);
+        const isSearchHidden = card.classList.contains('search-hidden');
         
-        // Sort visible cards by rank only
-        const visibleCards = playerCards.filter(card => !card.classList.contains('search-hidden'));
-        
-        // Remove all cards from the DOM
-        playerCards.forEach(card => {
-          if (card.parentNode) {
-            card.parentNode.removeChild(card);
-          }
-        });
-        
-        // Sort by rank (lowest to highest)
-        visibleCards.sort((a, b) => {
-          const rankA = parseInt(a.dataset.rank || 999);
-          const rankB = parseInt(b.dataset.rank || 999);
-          return rankA - rankB;
-        });
-        
-        // Add sorted cards back to the DOM
-        visibleCards.forEach(card => {
-          playerList.appendChild(card);
-        });
-      } else if (filterType.startsWith('bracket-')) {
-        // Extract the letter from the filter type (e.g., "bracket-a" => "A")
-        const bracketLetter = filterType.split('-')[1].toUpperCase();
-        
-        // Show only cards from the selected bracket (that also pass search filter)
-        playerCards.forEach(card => {
-          const bracketLabel = card.querySelector('.bracket-label');
-          const isCorrectBracket = bracketLabel && bracketLabel.textContent.includes(`Bracket: ${bracketLetter}`);
-          const isSearchHidden = card.classList.contains('search-hidden');
-          
-          // Only show if it's the correct bracket AND not hidden by search
-          card.style.display = (isCorrectBracket && !isSearchHidden) ? '' : 'none';
-        });
-        
-        // Remove visible cards from the DOM
-        const visibleByBracket = visibleBySearch.filter(card => {
-          const bracketLabel = card.querySelector('.bracket-label');
-          return bracketLabel && bracketLabel.textContent.includes(`Bracket: ${bracketLetter}`);
-        });
-        
-        // Remove all cards from the DOM
-        visibleByBracket.forEach(card => {
-          if (card.parentNode) {
-            card.parentNode.removeChild(card);
-          }
-        });
-        
-        // Sort by rank within the bracket
-        visibleByBracket.sort((a, b) => {
-          const rankA = parseInt(a.dataset.rank || 999);
-          const rankB = parseInt(b.dataset.rank || 999);
-          return rankA - rankB;
-        });
-        
-        // Add sorted cards back to the DOM
-        visibleByBracket.forEach(card => {
-          playerList.appendChild(card);
-        });
-      }
+        // Only show if it's the correct bracket AND not hidden by search
+        card.style.display = (isCorrectBracket && !isSearchHidden) ? '' : 'none';
+      });
+      
+      // Remove visible cards from the DOM
+      const visibleByBracket = visibleBySearch.filter(card => {
+        const bracketLabel = card.querySelector('.bracket-label');
+        return bracketLabel && bracketLabel.textContent.includes(`Bracket: ${bracketLetter}`);
+      });
+      
+      // Remove all cards from the DOM
+      visibleByBracket.forEach(card => {
+        if (card.parentNode) {
+          card.parentNode.removeChild(card);
+        }
+      });
+      
+      // Sort by rank within the bracket
+      visibleByBracket.sort((a, b) => {
+        const rankA = parseInt(a.dataset.rank || 999);
+        const rankB = parseInt(b.dataset.rank || 999);
+        return rankA - rankB;
+      });
+      
+      // Add sorted cards back to the DOM
+      visibleByBracket.forEach(card => {
+        playerList.appendChild(card);
+      });
       
       // Update the player count
       updatePlayerCount();
