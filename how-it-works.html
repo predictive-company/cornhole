@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works - Cornhole Kings</title>
+  <style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #080a14;
+  color: white;
+  overflow-x: hidden;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  /* Improved font sizing for mobile readability */
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Header and Nav */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Left section - Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2.0rem;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+nav {
+  display: flex;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  font-weight: 1000;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-email {
+  color: white;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+.log-in-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+
+.log-in-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sign-up-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.sign-up-btn:hover {
+  background-color: #22c55e;
+}
+
+/* Mobile Responsiveness for Header */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .logo-section, .nav-section, .user-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+  
+  .logo {
+    justify-content: center; /* Center the logo and text */
+  }
+  
+  .logo h1 {
+    font-size: 2.0rem; /* Maintain the larger font size on mobile */
+  }
+  
+  nav {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* How It Works specific styles - updated to match tournament style */
+.how-it-works-container {
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1.5rem auto;
+  max-width: 1000px;
+  /* Better spacing on mobile */
+  box-sizing: border-box;
+}
+
+.how-it-works-container h2 {
+  color: #4ade80;
+  margin-top: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.5rem;
+  /* Responsive font size */
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  margin-bottom: 1.5rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.section h3 {
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  /* Responsive font size */
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.6), rgba(8, 10, 20, 0.8));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.2rem;
+  transition: all 0.3s;
+  /* Improved mobile layout */
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* Mobile optimization for steps */
+@media (max-width: 600px) {
+  .step {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .step-number {
+    margin-right: 0;
+    margin-bottom: 1rem;
+    align-self: center;
+  }
+}
+
+.step:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #0d1023;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: white;
+  /* Responsive font size */
+  font-size: clamp(1rem, 4vw, 1.25rem);
+}
+
+.points-example {
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  padding: 1.2rem;
+  margin: 1.5rem 0;
+}
+
+.points-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  /* Mobile table handling */
+  display: block;
+  overflow-x: auto;
+}
+
+.points-table th,
+.points-table td {
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.points-table th {
+  background-color: rgba(74, 222, 128, 0.1);
+}
+
+.player-example {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  /* Better wrapping on mobile */
+  flex-wrap: wrap;
+}
+
+.player-rank {
+  width: 36px;
+  height: 36px;
+  background-color: #0d1023;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 1rem;
+  /* Better display on mobile */
+  min-width: 36px;
+  background-color: #3498db;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.player-points {
+  background-color: #4ade80;
+  color: #080a14;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: bold;
+  margin-left: auto;
+}
+
+.strategy-tips {
+  list-style-type: none;
+  padding: 0;
+}
+
+.strategy-tips li {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+  position: relative;
+  /* Better text wrapping on mobile */
+  display: flex;
+}
+
+.strategy-tips li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.prizes-preview {
+  display: flex;
+  align-items: flex-start;
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.8rem;
+  margin-top: 1.5rem;
+  transition: all 0.3s;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.prizes-preview:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+  border-color: rgba(74, 222, 128, 0.4);
+}
+
+.company-logo {
+  width: 230px;
+  height: 230px;
+  background-color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+  padding: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.company-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.prizes-button-container {
+  margin-top: 1rem;
+  display: flex;
+}
+
+.prizes-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: #0d1023;
+  text-decoration: none;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  transition: all 0.3s;
+  min-height: 48px;
+  min-width: 180px;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.3);
+  text-align: center;
+}
+
+.prizes-link:hover {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(34, 197, 94, 0.4);
+}
+
+.prizes-link:active {
+  transform: translateY(-1px);
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: white;
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  /* Mobile improvements */
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* Additional styles for new elements */
+.tournament-ranks {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.tournament-ranks li {
+  margin-bottom: 12px;
+  padding-left: 24px;
+  position: relative;
+  /* Better text wrapping on mobile */
+  line-height: 1.5;
+}
+
+.tournament-ranks li::before {
+  content: "•";
+  position: absolute;
+  left: 8px;
+  color: #3498db;
+  font-weight: bold;
+}
+
+.point-calculation {
+  background-color: rgba(52, 152, 219, 0.1);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.point-calculation h5 {
+  margin-top: 0;
+  color: #3498db;
+}
+
+.point-calculation ul {
+  padding-left: 20px;
+}
+
+/* Mobile image loading optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile tap state for better user feedback */
+@media (max-width: 768px) {
+  a:active, button:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
+  
+  /* Better spacing on mobile */
+  .how-it-works-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+  
+  .step {
+    margin-bottom: 1rem;
+  }
+  
+  .section {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Fix for mobile scrolling */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Mobile optimization for prizes */
+@media (max-width: 600px) {
+  .prizes-preview {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .company-logo {
+    margin: 0 auto 1.5rem auto;
+  }
+  
+  .prizes-button-container {
+    justify-content: center;
+  }
+  
+  .prizes-link {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html" class="active">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="how-it-works-container">
+    <h2>How It Works</h2>
+    
+    <div class="section">
+      <h3>Our Fantasy Draft System</h3>
+      <p>Welcome to Cornhole Kings Fantasy Draft! Our unique tournament-based system gives everyone a chance to win, whether you're backing the top players or betting on underdogs. We use real data from the American Cornhole League (ACL) to rank players for each tournament, giving you the most accurate and up-to-date information.</p>
+    </div>
+    
+    <div class="section">
+      <h3>How to Play</h3>
+      
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h4>Join a Tournament</h4>
+          <p>Browse upcoming tournaments and select one you'd like to join. Each tournament has its own unique pool of players with tournament-specific rankings based on their CPI (Cornhole Player Index).</p>
+          <div class="section">
+            <p><strong>Our system uses tournament-specific rankings rather than global rankings. This means:</strong></p>
+            <ul class="tournament-ranks">
+              <li><strong>Tournament-Specific Competition:</strong> Rankings are calculated specifically for each tournament based on the players participating</li>
+              <li><strong>CPI-Based:</strong> Players are ranked by their Cornhole Player Index (CPI), a statistical measure of player skill from the ACL</li>
+              <li><strong>Fair Competition:</strong> This ensures each tournament has its own competitive balance, regardless of which top players are participating</li>
+              <li><strong>Fresh Opportunities:</strong> Each tournament provides a new chance to draft differently as rankings may change between events</li>
+            </ul>
+          </div>
+        </div>
+        
+      </div>
+      
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h4>Draft Your Team</h4>
+          <p>Select your players to build your dream team. Each player is assigned potential points based on their tournament ranking. The tournament ranking is determined by the player's CPI (Cornhole Player Index) which is created based on their current skill level along with previous performances.</p>
+          <h4>Winning Strategy Tips:</h4>
+          <ul class="strategy-tips">
+            <li><strong>Consider the player's CPI</strong> - Higher CPI indicates solid previous performance</li>
+            <li><strong>Consider PPR (Points Per Round)</strong> - Players with higher PPR tend to score more consistently</li>
+            <li><strong>Look for value picks</strong> - Find underrated players who have more potential than their ranking suggests</li>
+            <li><strong>Track recent performance</strong> - Players on hot streaks might outperform their ranking</li>
+            <li><strong>Find errors</strong> - Think someone is rated lower than they should be? Show everyone what you may know</li>
+          </ul>
+          
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h4>Submit Your Team</h4>
+          <p>Once you've selected your players, submit your team before the draft deadline. You can only submit one team per tournament. Choose wisely, as your selections are final once submitted!</p>
+          <div class="points-example">
+            <h4>How Points Work</h4>
+            <p>Player points are inverse to their ranking in the tournament. Top-ranked players are safer picks but offer fewer potential points. Lower-ranked players are riskier but offer higher potential rewards!</p>
+            
+
+              <p><strong>Final points are awarded based on player placement:</strong></p>
+              <p>Each tournament has a different amount of players that will recieve points for placing. This information will be displayed on the "Tournaments" page and while drafting.</p>
+              <p>If a tournament has multiple brackets, the top players are determined from the overall standings. In a 4-bracket tournament, only the winner of each bracket would place in the top 4.</p>
+           
+          </div>
+        </div>
+      </div>
+      
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h4>Watch the Tournament</h4>
+          <p>As the tournament progresses, your players earn points based on their performance and final placement. The better your players perform, the more of their potential points you'll receive!</p>
+          <p>Check your "My Profile" page to check your team and see if they earned points for each tournament.</p>
+          <p>You can also view the tournament results which shows both your team and the team that won the tournament.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2>Prizes</h2>
+      <p>Prizes change each event, and can range from company merch to exclusive cornhole bags that are not available for purchase anywhere!</p>
+      
+      <div class="prizes-preview">
+        <div class="company-logo">
+          <img src="img/acl-logo.png" alt="Sponsor Logo" width="230" height="230">
+        </div>
+        <div class="prizes-content">
+          <h4>Win Premium Cornhole Bags</h4>
+          <p>Take home high quality, professional-level cornhole bags, merch, gear, and more from our sponsoring partners. Each tournament features different prizes from various bag manufacturers.</p>
+          <div class="prizes-button-container">
+            <a href="prizes.html" class="prizes-link">View Prize Gallery</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // Check if user is authenticated
+        const user = await getCurrentUser();
+        
+        if (user) {
+          // Update user section when logged in
+          const userSection = document.querySelector('.user-section');
+          userSection.innerHTML = `
+            <span class="user-email">${user.email}</span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          `;
+          
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    });
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set different background colors for different message types
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(74, 222, 128, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

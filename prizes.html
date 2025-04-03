@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prizes - Cornhole Kings</title>
+  <style>
+:root {
+  --primary: #0d1023;
+  --secondary: #4ade80;
+  --accent: #4ade80;
+  --light: #ecf0f1;
+  --dark: #080a14;
+  --success: #4ade80;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #080a14;
+  color: white;
+  overflow-x: hidden;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  /* Improved font sizing for mobile readability */
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Header and Nav */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Left section - Logo */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2.0rem;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+nav {
+  display: flex;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  font-weight: 1000;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-email {
+  color: white;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+.log-in-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+
+.log-in-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sign-up-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.sign-up-btn:hover {
+  background-color: #22c55e;
+}
+
+/* Mobile Responsiveness for Header */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .logo-section, .nav-section, .user-section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+  
+  .logo {
+    justify-content: center; /* Center the logo and text */
+  }
+  
+  .logo h1 {
+    font-size: 2.0rem; /* Maintain the larger font size on mobile */
+  }
+  
+  nav {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+/* Main content */
+.intro {
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 800px;
+  padding: 0 1rem;
+}
+
+.intro h2 {
+  color: #4ade80;
+  margin-bottom: 1rem;
+  /* Responsive font size */
+  font-size: clamp(1.5rem, 5vw, 2rem);
+}
+
+.intro p {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.6;
+  /* Better readability on mobile */
+  font-size: clamp(1rem, 4vw, 1.1rem);
+}
+
+/* Featured bags grid */
+.featured-bags {
+  display: grid;
+  /* Improved responsive grid */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  padding: 0 1rem;
+}
+
+.bag-card {
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  /* Ensure cards stay in view on small screens */
+  max-width: 100%;
+}
+
+.bag-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.bag-image {
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.bag-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+
+.bag-card:hover .bag-image img {
+  transform: scale(1.05);
+}
+
+.tournament-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: #080a14;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.bag-details {
+  padding: 1.5rem;
+}
+
+.bag-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: white;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.bag-manufacturer {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.manufacturer-logo {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #0d1023;
+}
+
+.bag-features {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.bag-features li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: flex-start;
+}
+
+.bag-features li:before {
+  content: "•";
+  color: #4ade80;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.bag-link {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  text-align: center;
+  margin-top: 1rem;
+  /* Better touch targets */
+  min-height: 44px;
+  min-width: 44px;
+  /* Full width on mobile for better tapping */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.bag-link:hover {
+  background-color: #22c55e;
+  transform: translateY(-2px);
+}
+
+/* SIMPLIFIED SPONSORS SECTION */
+.sponsors-section {
+  position: relative;
+  text-align: center;
+  margin: 3rem auto;
+  padding: 3rem 1rem;
+  max-width: 1200px;
+  background: linear-gradient(to bottom, rgba(13, 16, 35, 0.3), rgba(8, 10, 20, 0.8));
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.sponsors-section h3 {
+  color: white;
+  margin-bottom: 0.5rem;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+}
+
+.sponsors-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background-color: #4ade80;
+  border-radius: 2px;
+}
+
+.sponsors-section p {
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 700px;
+  margin: 1.5rem auto;
+  font-size: clamp(1rem, 3vw, 1.1rem);
+}
+
+.sponsors-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+  position: relative;
+}
+
+.sponsor-card {
+  width: 200px;
+  background: rgba(13, 16, 35, 0.6);
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sponsor-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+}
+
+.sponsor-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(74, 222, 128, 0.3);
+  background: rgba(13, 16, 35, 0.7);
+}
+
+.sponsor-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.sponsor-logo {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem auto;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #0d1023;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.sponsor-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.sponsor-card:hover .sponsor-logo {
+  background-color: #22c55e;
+}
+
+.sponsor-name {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.sponsor-card:hover .sponsor-name {
+  color: #4ade80;
+}
+
+.sponsor-type {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
+  margin-top: 0.5rem;
+}
+
+/* Hexagon grid for additional style */
+.hex-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.hex {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(74, 222, 128, 0.03);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  opacity: 0.2;
+}
+
+@media (max-width: 768px) {
+  .sponsor-card {
+    width: 160px;
+    padding: 1.5rem 1rem;
+  }
+  
+  .sponsor-logo {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+  }
+  
+  .sponsor-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .sponsors-list {
+    gap: 1rem;
+  }
+  
+  .sponsor-card {
+    width: 140px;
+    padding: 1.25rem 0.75rem;
+  }
+  
+  .sponsor-logo {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: white;
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  /* Mobile improvements */
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
+/* Mobile image loading optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile tap state for better user feedback */
+@media (max-width: 768px) {
+  a:active, button:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
+  
+  /* Adjust padding for mobile cards */
+  .bag-details {
+    padding: 1rem;
+  }
+  
+  /* Fix for mobile scrolling */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html" class="active">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="intro">
+    <h2>FEATURED PRIZES</h2>
+  </div>
+  
+  <div class="featured-bags">
+  <!-- Bag 1 -->
+  <div class="bag-card">
+    <div class="bag-image">
+      <img src="img/prism-red.png" alt="Logic Prism Bags" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">Bagmania</div>
+    </div>
+    <div class="bag-details">
+      <h3 class="bag-name">Logic Prisms</h3>
+      <div class="bag-manufacturer">
+        <span>Win these bags by having the top scoring team from the Bagmania Las Vegas Pro Singles Tournament</span>
+      </div>
+      <ul class="bag-features">
+        <li>Speed rating: 5/9</li>
+        <li>ACL PRO Stamp</li>
+        <li>These hybrid carpet bags allow for hole-friendly action while still reacting when trying to cut or roll.</li>
+        <li>The carpet side breaks in quickly and SlideFlat fill blend makes the bag feel great in hand and on the boards.</li>
+      </ul>
+      <a href="https://www.logiccornhole.com/collections/prism" class="bag-link" target="_blank" data-manufacturer="Logic Cornhole" data-tournament="Bagmania">View Website</a>
+    </div>
+  </div>
+
+  <!-- Bag 2 -->
+  <div class="bag-card">
+    <div class="bag-image">
+      <img src="img/wizardL-blue.png" alt="Wizard L Bags" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">Michigan Open</div>
+    </div>
+    <div class="bag-details">
+      <h3 class="bag-name">BG Wizard L</h3>
+      <div class="bag-manufacturer">
+        <span>Win these bags by having the top scoring team from the Michigan Open Pro Singles Tournament</span>
+      </div>
+      <ul class="bag-features">
+        <li>Speed rating: 5/7</li>
+        <li>ACL PRO Stamp</li>
+        <li>Herringbone Carpet</li>
+        <li>One of the most popular bags in the game.</li>
+      </ul>
+      <a href="https://bgcornhole.com/collections/acl-approved-bags" class="bag-link" target="_blank" data-manufacturer="BG Cornhole" data-tournament="Michigan Open">View Website</a>
+    </div>
+  </div>
+
+  <!-- Bag 3 -->
+  <div class="bag-card">
+    <div class="bag-image">
+      <img src="img/lucky-jersey.png" alt="Lucky Cornhole Jersey" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">Kawasaki Kids Tournament</div>
+    </div>
+    <div class="bag-details">
+      <h3 class="bag-name">Lucky Bags Jersey</h3>
+      <div class="bag-manufacturer">
+        <span>Finish in the top 4 users of the Kawaksaki kids tournament on 4/2/25</span>
+      </div>
+      <ul class="bag-features">
+        <li>10 different colorways</li>
+        <li>Customized with your first name and last name on the back.</li>
+        <li>Perfect blend of comfort, style, and performance.</li>
+      </ul>
+      <a href="https://luckycornhole.com/categories/ols/products/lucky-bags-solid-colorway-jersey" class="bag-link" target="_blank" data-manufacturer="Lucky Bags" data-tournament="Kawasaki Kids">View Website</a>
+    </div>
+  </div>
+
+  <!-- Bag 4 -->
+  <div class="bag-card">
+    <div class="bag-image">
+      <img src="img/ultra-break-in-kit.png" alt="Ultra Break-in Solution" onerror="this.src='img/bag-placeholder.jpg'">
+      <div class="tournament-badge">San Diego Regional #8</div>
+    </div>
+    <div class="bag-details">
+      <h3 class="bag-name">Ultra Break-In Solution</h3>
+      <div class="bag-manufacturer">
+        <span>Finish in the top 2 users of ACL Regional #8</span>
+      </div>
+      <ul class="bag-features">
+        <li>Conditioner, Soap, an Ultra micro-fiber towel</li>
+        <li>5 Step cornhole bag Break-In instruction card</li>
+        <li>Get your bags perfectly broken-in knowing you are doing it safely and quickly with our specially formulated products that will leave your bag flexible and feeling great.</li>
+      </ul>
+      <a href="https://ultracornhole.com/product/cornhole-break-in-solution/" class="bag-link" target="_blank" data-manufacturer="Ultra Cornhole" data-tournament="ACL Regional #8">View Website</a>
+    </div>
+  </div>
+  </div>
+  
+  <!-- Simplified sponsors section without badges and with reduced animations -->
+  <div class="sponsors-section">
+    <h3>Our Bag Sponsors</h3>
+    <p>We partner with the top cornhole bag manufacturers to bring you premium prizes for every tournament.</p>
+    
+    <div class="sponsors-list">
+      <!-- Logic Cornhole -->
+      <div class="sponsor-card">
+        <a href="https://www.logiccornhole.com/collections/prism" class="sponsor-link" data-manufacturer="Logic Cornhole" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/logic.png" alt="Logic Logo" onerror="this.parentNode.textContent='L'">
+          </div>
+          <div class="sponsor-name">Logic Cornhole</div>
+          <div class="sponsor-type">Bag Manufacturer</div>
+        </a>
+      </div>
+      
+      <!-- BG Cornhole -->
+      <div class="sponsor-card">
+        <a href="https://bgcornhole.com/collections/acl-approved-bags" class="sponsor-link" data-manufacturer="BG Cornhole" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/bg.png" alt="BG Cornhole Logo" onerror="this.parentNode.textContent='BG'">
+          </div>
+          <div class="sponsor-name">BG Cornhole</div>
+          <div class="sponsor-type">Bag Manufacturer</div>
+        </a>
+      </div>
+      
+      <!-- Lucky Bags -->
+      <div class="sponsor-card">
+        <a href="https://luckycornhole.com/" class="sponsor-link" data-manufacturer="Lucky Bags" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/lucky.png" alt="Lucky Bags Logo" onerror="this.parentNode.textContent='LB'">
+          </div>
+          <div class="sponsor-name">Lucky Bags</div>
+          <div class="sponsor-type">Bag Manufacturer</div>
+        </a>
+      </div>
+      
+      <!-- Ultra Cornhole -->
+      <div class="sponsor-card">
+        <a href="https://ultracornhole.com/" class="sponsor-link" data-manufacturer="Ultra Cornhole" target="_blank">
+          <div class="sponsor-logo">
+            <img src="img/ultra.png" alt="Ultra Logo" onerror="this.parentNode.textContent='U'">
+          </div>
+          <div class="sponsor-name">Ultra Cornhole</div>
+          <div class="sponsor-type">Official Sponsor</div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Decorative hexagon background -->
+    <div class="hex-grid">
+      <div class="hex" style="top: 10%; left: 5%;"></div>
+      <div class="hex" style="top: 70%; left: 10%;"></div>
+      <div class="hex" style="top: 40%; left: 20%;"></div>
+      <div class="hex" style="top: 20%; left: 80%;"></div>
+      <div class="hex" style="top: 60%; left: 85%;"></div>
+      <div class="hex" style="top: 30%; left: 50%;"></div>
+      <div class="hex" style="top: 80%; left: 60%;"></div>
+      <div class="hex" style="top: 15%; left: 30%;"></div>
+      <div class="hex" style="top: 50%; left: 70%;"></div>
+    </div>
+  </div>
+  
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Function to track outbound clicks
+    async function trackOutboundClick(linkDetails) {
+      try {
+        // Get the supabase client (assuming getSupabaseClient is defined in auth.js)
+        // If not, use the global supabase client
+        const supabaseClient = typeof getSupabaseClient === 'function' 
+                             ? getSupabaseClient() 
+                             : supabase;
+        
+          // Insert the click data into your Supabase table
+        const { data, error } = await supabaseClient
+          .from('outbound_clicks')
+          .insert([
+            { 
+              bag_name: linkDetails.bagName,
+              manufacturer: linkDetails.manufacturer,
+              tournament: linkDetails.tournament,
+              destination_url: linkDetails.destination,
+              user_id: linkDetails.userId || null,
+              link_type: linkDetails.linkType || 'bag', // Added link_type field
+              timestamp: new Date().toISOString()
+            }
+          ]);
+          
+        if (error) throw error;
+        console.log('Click tracked successfully', data);
+        return data;
+      } catch (err) {
+        console.error('Error tracking click:', err);
+        // Still allow the click to proceed even if tracking fails
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // Check if user is authenticated
+        const user = await getCurrentUser();
+        
+        if (user) {
+          // Update user section when logged in
+          const userSection = document.querySelector('.user-section');
+          userSection.innerHTML = `
+            <span class="user-email">${user.email}</span>
+            <button id="logoutBtn" class="logout-btn">Logout</button>
+          `;
+          
+          // Add logout event listener
+          document.getElementById('logoutBtn').addEventListener('click', async function() {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            }
+          });
+        }
+
+        // Add click tracking to all bag links
+        document.querySelectorAll('.bag-link').forEach(link => {
+          link.addEventListener('click', async function(e) {
+            // Get the bag details
+            const bagCard = this.closest('.bag-card');
+            const bagName = bagCard ? bagCard.querySelector('.bag-name').textContent : 'Unknown';
+            const manufacturer = this.getAttribute('data-manufacturer') || 
+                               (bagCard ? bagCard.querySelector('.bag-manufacturer span').textContent : 'Unknown');
+            const tournament = this.getAttribute('data-tournament') ||
+                              (bagCard ? bagCard.querySelector('.tournament-badge').textContent : 'Unknown');
+            
+            // Track the click
+            await trackOutboundClick({
+              bagName: bagName,
+              manufacturer: manufacturer,
+              tournament: tournament,
+              destination: this.href,
+              userId: user ? user.id : null,
+              linkType: 'bag'
+            });
+            
+            // Show a toast message
+            showToast(`Visiting ${manufacturer} website`, 'info');
+            
+            // We don't prevent default since we want the link to open in a new tab
+            // e.preventDefault() would stop the link from working
+          });
+        });
+
+        // Add click tracking to all sponsor links
+        document.querySelectorAll('.sponsor-link').forEach(link => {
+          link.addEventListener('click', async function(e) {
+            const manufacturer = this.getAttribute('data-manufacturer') || 
+                               this.querySelector('.sponsor-name').textContent;
+                               
+            // Track the click
+            await trackOutboundClick({
+              bagName: 'N/A', // Not applicable for sponsor links
+              manufacturer: manufacturer,
+              tournament: 'All', // Generic value
+              destination: this.href,
+              userId: user ? user.id : null,
+              linkType: 'sponsor' // Add link type to differentiate in analytics
+            });
+            
+            // Show a toast message
+            showToast(`Visiting ${manufacturer} website`, 'info');
+          });
+        });
+        
+        // Set static opacities for hexagons instead of animations
+        document.querySelectorAll('.hex').forEach(hex => {
+          // Random fixed opacity between 0.1 and 0.3
+          hex.style.opacity = (Math.random() * 0.2 + 0.1).toFixed(2);
+        });
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    });
+    
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set different background colors for different message types
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(74, 222, 128, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+
+    // Additional analytics features
+    // Store local click history in sessionStorage (cleared when browser closes)
+    function storeLocalClickHistory(clickData) {
+      const clickHistory = JSON.parse(sessionStorage.getItem('clickHistory') || '[]');
+      clickHistory.push({
+        ...clickData,
+        timestamp: new Date().toISOString()
+      });
+      sessionStorage.setItem('clickHistory', JSON.stringify(clickHistory));
+    }
+  </script>
+</body>
+</html>

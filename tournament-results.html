@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tournament Results - Cornhole Kings</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #080a14;
+      color: white;
+      overflow-x: hidden;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+    
+/* Header and Nav */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Left section - Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2.0rem;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+nav {
+  display: flex;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  font-weight: 1000;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #22c55e;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-email {
+  color: white;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+/* ADD THIS: Mobile Responsiveness for Header */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .logo-section, .nav-section, .user-section {
+    width: 100%;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+  
+  .logo {
+    justify-content: center; /* Center the logo and text */
+  }
+  
+  nav {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  /* Adjust result cards for mobile */
+  .team-result-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .player-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .player-item div {
+    margin: 0.3rem 0;
+  }
+}
+    
+    /* Main Container */
+    .results-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+    
+    .results-container h2 {
+      margin-top: 0;
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tournament-info {
+      background: linear-gradient(to right, rgba(74, 222, 128, 0.1), transparent);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    
+    .tournament-info h3 {
+      margin-top: 0;
+      color: white;
+    }
+    
+    .results-section {
+      margin-bottom: 2rem;
+    }
+    
+    .results-section h3 {
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Team Results Styles */
+    .team-results {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .team-result-card {
+      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+    
+    .team-result-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      border-color: rgba(74, 222, 128, 0.3);
+    }
+    
+    .team-result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      background: linear-gradient(to right, rgba(74, 222, 128, 0.2), transparent);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .team-user {
+      font-weight: bold;
+      font-size: 1.5rem;
+      color: white;
+    }
+    
+    .team-points {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #4ade80;
+    }
+    
+    .team-players {
+      padding: 1.5rem;
+    }
+    
+    .player-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .player-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background-color 0.2s;
+    }
+    
+    .player-item:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Placement Indicator - Keep original medal colors */
+    .placement-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-right: 1rem;
+    }
+    
+    .placement-badge {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      color: #080a14;
+      font-weight: bold;
+      font-size: 0.85rem;
+    }
+    
+    .first-place {
+      background-color: #f1c40f; /* Gold */
+    }
+    
+    .second-place {
+      background-color: #bdc3c7; /* Silver */
+    }
+    
+    .third-place {
+      background-color: #cd7f32; /* Bronze */
+    }
+    
+    .fourth-place {
+      background-color: #3498db; /* Blue */
+    }
+    
+    /* Team Cards By Placement - Keep original medal colors for the borders */
+    .team-result-card.first-place {
+      border-left: 5px solid #f1c40f;
+    }
+    
+    .team-result-card.second-place {
+      border-left: 5px solid #bdc3c7;
+    }
+    
+    .team-result-card.third-place {
+      border-left: 5px solid #cd7f32;
+    }
+    
+    .team-result-card.fourth-place {
+      border-left: 5px solid #3498db;
+    }
+    
+    /* Winner tag */
+    .winner-tag {
+      background-color: #f1c40f;
+      color: #080a14;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      margin-left: 1rem;
+    }
+    
+    /* Your team tag */
+    .your-team-tag {
+      background-color: #4ade80;
+      color: #080a14;
+      padding: 0.3rem 0.8rem;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      margin-left: 1rem;
+    }
+    
+    /* Back to profile button */
+    .back-button {
+      display: inline-block;
+      padding: 0.8rem 2rem;
+      background-color: #4ade80;
+      color: #080a14;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .back-button:hover {
+      background-color: #22c55e;
+      transform: translateY(-2px);
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #4ade80;
+      animation: spin 1s ease-in-out infinite;
+      margin: 1rem auto;
+    }
+    
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      background-color: rgba(74, 222, 128, 0.9);
+      color: white;
+      border-radius: 6px;
+      display: none;
+      z-index: 1000;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html" class="active">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <span class="user-email" id="userEmail">Loading...</span>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </header>
+  
+  <div class="results-container">
+    <a href="profile.html" class="back-button">← Back to Profile</a>
+    
+    <h2>Tournament Results</h2>
+    
+    <div id="tournamentInfo" class="tournament-info">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Loading tournament information...</p>
+      </div>
+    </div>
+    
+    <div class="results-section">
+      <h3>Team Results</h3>
+      <div id="teamResults" class="team-results">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <p>Loading team results...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/supabase.js"></script>
+  <script>
+// Helper functions
+function getInitials(name) {
+  if (!name) return 'XX';
+  return name
+    .split(' ')
+    .map(part => part[0])
+    .join('')
+    .toUpperCase();
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'Unknown Date';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', { 
+    month: 'long', 
+    day: 'numeric', 
+    year: 'numeric' 
+  });
+}
+
+function getOrdinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+function capitalizeFirstLetter(string) {
+  if (!string) return '';
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getPlacementClass(placement) {
+  if (!placement) return '';
+  if (placement === 1) return 'first-place';
+  if (placement === 2) return 'second-place';
+  if (placement === 3) return 'third-place';
+  if (placement === 4) return 'fourth-place';
+  return '';
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  
+  // Set color based on message type
+  if (type === 'success') {
+    toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+  } else if (type === 'error') {
+    toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+  } else if (type === 'info') {
+    toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+  }
+  
+  toast.style.display = 'block';
+  
+  setTimeout(() => {
+    toast.style.display = 'none';
+  }, 3000);
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+    // Check if user is authenticated
+    const user = await getCurrentUser();
+    
+    if (!user) {
+      // Not logged in, redirect to login
+      window.location.href = 'login.html?redirect=profile.html';
+      return;
+    }
+    
+    // Update user info in header
+    document.getElementById('userEmail').textContent = user.email || 'User';
+    
+    // Add logout event listener
+    document.getElementById('logoutBtn').addEventListener('click', async function() {
+      try {
+        const { error } = await logoutUser();
+        if (!error) {
+          window.location.href = 'login.html';
+        } else {
+          showToast('Error logging out: ' + error.message, 'error');
+        }
+      } catch (err) {
+        console.error('Error during logout:', err);
+        showToast('Error during logout', 'error');
+      }
+    });
+    
+    // Get tournament ID from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const tournamentId = urlParams.get('tournamentId');
+    
+    if (!tournamentId) {
+      showToast('No tournament specified', 'error');
+      document.getElementById('tournamentInfo').innerHTML = `
+        <p>Error: No tournament specified. Please go back to your profile and select a tournament.</p>
+      `;
+      document.getElementById('teamResults').innerHTML = '';
+      return;
+    }
+    
+    // Load tournament info and results
+    const tournamentInfo = await loadTournamentInfo(tournamentId);
+    
+    if (tournamentInfo) {
+      await loadTournamentResults(tournamentId, tournamentInfo.winning_team_id, user.id);
+    }
+    
+  } catch (err) {
+    console.error('Error initializing results page:', err);
+    showToast('An error occurred while loading the page', 'error');
+  }
+});
+
+// Load tournament information
+async function loadTournamentInfo(tournamentId) {
+  const tournamentInfoContainer = document.getElementById('tournamentInfo');
+  
+  try {
+    // Fetch tournament details
+    const { data: tournament, error } = await supabase
+      .from('tournaments')
+      .select('*')
+      .eq('id', tournamentId)
+      .single();
+      
+    if (error) {
+      console.error('Error fetching tournament:', error);
+      tournamentInfoContainer.innerHTML = `<p>Error loading tournament information.</p>`;
+      return null;
+    }
+    
+    if (!tournament) {
+      tournamentInfoContainer.innerHTML = `<p>Tournament not found.</p>`;
+      return null;
+    }
+    
+    // Check if tournament is completed
+    if (tournament.status !== 'completed') {
+      tournamentInfoContainer.innerHTML = `
+        <h3>${tournament.name}</h3>
+        <p>This tournament is not yet completed. Results will be available after the tournament ends.</p>
+        <p>Current status: ${capitalizeFirstLetter(tournament.status)}</p>
+        <p>Tournament dates: ${formatDate(tournament.start_date)} to ${formatDate(tournament.end_date)}</p>
+      `;
+      document.getElementById('teamResults').innerHTML = '';
+      return null;
+    }
+    
+    // Display tournament info
+    tournamentInfoContainer.innerHTML = `
+      <h3>${tournament.name}</h3>
+      <p>Status: <span style="color: #4ade80;">${capitalizeFirstLetter(tournament.status)}</span></p>
+      <p>Tournament dates: ${formatDate(tournament.start_date)} to ${formatDate(tournament.end_date)}</p>
+      <p>Team size: ${tournament.team_size} players</p>
+    `;
+    
+    return tournament;
+    
+  } catch (err) {
+    console.error('Error loading tournament info:', err);
+    tournamentInfoContainer.innerHTML = `<p>Error loading tournament information.</p>`;
+    return null;
+  }
+}
+
+async function loadTournamentResults(tournamentId, winningTeamId, currentUserId) {
+  const teamResultsContainer = document.getElementById('teamResults');
+  
+  try {
+    // Get the current user's team for this tournament
+    const { data: userTeam, error: userTeamError } = await supabase
+      .from('teams')
+      .select('id')
+      .eq('tournament_id', tournamentId)
+      .eq('user_id', currentUserId)
+      .maybeSingle();
+      
+    if (userTeamError) {
+      console.error('Error fetching user team:', userTeamError);
+    }
+    
+    // Array to store team IDs we want to display
+    const teamsToFetch = [];
+    
+    // Add user's team if they have one
+    if (userTeam && userTeam.id) {
+      teamsToFetch.push(userTeam.id);
+    }
+    
+    // Add winning team if it exists and is different from user's team
+    if (winningTeamId && (!userTeam || userTeam.id !== winningTeamId)) {
+      teamsToFetch.push(winningTeamId);
+    }
+    
+    // If no teams to fetch, show message
+    if (teamsToFetch.length === 0) {
+      teamResultsContainer.innerHTML = `
+        <p>You don't have a team in this tournament, and no winning team has been declared yet.</p>
+      `;
+      return;
+    }
+    
+    // Fetch the teams we want to display
+    const { data: teams, error: teamsError } = await supabase
+      .from('teams')
+      .select('id, user_id, team_points, winnings')
+      .in('id', teamsToFetch)
+      .order('team_points', { ascending: false });
+      
+    if (teamsError) {
+      console.error('Error fetching teams:', teamsError);
+      teamResultsContainer.innerHTML = `<p>Error loading team results.</p>`;
+      return;
+    }
+    
+    if (!teams || teams.length === 0) {
+      teamResultsContainer.innerHTML = `<p>No teams found for this tournament.</p>`;
+      return;
+    }
+
+    // First, get ALL team_players for this tournament to reference later
+    const { data: allTournamentTeamPlayers, error: allTpError } = await supabase
+      .from('team_players')
+      .select('player_id, potential_points, team_id')
+      .eq('tournament_id', tournamentId);
+      
+    if (allTpError) {
+      console.error('Error fetching all team players for tournament:', allTpError);
+    }
+    
+    // Create a map of player_id -> potential_points from all team_players
+    const playerPotentialPointsMap = {};
+    if (allTournamentTeamPlayers && allTournamentTeamPlayers.length > 0) {
+      allTournamentTeamPlayers.forEach(tp => {
+        if (tp.player_id) {
+          playerPotentialPointsMap[tp.player_id] = tp.potential_points;
+        }
+      });
+    }
+    
+    // Process each team to get user and player details
+    const processedTeams = [];
+    
+    for (const team of teams) {
+      try {
+        console.log(`Processing team ${team.id} (winning team: ${team.id === winningTeamId})`);
+        
+        // Get user details for this team
+        const { data: user, error: userError } = await supabase
+          .from('profiles')
+          .select('username, email')
+          .eq('id', team.user_id)
+          .maybeSingle();
+          
+        if (userError) {
+          console.error(`Error fetching user for team ${team.id}:`, userError);
+        }
+        
+        let players = [];
+        
+        // If this is the winning team, try to get players from player_tournament_points directly
+        if (team.id === winningTeamId) {
+          console.log(`Looking up players for winning team ${team.id} from player_tournament_points`);
+          
+          // Get players associated with this team in the tournament
+          const { data: tournamentPlayers, error: tpError } = await supabase
+            .from('player_tournament_points')
+            .select(`
+              player_id,
+              points_earned,
+              placement
+            `)
+            .eq('tournament_id', tournamentId)
+            .eq('team_id', team.id);
+          
+          if (tpError) {
+            console.error(`Error fetching tournament players for winning team:`, tpError);
+          }
+          
+          console.log(`Found ${tournamentPlayers?.length || 0} tournament players for winning team`);
+          
+          // If players found, get their details from players table
+          if (tournamentPlayers && tournamentPlayers.length > 0) {
+            const playerIds = tournamentPlayers.map(tp => tp.player_id);
+            
+            // Get player names and potential points
+            const { data: playerDetails, error: pdError } = await supabase
+              .from('players')
+              .select('id, name, potential_points')
+              .in('id', playerIds);
+              
+            if (pdError) {
+              console.error(`Error fetching player details for winning team:`, pdError);
+            }
+            
+            console.log(`Found ${playerDetails?.length || 0} player details for winning team`);
+            
+            // Create player entries for each player
+            if (playerDetails && playerDetails.length > 0) {
+              for (const player of playerDetails) {
+                // Get the tournament points info
+                const tpInfo = tournamentPlayers.find(tp => tp.player_id === player.id);
+                
+                // FIXED: Use the points earned as potential points
+                // since that's what the player would've earned at 100%
+                const potentialPoints = tpInfo?.points_earned || 0;
+                
+                // For debugging
+                console.log(`Player ${player.name} - Points earned: ${tpInfo?.points_earned}, Potential: ${potentialPoints}`);
+                
+                players.push({
+                  id: player.id,
+                  name: player.name,
+                  potential_points: potentialPoints,
+                  tournament_points: tpInfo?.points_earned || 0,
+                  placement: tpInfo?.placement || null
+                });
+              }
+            } else {
+              // If we couldn't get player names, use just the IDs
+              tournamentPlayers.forEach((tp, index) => {
+                players.push({
+                  id: tp.player_id,
+                  name: `Player ${index + 1}`,
+                  potential_points: tp.points_earned || 0, // Use points earned as potential
+                  tournament_points: tp.points_earned || 0,
+                  placement: tp.placement || null
+                });
+              });
+            }
+          } else {
+            // If we still don't have players, create a single placeholder
+            players = [
+              {
+                id: 'placeholder-1',
+                name: 'Tournament Winner',
+                potential_points: team.team_points || 0, 
+                tournament_points: team.team_points || 0,
+                placement: 1,
+                isPlaceholder: true
+              }
+            ];
+          }
+        } else {
+          // For regular teams (user's team), use the standard process
+          // Get team players with their potential_points from team_players table
+          const { data: teamPlayers, error: playersError } = await supabase
+            .from('team_players')
+            .select('player_id, potential_points')
+            .eq('team_id', team.id);
+            
+          if (playersError) {
+            console.error(`Error fetching players for team ${team.id}:`, playersError);
+          }
+          
+          console.log(`Found ${teamPlayers?.length || 0} team players for team ${team.id}`);
+          
+          // Get player details if we have team_players records
+          if (teamPlayers && teamPlayers.length > 0) {
+            // Get player IDs
+            const playerIds = teamPlayers.map(tp => tp.player_id);
+            
+            // Get player details
+            const { data: playerDetails, error: playerDetailsError } = await supabase
+              .from('players')
+              .select('id, name')
+              .in('id', playerIds);
+              
+            if (playerDetailsError) {
+              console.error(`Error fetching player details for team ${team.id}:`, playerDetailsError);
+            }
+            
+            console.log(`Found ${playerDetails?.length || 0} player details for team ${team.id}`);
+            
+            // Process player details
+            if (playerDetails && playerDetails.length > 0) {
+              for (const player of playerDetails) {
+                const teamPlayer = teamPlayers.find(tp => tp.player_id === player.id);
+                const potentialPoints = teamPlayer ? teamPlayer.potential_points : 0;
+                
+                // Get player tournament points
+                const { data: pointsData, error: pointsError } = await supabase
+                  .from('player_tournament_points')
+                  .select('points_earned, placement')
+                  .eq('player_id', player.id)
+                  .eq('tournament_id', tournamentId)
+                  .maybeSingle();
+                
+                // Default values
+                let tournamentPoints = 0;
+                let playerPlacement = null;
+                
+                if (!pointsError && pointsData) {
+                  tournamentPoints = pointsData.points_earned || 0;
+                  playerPlacement = pointsData.placement || null;
+                }
+                
+                players.push({
+                  id: player.id,
+                  name: player.name,
+                  potential_points: potentialPoints,
+                  tournament_points: tournamentPoints,
+                  placement: playerPlacement
+                });
+              }
+            }
+          }
+        }
+        
+        // Add team to processed teams
+        processedTeams.push({
+          ...team,
+          user: user || { username: 'Unknown User', email: '' },
+          players: players,
+          isWinningTeam: team.id === winningTeamId,
+          isUserTeam: team.id === (userTeam ? userTeam.id : null)
+        });
+        
+      } catch (err) {
+        console.error(`Error processing team ${team.id}:`, err);
+      }
+    }
+    
+    console.log('Processed teams:', processedTeams);
+    
+    // Render teams
+    renderTeamResults(processedTeams, teamResultsContainer);
+    
+  } catch (err) {
+    console.error('Error loading tournament results:', err);
+    teamResultsContainer.innerHTML = `<p>Error loading team results.</p>`;
+  }
+}
+
+function renderTeamResults(teams, container) {
+  // Clear container
+  container.innerHTML = '';
+  
+  if (!teams || teams.length === 0) {
+    container.innerHTML = `<p>No team results available.</p>`;
+    return;
+  }
+  
+  // Sort teams: Put winning team first, then user team (if it's not the winning team)
+  teams.sort((a, b) => {
+    // Winning team always first
+    if (a.isWinningTeam && !b.isWinningTeam) return -1;
+    if (!a.isWinningTeam && b.isWinningTeam) return 1;
+    
+    // Then user team
+    if (a.isUserTeam && !b.isUserTeam) return -1;
+    if (!a.isUserTeam && b.isUserTeam) return 1;
+    
+    // Otherwise sort by points
+    return (b.team_points || 0) - (a.team_points || 0);
+  });
+  
+  // Create and add team result cards
+  teams.forEach((team) => {
+    const teamCard = document.createElement('div');
+    
+    // Use placement from tournament_results
+    teamCard.className = `team-result-card ${getPlacementClass(team.placement)}`;
+    
+    // Create header
+    const header = document.createElement('div');
+    header.className = 'team-result-header';
+    
+    // Placement indicator if team has a placement value
+    let placementHTML = '';
+    if (team.placement && team.placement > 0 && team.placement <= 4) {
+      placementHTML = `
+        <div class="placement-indicator">
+          <div class="placement-badge ${getPlacementClass(team.placement)}">${team.placement}</div>
+          <span>${getOrdinal(team.placement)} Place</span>
+        </div>
+      `;
+    }
+    
+    // Add winning team tag
+    let teamTags = '';
+    if (team.isWinningTeam) {
+      teamTags += `<span class="winner-tag">TOURNAMENT WINNER</span>`;
+    }
+    
+    // Add "your team" tag if applicable
+    if (team.isUserTeam) {
+      teamTags += `<span class="your-team-tag">YOUR TEAM</span>`;
+    }
+    
+    header.innerHTML = `
+      ${placementHTML}
+      <div class="team-user">${team.user.username} ${teamTags}</div>
+      <div class="team-points">${team.team_points || 0} points</div>
+    `;
+    
+    teamCard.appendChild(header);
+    
+    // Create players section
+    const playersSection = document.createElement('div');
+    playersSection.className = 'team-players';
+    
+    if (team.players && team.players.length > 0) {
+      const playerList = document.createElement('div');
+      playerList.className = 'player-list';
+      
+      // Sort players by placement (players with placement first) then by points
+      team.players.sort((a, b) => {
+        // Players with placement first
+        if (a.placement && !b.placement) return -1;
+        if (!a.placement && b.placement) return 1;
+        
+        // Sort by placement
+        if (a.placement && b.placement) {
+          return a.placement - b.placement;
+        }
+        
+        // Sort by potential points if no placement or tournament points
+        if ((a.tournament_points || 0) === 0 && (b.tournament_points || 0) === 0) {
+          return (b.potential_points || 0) - (a.potential_points || 0);
+        }
+        
+        // Sort by tournament points if no placement
+        return (b.tournament_points || 0) - (a.tournament_points || 0);
+      });
+      
+      team.players.forEach(player => {
+        const playerItem = document.createElement('div');
+        playerItem.className = 'player-item';
+        
+        // Player placement indicator
+        let playerPlacementHTML = '';
+        if (player.placement && player.placement > 0 && player.placement <= 4) {
+          const placementIcon = player.placement === 1 ? '🥇' : player.placement === 2 ? '🥈' : player.placement === 3 ? '🥉' : '🏅';
+          
+          playerPlacementHTML = `<span class="placement-icon" title="${getOrdinal(player.placement)} Place">${placementIcon}</span>`;
+        }
+        
+        playerItem.innerHTML = `
+          <div>${player.name} ${playerPlacementHTML}</div>
+          <div>${player.tournament_points || 0} points earned <span style="color: #4ade80;">(${player.potential_points || 0} potential)</span></div>
+        `;
+        
+        playerList.appendChild(playerItem);
+      });
+      
+      playersSection.appendChild(playerList);
+    } else {
+      playersSection.innerHTML = `<p>No player information available</p>`;
+    }
+    
+    teamCard.appendChild(playersSection);
+    container.appendChild(teamCard);
+  });
+}
+  </script>
+</body>
+</html>
