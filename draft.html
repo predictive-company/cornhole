@@ -806,13 +806,23 @@
     font-size: 2.0rem; /* Maintain the larger font size on mobile */
   }
   
-  /* Fix tournament info section - make it sticky */
+  /* Tournament info section - not sticky itself */
   .tournament-info {
+    position: relative;
+    padding: 0.75rem;
+    margin: 0.5rem auto;
+  }
+  
+  /* Make just the team section sticky */
+  .tournament-info .your-team {
     position: sticky;
     top: 0;
     z-index: 99;
-    padding: 0.75rem;
-    margin: 0.5rem auto;
+    background: linear-gradient(135deg, rgba(13, 16, 35, 0.95), rgba(8, 10, 20, 0.98));
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .tournament-info h2 {
@@ -865,11 +875,7 @@
     overflow-x: hidden;
   }
   
-  /* Team section adjustments */
-  .your-team {
-    margin: 0.5rem 0;
-    padding: 0.6rem;
-  }
+  /* Team section adjustments - removed as we defined it above */
   
   .team-list {
     grid-template-columns: 1fr;
@@ -1053,6 +1059,13 @@
       grid-template-columns: repeat(2, 1fr);
     }
   }
+}
+
+/* Additional fix for iOS Safari bouncing effect */
+html, body {
+  position: relative;
+  height: 100%;
+  overscroll-behavior-y: none;
 }
 
 /* Additional fix for iOS Safari bouncing effect */
