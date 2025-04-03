@@ -148,21 +148,19 @@
       text-decoration: underline;
     }
 
-      /* Disable Safari's autofill styling */
-      input:-webkit-autofill,
-      input:-webkit-autofill:hover,
-      input:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0px 1000px #1a1b26 inset !important;
-        -webkit-text-fill-color: white !important;
-        transition: background-color 5000s ease-in-out 0s;
-        caret-color: white;
-      }
-      
-      /* Additional iOS-specific password field styling */
-      input[type="password"] {
-        -webkit-text-security: disc !important;
-        text-security: disc !important;
-      }
+    /* Disable Safari's autofill styling */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px #1a1b26 inset !important;
+      -webkit-text-fill-color: white !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+    
+    /* Force dark background */
+    #password {
+      background-color: #1a1b26 !important;
+    }
     
     #toast {
       position: fixed;
@@ -216,8 +214,7 @@
             required 
             minlength="6" 
             autocomplete="new-password" 
-            autocapitalize="none"
-            aria-autocomplete="none">
+            autocapitalize="none">
           <small>Password must be at least 6 characters</small>
         </div>
         
