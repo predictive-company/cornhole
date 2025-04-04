@@ -192,12 +192,22 @@
 
     .step-image {
       width: 100%;
-      height: 180px;
+      height: 160px;
       background-color: #111;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      object-fit: contain;
+
+    }
+
+    .step-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      width: auto;
+      height: auto;
     }
 
     .step-content {
@@ -454,7 +464,7 @@
     <div class="steps-container">
       <div class="step-card">
         <div class="step-image">
-          <img src="/api/placeholder/400/180" alt="Join a Tournament">
+          <img src="/img/step1.png" alt="Join a Tournament">
         </div>
         <div class="step-content">
           <div class="step-number">Step 1</div>
@@ -465,7 +475,7 @@
       
       <div class="step-card">
         <div class="step-image">
-          <img src="/api/placeholder/400/180" alt="Draft Your Team">
+          <img src="/img/step2.png" alt="Draft Your Team">
         </div>
         <div class="step-content">
           <div class="step-number">Step 2</div>
@@ -476,7 +486,7 @@
       
       <div class="step-card">
         <div class="step-image">
-          <img src="/api/placeholder/400/180" alt="Submit Your Team">
+          <img src="/img/step3.png" alt="Submit Your Team">
         </div>
         <div class="step-content">
           <div class="step-number">Step 3</div>
@@ -487,7 +497,7 @@
       
       <div class="step-card">
         <div class="step-image">
-          <img src="/api/placeholder/400/180" alt="Watch and Win">
+          <img src="/img/step4.png" alt="Watch and Win">
         </div>
         <div class="step-content">
           <div class="step-number">Step 4</div>
