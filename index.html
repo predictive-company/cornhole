@@ -10,22 +10,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cornhole Kings - Fantasy Cornhole Drafts</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+    
+    :root {
+      --primary: #FE53BB;      /* Hot pink */
+      --primary-light: #FF7CD8;
+      --secondary: #08F7FE;    /* Neon blue */
+      --secondary-light: #5FFBFF;
+      --accent: #F5D300;       /* Electric yellow */
+      --dark: #240046;         /* Deep purple */
+      --darker: #190032;
+      --text: #FFFFFF;
+      --text-muted: rgba(255, 255, 255, 0.7);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #080a14;
-      color: white;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--dark);
+      color: var(--text);
       overflow-x: hidden;
-      background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('img/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+      position: relative;
     }
     
     /* Header and Nav */
     header {
-      background-color: #0d1023;
+      background-color: rgba(11, 12, 30, 0.8);
+      backdrop-filter: blur(10px);
       padding: 0.7rem 2rem;
       display: flex;
       align-items: center;
@@ -50,25 +69,46 @@
       gap: 0.5rem;
       cursor: pointer;
       text-decoration: none;
-      color: white;
+      color: var(--text);
     }
     
     .logo h1 {
       margin: 0;
-      font-size: 2.0rem;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white; 
+      text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); 
     }
     
     .logo-icon {
       width: 36px;
       height: 36px;
-      background-color: #4ade80;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: bold;
       font-size: 1.1rem;
-      color: #0d1023;
+      color: var(--dark);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+    }
+    
+    .logo-icon::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0.2) 0%,
+        rgba(255, 255, 255, 0) 80%
+      );
+      transform: rotate(30deg);
     }
     
     /* Middle section - Navigation */
@@ -80,24 +120,31 @@
     
     nav {
       display: flex;
+      background: rgba(11, 12, 30, 0.4);
+      border-radius: 50px;
+      padding: 0.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     nav a {
-      color: white;
+      color: var(--text);
       text-decoration: none;
       padding: 0.6rem 1rem;
-      font-weight: 800;
-      transition: color 0.2s, background-color 0.2s;
-      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      border-radius: 50px;
+      position: relative;
+      z-index: 1;
     }
     
     nav a:hover {
-      color: #4ade80;
+      color: var(--secondary);
     }
     
     nav a.active {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 4px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
     }
     
     /* Right section - User info */
@@ -108,74 +155,99 @@
     }
     
     .user-email {
-      color: white;
+      color: var(--text);
       margin-right: 1rem;
       font-size: 0.9rem;
     }
     
     .logout-btn {
-      background-color: #4ade80;
-      color: #080a14;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
       border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
-      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
     }
     
     .logout-btn:hover {
-      background-color: #22c55e;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(138, 43, 226, 0.4);
     }
     
     .log-in-btn {
       background-color: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.3s ease;
       text-decoration: none;
       margin-right: 0.5rem;
     }
     
     .log-in-btn:hover {
       background-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
     
     .sign-up-btn {
-      background-color: #4ade80;
-      color: #080a14;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
       border: none;
-      border-radius: 4px;
-      padding: 0.5rem 1rem;
-      font-weight: bold;
+      border-radius: 50px;
+      padding: 0.5rem 1.5rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.3s ease;
       text-decoration: none;
+      box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
     }
     
     .sign-up-btn:hover {
-      background-color: #22c55e;
+      transform: translateY(-2px);
+      box-shadow: 0 7px 20px rgba(138, 43, 226, 0.4);
     }
     
     /* Announcement Banner */
     .announcement-banner {
-      background: linear-gradient(90deg, #4ade80, #f1c40f);
+      background: linear-gradient(90deg, var(--secondary),  var(--primary));
       padding: 0.5rem 0;
       text-align: center;
-      font-weight: bold;
+      font-weight: 600;
       overflow: hidden;
       white-space: nowrap;
-      color: #080a14; /* Dark text color for better contrast */
+      color: var(--dark);
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+      position: relative;
+    }
+    
+    .announcement-banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, 
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.3) 50%,
+        rgba(255, 255, 255, 0) 100%);
+      animation: shine 3s infinite;
+    }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
     }
     
     .banner-content {
       display: inline-block;
-      animation: scrollBanner 50s linear infinite; /* Slowed down animation */
+      animation: scrollBanner 50s linear infinite;
     }
     
     .banner-item {
@@ -197,217 +269,386 @@
     /* Hero Section */
     .hero {
       position: relative;
-      padding: 4rem 5%;
+      padding: 6rem 5% 8rem;
       text-align: center;
       overflow: hidden;
+      background: radial-gradient(circle at center, rgba(138, 43, 226, 0.2) 0%, transparent 70%);
     }
+    
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-image: url('/api/placeholder/1600/900');
+      background-size: cover;
+      opacity: 0.1;
+      z-index: -1;
+    }
+    
     
     .hero-tag {
       display: inline-block;
-      background-color: #2e1f55;
-      color: #4ade80;
-      font-weight: bold;
-      padding: 0.4rem 1rem;
-      border-radius: 30px;
-      margin-bottom: 1.5rem;
-      border: 1px solid #4ade80;
+      background: rgba(138, 43, 226, 0.2);
+      color: var(--secondary);
+      font-weight: 600;
+      padding: 0.6rem 1.5rem;
+      border-radius: 50px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(138, 43, 226, 0.5);
+      box-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+      backdrop-filter: blur(5px);
     }
     
     .hero h1 {
       font-size: 3.5rem;
-      margin: 0 0 1rem 0;
+      margin: 0 0 1.5rem 0;
       line-height: 1.2;
+      text-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+      letter-spacing: 2px;
     }
     
     .hero-highlight {
-      color: #4ade80;
+      color: var(--secondary);
       font-size: 4rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .hero-highlight::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 5px;
     }
     
     .hero p {
       font-size: 1.2rem;
       max-width: 700px;
-      margin: 0 auto 2rem auto;
-      color: rgba(255, 255, 255, 0.8);
+      margin: 0 auto 3rem auto;
+      color: var(--text-muted);
     }
     
     .hero-cta {
       display: inline-block;
-      background-color: #4ade80;
-      color: #080a14;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
       text-decoration: none;
-      padding: 1rem 2rem;
-      border-radius: 4px;
+      padding: 1rem 3rem;
+      border-radius: 50px;
       font-size: 1.2rem;
-      font-weight: bold;
-      transition: background-color 0.2s;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .hero-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: all 0.6s ease;
+      z-index: -1;
     }
     
     .hero-cta:hover {
-      background-color: #22c55e;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(138, 43, 226, 0.5);
     }
     
-    .cornhole-bag {
-      position: absolute;
-      top: 20%;
-      right: 15%;
-      transform: rotate(30deg);
-      animation: float 3s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0%, 100% { transform: rotate(30deg) translateY(0); }
-      50% { transform: rotate(30deg) translateY(-20px); }
+    .hero-cta:hover::before {
+      left: 100%;
     }
     
     /* How It Works */
     .how-it-works {
-      padding: 4rem 5%;
+      padding: 6rem 5% 8rem;
       text-align: center;
       position: relative;
+      background: linear-gradient(0deg, var(--darker) 0%, transparent 100%);
     }
     
     .section-title {
       font-size: 2.5rem;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
       display: inline-block;
       position: relative;
+      text-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
     }
     
     .section-title::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 60px;
+      width: 80px;
       height: 4px;
-      background-color: #4ade80;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       border-radius: 2px;
     }
     
+    /* Add subtle line texture to How It Works section */
+    .how-it-works {
+      padding: 6rem 5% 8rem;
+      text-align: center;
+      position: relative;
+      background: linear-gradient(60deg, var(--darker) 0%, transparent 100%);
+      position: relative;
+    }
+
+    /* Add the line texture */
+    .how-it-works::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(
+        60deg,
+        rgba(255, 255, 255, 0.06) 0px,
+        rgba(255, 255, 255, 0.06) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Make sure all content is above the texture */
+    .how-it-works > * {
+      position: relative;
+      z-index: 1;
+    }
+
     .steps {
       display: flex;
       justify-content: center;
       gap: 2rem;
-      margin-bottom: 3rem;
+      margin-bottom: 4rem;
       flex-wrap: wrap;
     }
     
     .step-card {
-      background-color: #0d1023;
-      border-radius: 8px;
-      width: 300px;
-      padding: 2rem;
+      background: rgba(11, 12, 30, 0.7);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      width: 300px; /* Keep the original width */
+      padding: 70px 2rem 2rem; /* Increased top padding only */
       text-align: center;
       position: relative;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%);
+      z-index: -1;
+    }
+    
+    .step-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
     
     .step-number {
       position: absolute;
-      top: -20px;
+      top: 10px; /* Changed from -15px to be fully visible within the card */
       left: 50%;
       transform: translateX(-50%);
-      width: 40px;
-      height: 40px;
-      background-color: #4ade80;
-      color: #080a14;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 1.2rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.5);
     }
     
     .step-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: #4ade80;
+      font-size: 4rem; /* Increased from 3.5rem */
+      margin-bottom: 1.5rem;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .step-icon::after {
+      display: none; /* This removes the glow effect */
     }
     
     .step-card h3 {
       margin-top: 0;
       margin-bottom: 1rem;
-      color: #4ade80;
+      color: var(--secondary);
+      font-weight: 700;
     }
     
     .step-card p {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
       margin: 0;
+      line-height: 1.6;
     }
     
     .cta-button {
       display: inline-block;
-      background-color: #4ade80;
-      color: #080a14;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
       text-decoration: none;
-      padding: 1rem 2rem;
-      border-radius: 4px;
-      font-weight: bold;
-      transition: background-color 0.2s;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cta-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: all 0.6s ease;
     }
     
     .cta-button:hover {
-      background-color: #22c55e;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(138, 43, 226, 0.5);
+    }
+    
+    .cta-button:hover::before {
+      left: 100%;
     }
     
     /* Features Section */
     .features {
-      padding: 4rem 5%;
+      padding: 6rem 5% 8rem;
       text-align: center;
-      background-color: #0d1023;
+      background: var(--darker);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .features::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 75% 25%, rgba(0, 229, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 25% 75%, rgba(138, 43, 226, 0.1) 0%, transparent 50%);
+      z-index: 0;
     }
     
     .features-grid {
       display: flex;
       justify-content: center;
-      gap: 2rem;
-      margin: 3rem 0;
+      gap: 3rem;
+      margin: 4rem 0;
       flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
     }
     
     .feature-card {
       width: 300px;
       text-align: center;
+      padding: 2rem;
+      border-radius: 20px;
+      background: rgba(11, 12, 30, 0.4);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      border-color: rgba(138, 43, 226, 0.3);
     }
     
     .feature-icon {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1.5rem auto;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 2rem auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 5.5rem;
-      color: #4ade80;
+      font-size: 4rem;
+      color: var(--secondary);
+      position: relative;
+    }
+    
+    .feature-icon::after {
+      content: '';
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.3) 0%, transparent 70%);
+      z-index: -1;
     }
     
     .feature-card h3 {
       margin-top: 0;
       margin-bottom: 1rem;
-      color: #4ade80;
+      color: var(--secondary);
+      font-weight: 700;
     }
     
     .feature-card p {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
       margin: 0;
+      line-height: 1.6;
     }
     
     /* Prizes Section */
     .prizes {
-      padding: 4rem 5%;
+      padding: 6rem 5% 8rem;
       text-align: center;
       position: relative;
       overflow: hidden;
+      background: linear-gradient(0deg, rgba(11, 12, 30, 0.5) 0%, var(--darker) 100%);
     }
 
     .prizes p {
       font-size: 1.2rem;
-      max-width: 700px;
-      margin: 0 auto 2rem auto;
-      color: rgba(255, 255, 255, 0.8);
+      max-width: 800px;
+      margin: 0 auto 3rem auto;
+      color: var(--text-muted);
+      line-height: 1.6;
     }
     
     .prize-image {
@@ -415,63 +656,127 @@
       height: 200px;
       margin: 0 auto 1.5rem auto;
       object-fit: contain;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
     }
     
     .prizes-grid {
       display: flex;
       justify-content: center;
       gap: 2rem;
-      margin: 2rem 0;
+      margin: 3rem 0;
       flex-wrap: wrap;
     }
     
     .prize-card {
       width: 300px;
       text-align: center;
-      background-color: rgba(13, 16, 35, 0.7);
-      border-radius: 8px;
-      padding: 1.5rem;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      transition: transform 0.2s, box-shadow 0.2s;
+      background: rgba(11, 12, 30, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .prize-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
     }
     
     .prize-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .prize-card:hover .prize-image {
+      transform: scale(1.05);
     }
     
     .prize-card h3 {
       margin-top: 0;
       margin-bottom: 1rem;
-      color: #4ade80;
+      color: var(--secondary);
+      font-weight: 700;
     }
     
     .prize-card p {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
       margin: 0;
+      font-size: 1rem;
+    }
+    
+    .tournament-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
+      font-weight: 600;
+      padding: 0.4rem 1rem;
+      border-radius: 50px;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      box-shadow: 0 5px 10px rgba(138, 43, 226, 0.3);
     }
     
     .prize-cta {
       display: inline-block;
-      background-color: #4ade80;;
-      color: #080a14;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
       text-decoration: none;
-      padding: 1rem 2rem;
-      border-radius: 4px;
-      font-weight: bold;
-      transition: background-color 0.2s;
-      margin-top: 2rem;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 20px rgba(138, 43, 226, 0.4);
+      position: relative;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+    
+    .prize-cta::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: all 0.6s ease;
     }
     
     .prize-cta:hover {
-      background-color: #389e5e;;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(138, 43, 226, 0.5);
+    }
+    
+    .prize-cta:hover::before {
+      left: 100%;
     }
     
     /* Footer */
     footer {
-      background-color: #0d1023;
-      padding: 3rem 5%;
+      background-color: var(--darker);
+      padding: 4rem 5% 2rem;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+    }
+    
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
     }
     
     .footer-content {
@@ -479,27 +784,60 @@
       justify-content: space-between;
       align-items: flex-start;
       flex-wrap: wrap;
-      gap: 2rem;
+      gap: 3rem;
+    }
+    
+    .footer-info {
+      max-width: 400px;
     }
     
     .footer-logo {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
     }
     
-    .footer-logo-icon {
-      width: 30px;
-      height: 30px;
-      background-color: #4ade80;
+    .footer-logo h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: white; 
+    }
+    
+    .footer-info p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .social-link {
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      font-size: 0.9rem;
-      color: #0d1023;
+      color: var(--text);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .social-link:hover {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--dark);
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
     }
     
     .footer-links {
@@ -513,9 +851,22 @@
     }
     
     .footer-column h4 {
-      color: #4ade80;
+      color: var(--secondary);
       margin-top: 0;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .footer-column h4::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -5px;
+      width: 30px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
     }
     
     .footer-column ul {
@@ -525,57 +876,80 @@
     }
     
     .footer-column ul li {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
     }
     
     .footer-column a {
-      color: rgba(255, 255, 255, 0.7);
+      color: var(--text-muted);
       text-decoration: none;
-      transition: color 0.2s;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
+    }
+    
+    .footer-column a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 1px;
+      bottom: -2px;
+      left: 0;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: all 0.3s ease;
     }
     
     .footer-column a:hover {
-      color: #4ade80;
+      color: var(--secondary);
     }
     
-    .social-links {
-      display: flex;
-      gap: 1rem;
-      margin-top: 1rem;
-    }
-    
-    .social-link {
-      width: 36px;
-      height: 36px;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      text-decoration: none;
-      transition: background-color 0.2s;
-    }
-    
-    .social-link:hover {
-      background-color: #4ade80;
-      color: #0d1023;
+    .footer-column a:hover::after {
+      width: 100%;
     }
     
     .copyright {
       text-align: center;
-      margin-top: 3rem;
-      padding-top: 1.5rem;
+      margin-top: 4rem;
+      padding-top: 2rem;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.5);
+      color: var(--text-muted);
       font-size: 0.9rem;
     }
     
-    /* Mobile Responsiveness for Header */
+    /* Glow effects */
+    .glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.15;
+      filter: blur(80px);
+    }
+    
+    .glow-1 {
+      background-color: var(--primary);
+      top: 20%;
+      left: 10%;
+    }
+    
+    .glow-2 {
+      background-color: var(--secondary);
+      bottom: 30%;
+      right: 15%;
+    }
+    
+    .glow-3 {
+      background-color: var(--accent);
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       header {
         flex-direction: column;
-        padding: 0.5rem;
+        padding: 1rem;
       }
       
       .logo-section, .nav-section, .user-section {
@@ -587,14 +961,24 @@
       nav {
         justify-content: center;
         flex-wrap: wrap;
+        padding: 0.2rem 0.5rem;
+      }
+      
+      nav a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
       }
       
       .hero h1 {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
       }
       
       .hero-highlight {
-        font-size: 3rem;
+        font-size: 2.5rem;
+      }
+      
+      .section-title {
+        font-size: 2rem;
       }
       
       .steps, .features-grid, .prizes-grid {
@@ -608,13 +992,35 @@
         text-align: center;
       }
       
+      .footer-info {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .footer-column h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      
       .footer-links {
+        justify-content: center;
+        gap: 2rem;
+      }
+      
+      .social-links {
         justify-content: center;
       }
     }
   </style>
 </head>
 <body>
+  <!-- Glow Effects -->
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+  <div class="glow glow-3"></div>
+
   <!-- Announcement Banner -->
   <div class="announcement-banner">
     <div class="banner-content">
@@ -661,10 +1067,11 @@
   </header>
   
   <section class="hero">
-    <h1>DRAFT PLAYERS<br>OUTSMART YOUR OPPONENTS<br> <span class="hero-highlight">WIN PRIZES</span></h1>
-    <p>Our fantasy cornhole draft gives underdogs more points for winning. Draft strategically and win premium cornhole bags from top manufacturers!</p>
-    <a href="tournaments.html" class="hero-cta">DRAFT NOW</a>
-    
+    <div class="hero-content">
+      <h1>DRAFT PLAYERS<br>OUTSMART YOUR OPPONENTS<br> <span class="hero-highlight">WIN PRIZES</span></h1>
+      <p>Our fantasy cornhole draft gives underdogs more points for winning. Draft strategically and win premium cornhole bags from top manufacturers!</p>
+      <a href="tournaments.html" class="hero-cta">DRAFT NOW</a>
+    </div>
   </section>
   
   <section class="how-it-works">
@@ -703,7 +1110,7 @@
       <div class="feature-card">
         <div class="feature-icon">💸</div>
         <h3>FREE TO PLAY</h3>
-        <p>Our no risk, big rewards system creates a user experience that everyone can enjoy, worry-free. </p>
+        <p>Our no risk, big rewards system creates a user experience that everyone can enjoy, worry-free.</p>
       </div>
 
       <div class="feature-card">
@@ -756,8 +1163,8 @@
   <footer>
     <div class="footer-content">
       <div class="footer-info">
-        <a href="index.html" class="logo">
-          <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <a href="index.html" class="footer-logo">
+          <img src="img/outline.png" alt="Cornhole Kings Logo" width="40" height="40">
           <h1>Cornhole Kings</h1>
         </a>
         <p>The premier fantasy draft platform for cornhole enthusiasts.</p>
