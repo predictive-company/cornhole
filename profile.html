@@ -10,22 +10,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Profile - Cornhole Kings</title>
   <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #FE53BB;      /* Hot pink */
+  --primary-light: #FF7CD8;
+  --secondary: #08F7FE;    /* Neon blue */
+  --secondary-light: #5FFBFF;
+  --accent: #F5D300;       /* Electric yellow */
+  --dark: #240046;         /* Deep purple */
+  --darker: #190032;
+  --text: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.7);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #080a14;
-  color: white;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
   overflow-x: hidden;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  position: relative;
+  background-color: #080a14;
+  line-height: 1.6;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Add a pseudo-element that contains both the background image and the darkening overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('img/background.jpg');
   background-size: cover;
-  background-position: center;
   background-attachment: fixed;
+  background-position: center;
+  /* This creates a dark overlay on top of your image */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.65);
+  z-index: -1;
 }
 
 /* Header and Nav */
 header {
-  background-color: #0d1023;
+  background-color: rgba(11, 12, 30, 0.8);
+  backdrop-filter: blur(10px);
   padding: 0.7rem 2rem;
   display: flex;
   align-items: center;
@@ -50,18 +87,21 @@ header {
   gap: 0.5rem;
   cursor: pointer;
   text-decoration: none;
-  color: white;
+  color: var(--text);
 }
 
 .logo h1 {
   margin: 0;
   font-size: 2.0rem;
+  font-weight: 700;
+  color: white; 
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); 
 }
 
 .logo-icon {
   width: 36px;
   height: 36px;
-  background-color: #f1c40f;
+  background-color: #f1c40f; /* Keep original color */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -69,6 +109,8 @@ header {
   font-weight: bold;
   font-size: 1.1rem;
   color: #0d1023;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Middle section - Navigation */
@@ -80,24 +122,31 @@ header {
 
 nav {
   display: flex;
+  background: rgba(11, 12, 30, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 nav a {
-  color: white;
+  color: var(--text);
   text-decoration: none;
   padding: 0.6rem 1rem;
   font-weight: 800;
   transition: color 0.2s, background-color 0.2s;
   font-size: 1.1rem;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
 }
 
 nav a:hover {
-      color: #22c55e;
-    }
+  color: var(--secondary); /* Blue text on hover */
+}
 
 nav a.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: transparent; /* No background */
+  color: var(--secondary); /* Blue text when selected */
 }
 
 /* Right section - User info */
@@ -108,58 +157,66 @@ nav a.active {
 }
 
 .user-email {
-  color: white;
+  color: var(--text);
   margin-right: 1rem;
   font-size: 0.9rem;
 }
 
 .logout-btn {
-  background-color: #4ade80;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .logout-btn:hover {
-  background-color: #22c55e;
+  transform: translateY(-2px);
+  background: #f0f0f0;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 .log-in-btn {
   background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: none;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   text-decoration: none;
   margin-right: 0.5rem;
 }
 
 .log-in-btn:hover {
   background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .sign-up-btn {
-  background-color: #4ade80;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .sign-up-btn:hover {
-  background-color: #22c55e;
+  transform: translateY(-2px);
+  background: #f0f0f0;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Mobile Responsiveness for Header */
@@ -177,35 +234,58 @@ nav a.active {
   }
   
   .logo {
-    justify-content: center; /* Center the logo and text */
+    justify-content: center;
   }
   
   .logo h1 {
-    font-size: 2.0rem; /* Maintain the larger font size on mobile */
+    font-size: 2.0rem;
   }
   
   nav {
     justify-content: center;
     flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+  
+  nav a {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    margin: 0 0.25rem;
   }
 }
+
 /* Profile Styles */
 .profile-container {
   max-width: 1000px;
   margin: 2rem auto;
-  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(11, 12, 30);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .profile-container h2 {
   margin-top: 0;
-  color: #4ade80;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text); /* White heading */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 1rem;
   font-size: 2.0rem;
   margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+  text-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
 }
 
 .profile-section {
@@ -213,17 +293,31 @@ nav a.active {
 }
 
 .profile-section h3 {
-  color: white;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text); /* White heading */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.profile-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
 }
 
 .profile-details {
-  background: linear-gradient(to right, rgba(74, 222, 128, 0.1), transparent);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(to right, rgba(8, 247, 254, 0.1), transparent);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.5rem;
   border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .profile-row {
@@ -238,7 +332,7 @@ nav a.active {
 .profile-label {
   font-weight: bold;
   width: 150px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-muted);
 }
 
 .teams-list {
@@ -248,24 +342,25 @@ nav a.active {
 }
 
 .team-card {
-  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  background: rgb(11, 12, 30);
   border-radius: 16px;
   overflow: hidden;
   transition: all 0.3s;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .team-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-  border-color: rgba(74, 222, 128, 0.3);
+  border-color: rgba(8, 247, 254, 0.3);
 }
 
 .team-card-header {
-  background: linear-gradient(to right, rgba(74, 222, 128, 0.2), transparent);
+  background: linear-gradient(to right, rgba(8, 247, 254, 0.2), transparent);
   padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -273,13 +368,13 @@ nav a.active {
 
 .team-card h4 {
   margin: 0;
-  color: white;
+  color: var(--text);
   font-size: 1.5rem;
 }
 
 .team-card-header .tournament-date {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
 }
 
 /* Tournament card styling - keep the placement colors */
@@ -341,11 +436,12 @@ nav a.active {
 .points-total {
   display: flex;
   flex-direction: column;
-  background-color: rgba(74, 222, 128, 0.1);
-  border: 1px solid rgba(74, 222, 128, 0.3);
+  background-color: rgba(8, 247, 254, 0.1);
+  border: 1px solid rgba(8, 247, 254, 0.3);
   border-radius: 8px;
   padding: 1rem;
   margin: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .points-summary {
@@ -356,16 +452,16 @@ nav a.active {
 
 .points-label {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-muted);
 }
 
 .points-value {
   font-weight: bold;
-  color: #4ade80;
+  color: var(--secondary);
 }
 
 .points-earned {
-  color: #4ade80;
+  color: var(--secondary);
   font-weight: bold;
   margin-top: 5px;
 }
@@ -374,7 +470,7 @@ nav a.active {
   display: flex;
   align-items: center;
   font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
   margin-top: 4px;
   justify-content: space-between;
 }
@@ -387,22 +483,24 @@ nav a.active {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #e74c3c;
+  background-color: var(--primary);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   font-size: 0.9rem;
-  color: white;
+  color: var(--text);
   margin-right: 0.5rem;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Team players styling */
 .team-players-list {
   margin: 0 1.5rem 1.5rem 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .team-player {
@@ -410,7 +508,7 @@ nav a.active {
   align-items: center;
   padding: 0.8rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .team-player:hover {
@@ -423,7 +521,7 @@ nav a.active {
 
 .team-player-info {
   flex: 1;
-  color: white;
+  color: var(--text);
   font-weight: 500;
 }
 
@@ -439,10 +537,11 @@ nav a.active {
 }
 
 .player-points-calculation {
-  background-color: rgba(74, 222, 128, 0.1);
+  background-color: rgba(8, 247, 254, 0.1);
   padding: 2px 5px;
   border-radius: 4px;
   margin-left: 5px;
+  border: 1px solid rgba(8, 247, 254, 0.2);
 }
 
 /* Placement icons - keep the emoji */
@@ -465,38 +564,43 @@ nav a.active {
 }
 
 .status-completed {
-  background-color: rgba(74, 222, 128, 0.2);
-  color: #4ade80;
+  background-color: rgba(8, 247, 254, 0.2);
+  color: var(--secondary);
+  border: 1px solid rgba(8, 247, 254, 0.3);
 }
 
 .status-active {
-  background-color: rgba(74, 222, 128, 0.2);
-  color: #4ade80;
+  background-color: rgba(254, 83, 187, 0.2);
+  color: var(--primary);
+  border: 1px solid rgba(254, 83, 187, 0.3);
 }
 
 .status-upcoming {
-  background-color: rgba(74, 222, 128, 0.2);
-  color: #4ade80;
+  background-color: rgba(245, 211, 0, 0.2);
+  color: var(--accent);
+  border: 1px solid rgba(245, 211, 0, 0.3);
 }
 
 .status-unknown {
   background-color: rgba(149, 165, 166, 0.2);
   color: #95a5a6;
+  border: 1px solid rgba(149, 165, 166, 0.3);
 }
 
 /* Winnings badge */
 .winnings-badge {
   margin-left: 10px;
-  background-color: #4ade80;
-  color: white;
+  background-color: var(--secondary);
+  color: var(--dark);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.8rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Points details */
 .points-earned-label {
-  color: #4ade80;
+  color: var(--secondary);
 }
 
 .points-not-earned {
@@ -508,31 +612,33 @@ nav a.active {
 .view-results-btn {
   display: inline-block;
   padding: 0.8rem 2rem;
-  background-color: #4ade80;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
   border-radius: 6px;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
   text-decoration: none;
   text-align: center;
   width: auto;
   min-width: 200px;
   margin: 0 1.5rem 1.5rem 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .view-results-btn:hover {
-  background-color: #22c55e;
-  transform: translateY(-2px);
+  background: #f0f0f0;
+  transform: translateY(-5px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Animation for the card */
 @keyframes highlight-card {
-  0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.5); }
-  70% { box-shadow: 0 0 0 10px rgba(241, 196, 15, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(8, 247, 254, 0.5); }
+  70% { box-shadow: 0 0 0 10px rgba(8, 247, 254, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(8, 247, 254, 0); }
 }
 
 .team-card.highlight {
@@ -544,12 +650,18 @@ nav a.active {
   bottom: 20px;
   right: 20px;
   padding: 15px 25px;
-  background-color: rgba(74, 222, 128, 0.9);
-  color: white;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--dark);
   border-radius: 6px;
   display: none;
   z-index: 1000;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: 600;
 }
 
 /* Loading spinner */
@@ -559,7 +671,7 @@ nav a.active {
   height: 50px;
   border: 3px solid rgba(255,255,255,.3);
   border-radius: 50%;
-  border-top-color: #4ade80;
+  border-top-color: var(--secondary);
   animation: spin 1s ease-in-out infinite;
   margin: 1rem auto;
 }
@@ -574,6 +686,28 @@ nav a.active {
   align-items: center;
   justify-content: center;
   padding: 2rem;
+}
+
+/* Mobile tap state for better user feedback */
+@media (max-width: 768px) {
+  a:active, button:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
+  
+  /* Adjust padding for mobile cards */
+  .team-card-header {
+    padding: 1rem;
+  }
+  
+  .team-player {
+    padding: 0.6rem;
+  }
+  
+  .view-results-btn {
+    margin: 0 1rem 1rem 1rem;
+    padding: 0.7rem 1.5rem;
+  }
 }
   </style>
 </head>
