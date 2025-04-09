@@ -10,22 +10,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Draft Team - Cornhole Kings</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #FF0000;      /* Changed from hot pink to red */
+  --primary-light: #FF7CD8;
+  --secondary: #08F7FE;    /* Neon blue */
+  --secondary-light: #5FFBFF;
+  --accent: #FFFFFF;       /* Changed from electric yellow to white */
+  --dark: #240046;         /* Deep purple */
+  --darker: #190032;
+  --text: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --success: #2ecc71;      /* Keep original success color */
+  --warning: #FFFFFF;      /* Changed from yellow to white */
+  --danger: #e74c3c;       /* Keep original danger color */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #080a14;
-  color: white;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
   overflow-x: hidden;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  position: relative;
+  background-color: #080a14;
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  overscroll-behavior-y: none;
+}
+
+/* Add a pseudo-element that contains both the background image and the darkening overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('img/background.jpg');
   background-size: cover;
-  background-position: center;
   background-attachment: fixed;
+  background-position: center;
+  /* This creates a dark overlay on top of your image */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.65);
+  z-index: -1;
+}
+
+/* Target only the default ACL logo image */
+img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Final Logo ACL.png"] {
+  object-fit: contain;
+  object-position: center;
+  padding: 5px;
+  box-sizing: border-box;
 }
 
 /* Header and Nav */
 header {
-  background-color: #0d1023;
+  background-color: rgba(11, 12, 30, 0.8);
+  backdrop-filter: blur(10px);
   padding: 0.7rem 2rem;
   display: flex;
   align-items: center;
@@ -36,14 +87,6 @@ header {
   width: 100%;
   box-sizing: border-box;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Target only the default ACL logo image */
-img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Final Logo ACL.png"] {
-  object-fit: contain; /* This makes the image fit within its container */
-  object-position: center; /* Center the image */
-  padding: 5px; /* Add some padding to create space around the image */
-  box-sizing: border-box; /* Ensure padding doesn't increase the overall size */
 }
 
 /* Left section - Logo */
@@ -58,18 +101,21 @@ img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Fi
   gap: 0.5rem;
   cursor: pointer;
   text-decoration: none;
-  color: white;
+  color: var(--text);
 }
 
 .logo h1 {
   margin: 0;
   font-size: 2.0rem;
+  font-weight: 700;
+  color: white; 
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); 
 }
 
 .logo-icon {
   width: 36px;
   height: 36px;
-  background-color: #4ade80;
+  background-color: #FFFFFF; /* Changed from yellow to white */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -77,6 +123,8 @@ img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Fi
   font-weight: bold;
   font-size: 1.1rem;
   color: #0d1023;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Middle section - Navigation */
@@ -88,24 +136,31 @@ img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Fi
 
 nav {
   display: flex;
+  background: rgba(11, 12, 30, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 nav a {
-  color: white;
+  color: var(--text);
   text-decoration: none;
   padding: 0.6rem 1rem;
   font-weight: 800;
   transition: color 0.2s, background-color 0.2s;
   font-size: 1.1rem;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
 }
 
 nav a:hover {
-  color: #4ade80;
+  color: var(--secondary); /* Blue text on hover */
 }
 
 nav a.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: transparent; /* No background */
+  color: var(--secondary); /* Blue text when selected */
 }
 
 /* Right section - User info */
@@ -116,132 +171,110 @@ nav a.active {
 }
 
 .user-email {
-  color: white;
+  color: var(--text);
   margin-right: 1rem;
   font-size: 0.9rem;
 }
 
 .logout-btn {
-  background-color: #4ade80;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .logout-btn:hover {
-  background-color: #22c55e;
+  transform: translateY(-2px);
+  background: #f0f0f0;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 .log-in-btn {
   background-color: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: none;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   text-decoration: none;
   margin-right: 0.5rem;
 }
 
 .log-in-btn:hover {
   background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .sign-up-btn {
-  background-color: #4ade80;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .sign-up-btn:hover {
-  background-color: #22c55e;
-}
-
-/* Mobile Responsiveness for Header */
-@media (max-width: 768px) {
-  header {
-    flex-direction: column;
-    padding: 0.5rem;
-  }
-  
-  .logo-section, .nav-section, .user-section {
-    width: 100%;
-    justify-content: center;
-    margin: 0.5rem 0;
-  }
-
-  .logo {
-    justify-content: center; /* Center the logo and text */
-  }
-  
-  .logo h1 {
-    font-size: 2.0rem; /* Maintain the larger font size on mobile */
-  }
-  
-  .timer {
-    position: static;
-    margin-bottom: 1rem;
-    width: 100%;
-    justify-content: center;
-  }
-
-  nav {
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  transform: translateY(-2px);
+  background: #f0f0f0;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 /* Draft page styles */
 .submitted-banner {
   background-color: rgba(46, 204, 113, 0.2);
-  border: 2px solid #2ecc71;
+  border: 2px solid var(--success);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   margin: 0.5rem 0 1rem 0;
   text-align: center;
-  color: #2ecc71;
+  color: var(--success);
   font-weight: bold;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .view-team-btn {
-  background-color: #2ecc71;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 0.75rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   width: 100%;
   font-size: 1.1rem;
   margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .view-team-btn:hover {
-  background-color: #2c9c5b;
+  background: #f0f0f0;
+  transform: translateY(-5px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 .submit-team.submitted {
-  background-color: #2ecc71;
+  background-color: var(--success);
   opacity: 0.7;
   cursor: default;
 }
 
 #selectedPlayers.submitted {
-  border: 1px solid #2ecc71;
+  border: 1px solid var(--success);
 }
 
 .draft-btn.disabled {
@@ -267,7 +300,7 @@ nav a.active {
 }
 
 .player-card.drafted .view-only-label {
-  background-color: #2ecc71;
+  background-color: var(--success);
 }
 
 .bracket-links {
@@ -278,21 +311,22 @@ nav a.active {
 }
 
 .bracket-link {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  background-color: white; /* Changed from transparent to white */
+  color: var(--dark); /* Changed text color to dark to contrast with white background */
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.2s, color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s ease;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .bracket-link:hover {
-  background-color: #4ade80;
-  color: #080a14;
-  border-color: #4ade80;
+  background-color: #f0f0f0; /* Changed hover color */
+  color: var(--dark);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 /* Player avatar styles */
@@ -302,7 +336,7 @@ nav a.active {
   border-radius: 50%;
   object-fit: cover;
   object-position: center top;
-  background-color: #e74c3c;
+  background-color: var(--primary); /* Now using the red from var(--primary) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -311,13 +345,14 @@ nav a.active {
   color: white;
   transition: transform 0.3s ease;
   margin-bottom: 0.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .player-avatar-fallback {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background-color: #e74c3c;
+  background-color: var(--primary); /* Now using the red from var(--primary) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -325,6 +360,7 @@ nav a.active {
   font-size: 1.8rem;
   color: white;
   margin-bottom: 0.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .player-avatar:hover {
@@ -337,7 +373,8 @@ nav a.active {
   border-radius: 50%;
   object-fit: cover;
   margin-right: 0.5rem;
-  background-color: #e74c3c;
+  background-color: var(--primary); /* Now using the red from var(--primary) */
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .team-player-info {
@@ -349,7 +386,7 @@ nav a.active {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #e74c3c;
+  background-color: var(--primary); /* Now using the red from var(--primary) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -357,17 +394,19 @@ nav a.active {
   font-size: 0.9rem;
   color: white;
   margin-right: 0.5rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Points system styles */
 .potential-points {
-  background-color: rgba(39, 174, 96, 0.2);
-  color: #27ae60;
+  background-color: rgba(8, 247, 254, 0.2);
+  color: var(--secondary);
   padding: 3px 8px;
   border-radius: 4px;
   font-weight: bold;
   display: inline-block;
   margin-top: 5px;
+  border: 1px solid rgba(8, 247, 254, 0.3);
 }
 
 .points-info {
@@ -380,41 +419,43 @@ nav a.active {
 .points-icon {
   width: 24px;
   height: 24px;
-  background-color: #27ae60;
+  background-color: var(--secondary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 0.8rem;
   font-weight: bold;
-  color: white;
+  color: var(--dark);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .points-range {
-  background-color: rgba(39, 174, 96, 0.1);
+  background-color: rgba(8, 247, 254, 0.1);
   border-radius: 4px;
   padding: 0.5rem;
   margin-bottom: 1rem;
+  border: 1px solid rgba(8, 247, 254, 0.2);
 }
 
 .points-description {
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
+  color: var(--text-muted);
 }
 
 .points-scale {
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-muted);
 }
 
 .bracket-label {
   position: absolute;
   top: 8px;
   left: 8px;
-  background-color: #2ecc71;
-  color: rgb(0, 0, 0);
+  color: var(--text);
   border-radius: 4px;
   padding: 3px 8px;
   font-size: 1.0rem;
@@ -427,21 +468,37 @@ nav a.active {
 .tournament-info {
   max-width: 1200px;
   margin: 2rem auto;
-  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(11, 12, 30);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1.5rem;
   position: relative;
   z-index: 1;
-  overflow: visible; /* Critical for the sticky element to work */
+  overflow: visible;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .tournament-info h2 {
   margin-top: 0;
-  color: white;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 0.5rem;
   margin-bottom: 1rem;
+  font-weight: 700;
+  text-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  position: relative;
+  display: inline-block;
+}
+
+.tournament-info h2::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
 }
 
 .timer {
@@ -456,6 +513,8 @@ nav a.active {
   border-radius: 4px;
   font-weight: bold;
   font-size: 0.9rem;
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Draft container */
@@ -466,28 +525,29 @@ nav a.active {
 
 .players-pool {
   width: 100%;
-  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(11, 12, 30);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1rem;
   margin-top: 1.5rem;
   margin-bottom: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 /* Your Team section - sticky properly configured */
 .your-team {
   width: 100%;
-  background: linear-gradient(135deg, rgba(13, 16, 35, 0.95), rgba(8, 10, 20, 0.98));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgb(11, 12, 30);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1rem;
   margin: 1rem 0;
-  position: -webkit-sticky; /* For Safari */
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
-  z-index: 200; /* Higher than header to ensure it stays on top */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Add shadow for visual distinction when sticky */
-  -webkit-transform: translateZ(0); /* Hardware acceleration */
+  z-index: 200;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
 
@@ -496,14 +556,33 @@ nav a.active {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  border-bottom: 1px solid #2ecc71;
+  border-bottom: 1px solid var(--secondary);
   padding-bottom: 0.5rem;
+  position: relative;
+}
+
+.section-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
 }
 
 .section-header-info {
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+.section-header h3 {
+  font-size: 1rem;
+  margin: 0;
+  color: var(--text);
+  font-weight: 700;
 }
 
 .search-filter {
@@ -514,35 +593,41 @@ nav a.active {
 }
 
 input, select {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5rem;
   border-radius: 4px;
-  color: white;
+  color: var(--text);
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 15px rgba(8, 247, 254, 0.2);
 }
 
 input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Add this to your CSS to fix the dropdown appearance */
 select {
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0.5rem;
   border-radius: 4px;
-  color: white;
-  appearance: menulist; /* Show the dropdown arrow */
+  color: var(--text);
+  appearance: menulist;
 }
 
 select option {
   background-color: #0d1023;
-  color: white;
+  color: var(--text);
 }
 
-/* Add this for hover effects on dropdown items */
 select option:hover {
-  background-color: #2ecc71;
+  background-color: var(--secondary);
 }
 
 .player-list {
@@ -564,35 +649,36 @@ select option:hover {
 }
 
 .player-list::-webkit-scrollbar-thumb {
-  background: rgba(74, 222, 128, 0.5);
+  background: rgba(8, 247, 254, 0.5);
   border-radius: 10px;
 }
 
 .player-list::-webkit-scrollbar-thumb:hover {
-  background: rgba(74, 222, 128, 0.8);
+  background: rgba(8, 247, 254, 0.8);
 }
 
 /* For Firefox */
 .player-list {
   scrollbar-width: thin;
-  scrollbar-color: rgba(74, 222, 128, 0.5) rgba(255, 255, 255, 0.05);
+  scrollbar-color: rgba(8, 247, 254, 0.5) rgba(255, 255, 255, 0.05);
 }
     
 .player-card {
-  background: linear-gradient(135deg, rgba(41, 128, 185, 0.6), rgba(44, 62, 80, 0.8));
+  background: linear-gradient(135deg, rgba(26, 60, 88, 0.9), rgba(0, 7, 50, 0.8));
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: all 0.3s ease;
   position: relative;
   padding-bottom: 2.5rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .player-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  border-color: #2ecc71;
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(8, 247, 254, 0.3);
 }
 
 .player-info {
@@ -606,6 +692,12 @@ select option:hover {
 .player-info h4, .potential-points {
   text-align: center;
   width: 100%;
+}
+
+.player-info h4 {
+  color: var(--text);
+  font-weight: 700;
+  margin: 0.25rem 0;
 }
 
 .player-stats {
@@ -626,35 +718,41 @@ select option:hover {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  color: var(--text-muted);
 }
 
 .stat-value {
   font-weight: bold;
-  color: #f1c40f;
+  color: var(--warning); /* This is now white from the updated CSS variables */
 }
 
 .draft-btn {
   position: absolute;
   bottom: 0.75rem;
   right: 0.75rem;
-  background-color: #f1c40f;
+  background-color: rgb(255, 255, 255); /* Changed from yellow to white */
   color: #0d1023;
   border: none;
   border-radius: 4px;
   padding: 0.25rem 0.5rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   z-index: 2;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
 .draft-btn:hover {
-  background-color: #f39c12;
+  background-color: var(--secondary); /* Changed hover color */
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .draft-btn:disabled {
   background-color: #7f8c8d;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .team-list {
@@ -666,16 +764,25 @@ select option:hover {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .team-player {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(41, 128, 185, 0.3);
+  background-color: rgba(8, 247, 254, 0.1);
   padding: 0.75rem;
   border-radius: 4px;
   margin-bottom: 0;
+  border: 1px solid rgba(8, 247, 254, 0.2);
+  transition: all 0.3s ease;
+}
+
+.team-player:hover {
+  background-color: rgba(8, 247, 254, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .remove-player {
@@ -689,11 +796,12 @@ select option:hover {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
 }
 
 .remove-player:hover {
-  background-color: #e74c3c;
+  background-color: var(--danger);
+  transform: scale(1.1);
 }
 
 .team-summary {
@@ -706,29 +814,35 @@ select option:hover {
 
 .team-summary div {
   flex: 1;
+  color: var(--text-muted);
 }
 
 .submit-team {
-  background-color: #2ecc71;
-  color: #fff;
+  background: white;
+  color: var(--dark);
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 0.75rem 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  width: 100%;
+  font-weight: 600;
   font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
   margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .submit-team:hover {
-  background-color: #27ae60;
+  background: #f0f0f0;
+  transform: translateY(-5px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
 .submit-team:disabled {
   background-color: #7f8c8d;
   cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
 }
 
 .badges {
@@ -738,19 +852,13 @@ select option:hover {
 }
 
 .badge {
-  background-color: rgba(142, 68, 173, 0.6);
+  background-color: rgba(254, 83, 187, 0.2);
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   font-size: 0.7rem;
   font-weight: bold;
-}
-
-/* Mobile-specific fixes for Cornhole Kings */
-
-/* Add specific styles for the player count display */
-.section-header h3 {
-  font-size: 1rem;
-  margin: 0;
+  border: 1px solid rgba(254, 83, 187, 0.3);
+  color: var(--primary-light);
 }
 
 /* Filter buttons styling */
@@ -764,14 +872,14 @@ select option:hover {
 
 .filter-btn {
   background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  color: var(--text);
   text-decoration: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
-  font-weight: bold;
-  transition: background-color 0.2s, color 0.2s;
+  font-weight: 600;
+  transition: all 0.3s ease;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   flex: 1;
   margin: 0 0.25rem 0.5rem;
@@ -779,29 +887,51 @@ select option:hover {
 }
 
 .filter-btn:hover {
-  background-color: rgba(74, 222, 128, 0.3);
-  color: white;
-  border-color: #4ade80;
+  background-color: rgba(8, 247, 254, 0.2);
+  color: var(--secondary);
+  border-color: var(--secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .filter-btn.active {
-  background-color: #4ade80;
-  color: #080a14;
-  border-color: #4ade80;
+  background-color: var(--secondary);
+  color: var(--dark);
+  border-color: var(--secondary);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .placeholder-img {
   background-color: #e2e2e2;
   transition: opacity 0.3s ease;
 }
+/* Continuation of updated CSS */
 
-/* Mobile Responsiveness for Header and Draft Page */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--dark);
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
-  /* Fix header layout */
   header {
     flex-direction: column;
     padding: 0.5rem;
-    position: static; /* Make header not sticky for draft page */
+    position: static;
   }
   
   .logo-section, .nav-section, .user-section {
@@ -811,11 +941,11 @@ select option:hover {
   }
 
   .logo {
-    justify-content: center; /* Center the logo and text */
+    justify-content: center;
   }
   
   .logo h1 {
-    font-size: 2.0rem; /* Maintain the larger font size on mobile */
+    font-size: 2.0rem;
   }
   
   /* Tournament info section - not sticky itself */
@@ -855,6 +985,13 @@ select option:hover {
   nav {
     justify-content: center;
     flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+  
+  nav a {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    margin: 0 0.25rem;
   }
   
   /* Prevent horizontal scrolling in player list */
@@ -865,9 +1002,9 @@ select option:hover {
     box-sizing: border-box;
     padding-right: 0;
     overflow-x: hidden;
-    overscroll-behavior-x: none; /* Prevents pull-to-refresh horizontally */
-    touch-action: pan-y; /* Only allow vertical touch actions */
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
   }
   
   /* Prevent horizontal scrolling on the entire page */
@@ -884,6 +1021,8 @@ select option:hover {
     width: 100%;
     box-sizing: border-box;
     overflow-x: hidden;
+    padding-right: 0.6rem;
+    padding-left: 0.6rem;
   }
   
   .team-list {
@@ -896,18 +1035,20 @@ select option:hover {
   
   /* Filter buttons styling - make them equal width in a grid */
   .filter-buttons {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin: 0.75rem 0 1rem 0;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(2, auto) !important;
+    gap: 0.5rem !important;
+    margin: 0.75rem 0 1rem 0 !important;
+    padding: 0 0.5rem !important;
   }
   
   .filter-btn {
-    width: 100%;
-    margin: 0;
-    padding: 0.4rem 0;
-    font-size: 0.9rem;
-    text-align: center;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0.5rem 0 !important;
+    font-size: 0.9rem !important;
+    flex: none !important;
   }
 
   /* Adjust player cards for better mobile display */
@@ -916,13 +1057,12 @@ select option:hover {
     padding-bottom: 2.25rem;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
-    /* Make cards more compact */
     display: flex;
     flex-direction: column;
     align-items: center;
     width: auto;
     box-sizing: border-box;
-    min-width: 0; /* Prevents flex items from overflowing */
+    min-width: 0;
   }
 
   /* Fix bracket links to prevent overflow */
@@ -1032,8 +1172,8 @@ select option:hover {
     width: auto !important;
   }
 
-/* Adjust player avatar size for smaller screens */
-.player-avatar, .player-avatar-fallback {
+  /* Adjust player avatar size for smaller screens */
+  .player-avatar, .player-avatar-fallback {
     width: 60px;
     height: 60px;
     font-size: 1.2rem;
@@ -1048,15 +1188,6 @@ select option:hover {
   .team-player-avatar, .team-player-avatar-fallback {
     width: 40px;
     height: 40px;
-  }
-
-  /* Fix the container width to prevent content from being cut off */
-  .draft-container, .players-pool {
-    max-width: 100%;
-    box-sizing: border-box;
-    padding-right: 0.6rem;
-    padding-left: 0.6rem;
-    overflow-x: hidden;
   }
 
   /* Fix submit team button */
@@ -1075,31 +1206,6 @@ select option:hover {
   }
 }
 
-/* Additional fix for iOS Safari bouncing effect */
-html, body {
-  position: relative;
-  height: 100%;
-  overscroll-behavior-y: none;
-}
-
-/* Direct fix for the filter buttons - forcing 2x2 grid */
-.filter-buttons {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  grid-template-rows: repeat(2, auto) !important;
-  gap: 0.5rem !important;
-  margin: 0.75rem 0 1rem 0 !important;
-  padding: 0 0.5rem !important;
-}
-
-.filter-btn {
-  width: 100% !important;
-  margin: 0 !important;
-  padding: 0.5rem 0 !important;
-  font-size: 0.9rem !important;
-  flex: none !important; /* Override any flex settings */
-}
-
 /* Specifically for iOS - maintain stickiness */
 @supports (-webkit-touch-callout: none) {
   .your-team {
@@ -1110,18 +1216,6 @@ html, body {
   }
 }
 
-#toast {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  padding: 15px 25px;
-  background-color: rgba(74, 222, 128, 0.9);
-  color: white;
-  border-radius: 6px;
-  display: none;
-  z-index: 1000;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
 </style>
 </head>
 <body>
@@ -1187,8 +1281,8 @@ html, body {
   
   <div class="draft-container">
     <div class="players-pool">
-      <div style="background-color: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 8px; padding: 0.75rem; margin: 1rem 0; text-align: center;">
-        <span style="font-weight: bold; color: #4ade80;">Strategy Tip:</span> 
+      <div style="background-color: rgba(30, 24, 65, 0.1); border: 1px solid rgba(38, 27, 88, 0.3); border-radius: 8px; padding: 0.75rem; margin: 1rem 0; text-align: center;">
+        <span style="font-weight: bold; color: var(--primary-light);">Strategy Tip:</span> 
         While not required, selecting one player from each bracket typically maximizes your chances of earning points!
       </div>
   
