@@ -400,26 +400,13 @@ nav a.active {
   padding: 4rem 5%;
   text-align: center;
   position: relative;
-  background: rgba(25, 0, 50, 0.0);
-  backdrop-filter: blur(1px);
+  background: rgb(11, 12, 30, 0.0); /* Changed from rgba with opacity to solid color */
+  backdrop-filter: none; /* Removed blur effect */
 }
 
+/* Remove the repeating-linear-gradient texture */
 .how-it-works::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: repeating-linear-gradient(
-    60deg,
-    rgba(255, 255, 255, 0.06) 0px,
-    rgba(255, 255, 255, 0.06) 1px,
-    transparent 1px,
-    transparent 3px
-  );
-  z-index: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .how-it-works > * {
@@ -435,9 +422,10 @@ nav a.active {
   flex-wrap: wrap;
 }
 
+/* Step Card Background */
 .step-card {
-  background: var(--darker);
-  backdrop-filter: blur(10px);
+  background: rgb(11, 12, 30); /* Changed from var(--darker) to match header */
+  backdrop-filter: none; /* Removed blur effect */
   border-radius: 8px;
   width: 300px;
   padding: 2rem;
@@ -449,15 +437,9 @@ nav a.active {
   overflow: visible;
 }
 
+/* Remove the gradient background */
 .step-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 229, 255, 0.1) 100%);
-  z-index: -1;
+  display: none;
 }
 
 .step-card:hover {
@@ -508,42 +490,14 @@ nav a.active {
 .features {
   padding: 4rem 5%;
   text-align: center;
-  background: rgba(25, 0, 50, 1.0);
+  background: rgb(11, 12, 30); /* Changed from rgba with opacity to solid color */
   position: relative;
   overflow: hidden;
 }
 
-/* Add particle texture background */
-.features::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(circle at 10% 10%, rgba(0, 229, 255, 0.05) 0%, transparent 25%),
-    radial-gradient(circle at 30% 40%, rgba(254, 83, 187, 0.05) 0%, transparent 30%),
-    radial-gradient(circle at 60% 30%, rgba(0, 229, 255, 0.05) 0%, transparent 35%),
-    radial-gradient(circle at 90% 70%, rgba(254, 83, 187, 0.05) 0%, transparent 25%),
-    radial-gradient(circle at 40% 80%, rgba(0, 229, 255, 0.05) 0%, transparent 30%);
-  z-index: 0;
-}
-
-/* Add subtle dot texture overlay */
-.features::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px);
-  background-size: 25px 25px;
-  opacity: 0.07;
-  z-index: 0;
-  pointer-events: none;
+/* Remove the particle texture backgrounds */
+.features::before, .features::after {
+  display: none;
 }
 
 .features-grid {
@@ -620,8 +574,9 @@ nav a.active {
   text-align: center;
   position: relative;
   overflow: hidden;
-  background: rgba(25, 0, 50, 0.0);
+  background: rgb(11, 12, 30, 0.0); /* Changed from rgba with opacity to solid color */
 }
+
 
 .prizes p {
   font-size: 1.2rem;
@@ -648,11 +603,12 @@ nav a.active {
   flex-wrap: wrap;
 }
 
+/* Prize Card Background */
 .prize-card {
   width: 300px;
   text-align: center;
-  background: rgba(11, 12, 30, 0.6);
-  backdrop-filter: blur(10px);
+  background: rgb(11, 12, 30); /* Changed from rgba with opacity to solid color */
+  backdrop-filter: none; /* Removed blur effect */
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -712,7 +668,7 @@ nav a.active {
 
 /* Footer */
 footer {
-  background-color: var(--darker);
+  background-color: rgb(11, 12, 30); /* Changed from var(--darker) to match header */
   padding: 3rem 5% 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
