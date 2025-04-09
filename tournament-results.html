@@ -10,22 +10,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tournament Results - Cornhole Kings</title>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #080a14;
-      color: white;
-      overflow-x: hidden;
-      background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-    }
-    
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #FE53BB;      /* Hot pink */
+  --primary-light: #FF7CD8;
+  --secondary: #08F7FE;    /* Neon blue */
+  --secondary-light: #5FFBFF;
+  --accent: #F5D300;       /* Electric yellow */
+  --dark: #240046;         /* Deep purple */
+  --darker: #190032;
+  --text: #FFFFFF;
+  --text-muted: rgba(255, 255, 255, 0.7);
+  --medal-gold: #f1c40f;   /* Keep original medal colors */
+  --medal-silver: #bdc3c7;
+  --medal-bronze: #cd7f32;
+  --medal-blue: #3498db;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+  position: relative;
+  background-color: #080a14;
+  line-height: 1.6;
+  font-size: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Add a pseudo-element that contains both the background image and the darkening overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('img/background.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  background-position: center;
+  /* This creates a dark overlay on top of your image */
+  box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.65);
+  z-index: -1;
+}
+
 /* Header and Nav */
 header {
-  background-color: #0d1023;
+  background-color: rgba(11, 12, 30, 0.8);
+  backdrop-filter: blur(10px);
   padding: 0.7rem 2rem;
   display: flex;
   align-items: center;
@@ -50,18 +92,21 @@ header {
   gap: 0.5rem;
   cursor: pointer;
   text-decoration: none;
-  color: white;
+  color: var(--text);
 }
 
 .logo h1 {
   margin: 0;
   font-size: 2.0rem;
+  font-weight: 700;
+  color: white; 
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5); 
 }
 
 .logo-icon {
   width: 36px;
   height: 36px;
-  background-color: #f1c40f;
+  background-color: #f1c40f; /* Keep original color */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -69,6 +114,8 @@ header {
   font-weight: bold;
   font-size: 1.1rem;
   color: #0d1023;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Middle section - Navigation */
@@ -80,24 +127,31 @@ header {
 
 nav {
   display: flex;
+  background: rgba(11, 12, 30, 0.4);
+  border-radius: 4px;
+  padding: 0.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 nav a {
-  color: white;
+  color: var(--text);
   text-decoration: none;
   padding: 0.6rem 1rem;
   font-weight: 800;
   transition: color 0.2s, background-color 0.2s;
   font-size: 1.1rem;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
 }
 
 nav a:hover {
-  color: #22c55e;
+  color: var(--secondary); /* Blue text on hover */
 }
 
 nav a.active {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  background: transparent; /* No background */
+  color: var(--secondary); /* Blue text when selected */
 }
 
 /* Right section - User info */
@@ -108,28 +162,31 @@ nav a.active {
 }
 
 .user-email {
-  color: white;
+  color: var(--text);
   margin-right: 1rem;
   font-size: 0.9rem;
 }
 
 .logout-btn {
-  background-color: #4ade80;
-  color: #080a14;
+  background: white;
+  color: var(--dark);
   border: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
-  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .logout-btn:hover {
-  background-color: #22c55e;
+  transform: translateY(-2px);
+  background: #f0f0f0;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* ADD THIS: Mobile Responsiveness for Header */
+/* Mobile Responsiveness for Header */
 @media (max-width: 768px) {
   header {
     flex-direction: column;
@@ -149,6 +206,13 @@ nav a.active {
   nav {
     justify-content: center;
     flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+  
+  nav a {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+    margin: 0 0.25rem;
   }
   
   /* Adjust result cards for mobile */
@@ -167,248 +231,302 @@ nav a.active {
     margin: 0.3rem 0;
   }
 }
-    
-    /* Main Container */
-    .results-container {
-      max-width: 1000px;
-      margin: 2rem auto;
-      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      padding: 2rem;
-    }
-    
-    .results-container h2 {
-      margin-top: 0;
-      color: white;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    .tournament-info {
-      background: linear-gradient(to right, rgba(74, 222, 128, 0.1), transparent);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-    }
-    
-    .tournament-info h3 {
-      margin-top: 0;
-      color: white;
-    }
-    
-    .results-section {
-      margin-bottom: 2rem;
-    }
-    
-    .results-section h3 {
-      color: white;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    /* Team Results Styles */
-    .team-results {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    
-    .team-result-card {
-      background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      overflow: hidden;
-      transition: all 0.3s;
-    }
-    
-    .team-result-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-      border-color: rgba(74, 222, 128, 0.3);
-    }
-    
-    .team-result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.5rem;
-      background: linear-gradient(to right, rgba(74, 222, 128, 0.2), transparent);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-    
-    .team-user {
-      font-weight: bold;
-      font-size: 1.5rem;
-      color: white;
-    }
-    
-    .team-points {
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: #4ade80;
-    }
-    
-    .team-players {
-      padding: 1.5rem;
-    }
-    
-    .player-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    
-    .player-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.8rem;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      transition: background-color 0.2s;
-    }
-    
-    .player-item:hover {
-      background-color: rgba(255, 255, 255, 0.08);
-    }
-    
-    /* Placement Indicator - Keep original medal colors */
-    .placement-indicator {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-right: 1rem;
-    }
-    
-    .placement-badge {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 24px;
-      color: #080a14;
-      font-weight: bold;
-      font-size: 0.85rem;
-    }
-    
-    .first-place {
-      background-color: #f1c40f; /* Gold */
-    }
-    
-    .second-place {
-      background-color: #bdc3c7; /* Silver */
-    }
-    
-    .third-place {
-      background-color: #cd7f32; /* Bronze */
-    }
-    
-    .fourth-place {
-      background-color: #3498db; /* Blue */
-    }
-    
-    /* Team Cards By Placement - Keep original medal colors for the borders */
-    .team-result-card.first-place {
-      border-left: 5px solid #f1c40f;
-    }
-    
-    .team-result-card.second-place {
-      border-left: 5px solid #bdc3c7;
-    }
-    
-    .team-result-card.third-place {
-      border-left: 5px solid #cd7f32;
-    }
-    
-    .team-result-card.fourth-place {
-      border-left: 5px solid #3498db;
-    }
-    
-    /* Winner tag */
-    .winner-tag {
-      background-color: #f1c40f;
-      color: #080a14;
-      padding: 0.3rem 0.8rem;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 0.8rem;
-      margin-left: 1rem;
-    }
-    
-    /* Your team tag */
-    .your-team-tag {
-      background-color: #4ade80;
-      color: #080a14;
-      padding: 0.3rem 0.8rem;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 0.8rem;
-      margin-left: 1rem;
-    }
-    
-    /* Back to profile button */
-    .back-button {
-      display: inline-block;
-      padding: 0.8rem 2rem;
-      background-color: #4ade80;
-      color: #080a14;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-decoration: none;
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-    
-    .back-button:hover {
-      background-color: #22c55e;
-      transform: translateY(-2px);
-    }
-    
-    /* Loading spinner */
-    .loading-spinner {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: #4ade80;
-      animation: spin 1s ease-in-out infinite;
-      margin: 1rem auto;
-    }
-    
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-    }
-    
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    #toast {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 15px 25px;
-      background-color: rgba(74, 222, 128, 0.9);
-      color: white;
-      border-radius: 6px;
-      display: none;
-      z-index: 1000;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
+
+/* Main Container */
+.results-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  background: rgb(11, 12, 30);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.results-container h2 {
+  margin-top: 0;
+  color: var(--text); /* White text for headings */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  text-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+  font-weight: 700;
+}
+
+.results-container h2::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+}
+
+.tournament-info {
+  background: linear-gradient(to right, rgba(8, 247, 254, 0.1), transparent);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tournament-info h3 {
+  margin-top: 0;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.results-section {
+  margin-bottom: 2rem;
+}
+
+.results-section h3 {
+  color: var(--text); /* White text for headings */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+  display: inline-block;
+  font-weight: 700;
+}
+
+.results-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 2px;
+}
+
+/* Team Results Styles */
+.team-results {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.team-result-card {
+  background: rgb(11, 12, 30);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.team-result-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(8, 247, 254, 0.3);
+}
+
+.team-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(to right, rgba(8, 247, 254, 0.2), transparent);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-user {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--text);
+}
+
+.team-points {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--secondary);
+}
+
+.team-players {
+  padding: 1.5rem;
+}
+
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.player-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Placement Indicator - Keep original medal colors */
+.placement-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-right: 1rem;
+}
+
+.placement-badge {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 24px;
+  color: #080a14;
+  font-weight: bold;
+  font-size: 0.85rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.first-place {
+  background-color: var(--medal-gold); /* Gold */
+}
+
+.second-place {
+  background-color: var(--medal-silver); /* Silver */
+}
+
+.third-place {
+  background-color: var(--medal-bronze); /* Bronze */
+}
+
+.fourth-place {
+  background-color: var(--medal-blue); /* Blue */
+}
+
+/* Team Cards By Placement - Keep original medal colors for the borders */
+.team-result-card.first-place {
+  border-left: 5px solid var(--medal-gold);
+}
+
+.team-result-card.second-place {
+  border-left: 5px solid var(--medal-silver);
+}
+
+.team-result-card.third-place {
+  border-left: 5px solid var(--medal-bronze);
+}
+
+.team-result-card.fourth-place {
+  border-left: 5px solid var(--medal-blue);
+}
+
+/* Winner tag */
+.winner-tag {
+  background-color: var(--medal-gold);
+  color: #080a14;
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Your team tag */
+.your-team-tag {
+  background-color: var(--secondary);
+  color: var(--dark);
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Back to profile button */
+.back-button {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background: white;
+  color: var(--dark);
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.back-button:hover {
+  background: #f0f0f0;
+  transform: translateY(-5px);
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: var(--secondary);
+  animation: spin 1s ease-in-out infinite;
+  margin: 1rem auto;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--dark);
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
+  max-width: 90%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Mobile tap state for better user feedback */
+@media (max-width: 768px) {
+  a:active, button:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
+}
   </style>
 </head>
 <body>
