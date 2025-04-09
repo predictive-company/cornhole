@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png">
+  <link rel="manifest" href="/img/site.webmanifest">
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms and Conditions - Cornhole Kings</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #080a14;
+  color: white;
+  overflow-x: hidden;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('img/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Header and Nav */
+header {
+  background-color: #0d1023;
+  padding: 0.7rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Target only the default ACL logo image */
+img[src="https://mysqlvm.blob.core.windows.net/acl-player-photos/1613081850476Final Logo ACL.png"] {
+  object-fit: contain;
+  object-position: center;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* Left section - Logo */
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 2.0rem;
+}
+
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background-color: #4ade80;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #0d1023;
+}
+
+/* Middle section - Navigation */
+.nav-section {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+nav {
+  display: flex;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  font-weight: 800;
+  transition: color 0.2s, background-color 0.2s;
+  font-size: 1.1rem;
+}
+
+nav a:hover {
+  color: #4ade80;
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+/* Right section - User info */
+.user-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-email {
+  color: white;
+  margin-right: 1rem;
+  font-size: 0.9rem;
+}
+
+.logout-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
+  background-color: #22c55e;
+}
+
+.log-in-btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+  margin-right: 0.5rem;
+}
+
+.log-in-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.sign-up-btn {
+  background-color: #4ade80;
+  color: #080a14;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.sign-up-btn:hover {
+  background-color: #22c55e;
+}
+
+/* Main content container */
+.content-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(13, 16, 35, 0.8), rgba(8, 10, 20, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+.content-container h2 {
+  color: white;
+  border-bottom: 1px solid #4ade80;
+  padding-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+/* Terms section styling */
+.terms-section {
+  margin-bottom: 2rem;
+}
+
+.terms-section h3 {
+  color: #4ade80;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.terms-section p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.terms-section ul, .terms-section ol {
+  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+}
+
+.terms-section li {
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+.terms-section a {
+  color: #4ade80;
+  text-decoration: none;
+}
+
+.terms-section a:hover {
+  text-decoration: underline;
+}
+
+.last-updated {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+.table-of-contents {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.table-of-contents h3 {
+  margin-top: 0;
+  color: white;
+}
+
+.table-of-contents ol {
+  margin-bottom: 0;
+}
+
+.table-of-contents a {
+  color: #4ade80;
+  text-decoration: none;
+}
+
+.table-of-contents a:hover {
+  text-decoration: underline;
+}
+
+/* Highlight box for important notices */
+.highlight-box {
+  background-color: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.highlight-box h4 {
+  color: #4ade80;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* Footer links */
+.footer-links {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  margin: 0 0.5rem;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #4ade80;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+  
+  .logo-section, .nav-section, .user-section {
+    width: 100%;
+    justify-content: center;
+    margin: 0.5rem 0;
+  }
+
+  .logo {
+    justify-content: center;
+  }
+  
+  .logo h1 {
+    font-size: 2.0rem;
+  }
+  
+  nav {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .content-container {
+    padding: 1rem;
+    margin: 1rem;
+  }
+}
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  background-color: rgba(74, 222, 128, 0.9);
+  color: white;
+  border-radius: 6px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo-section">
+      <a href="index.html" class="logo">
+        <img src="img/outline.png" alt="Cornhole Kings Logo" width="50" height="50">
+        <h1>Cornhole Kings</h1>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <nav>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="profile.html">My Profile</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="prizes.html">Prizes</a>
+      </nav>
+    </div>
+    
+    <div class="user-section">
+      <a href="login.html" class="log-in-btn">Log In</a>
+      <a href="signup.html" class="sign-up-btn">Sign Up</a>
+    </div>
+  </header>
+  
+  <div class="content-container">
+    <h2>Terms and Conditions</h2>
+    <p class="last-updated">Last Updated: April 6, 2025</p>
+    
+    <div class="table-of-contents">
+      <h3>Table of Contents</h3>
+      <ol>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#account">Account Registration and Eligibility</a></li>
+        <li><a href="#service-description">Service Description</a></li>
+        <li><a href="#user-conduct">User Conduct</a></li>
+        <li><a href="#payments">Payments and Fees</a></li>
+        <li><a href="#intellectual-property">Intellectual Property Rights</a></li>
+        <li><a href="#disclaimer">Disclaimer of Warranties</a></li>
+        <li><a href="#limitation">Limitation of Liability</a></li>
+        <li><a href="#indemnification">Indemnification</a></li>
+        <li><a href="#termination">Term and Termination</a></li>
+        <li><a href="#governing-law">Governing Law</a></li>
+        <li><a href="#changes">Changes to Terms and Conditions</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ol>
+    </div>
+    
+    <div class="highlight-box">
+      <h4>Important Notice</h4>
+      <p>By accessing or using the Cornhole Kings website, mobile application, or any related services (collectively, the "Service"), you agree to be bound by these Terms and Conditions. If you do not agree to all of these terms, do not access or use our Service.</p>
+      <p>Please read these Terms and Conditions carefully before using our Service.</p>
+    </div>
+    
+    <div class="terms-section" id="introduction">
+      <h3>1. Introduction</h3>
+      <p>Welcome to Cornhole Kings, a fantasy cornhole draft platform that allows users to create teams, participate in tournaments, and track their performance in the world of competitive cornhole.</p>
+      <p>These Terms and Conditions ("Terms") govern your access to and use of the Cornhole Kings Service. By accessing or using our Service, you agree to be legally bound by these Terms and our Privacy Policy.</p>
+    </div>
+    
+    <div class="terms-section" id="account">
+        <h3>2. Account Registration and Eligibility</h3>
+        <p>To access certain features of the Service, you must register for an account. When you register, you agree to provide accurate, current, and complete information about yourself. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.</p>
+        <p>You must be at least 13 years old to use the Service. If you are between the ages of 13 and 18, you may only use the Service with the consent and supervision of a parent or legal guardian who agrees to be bound by these Terms. By using the Service, you represent and warrant that you meet these age requirements.</p>
+        <p>You may not:</p>
+      <ul>
+        <li>Create multiple accounts for the same person</li>
+        <li>Share your account with anyone else</li>
+        <li>Create an account for someone other than yourself</li>
+        <li>Create an account if you have previously been banned from the Service</li>
+        <li>Provide false information when registering an account</li>
+      </ul>
+      <p>We reserve the right to suspend or terminate your account if we believe that you have violated these Terms.</p>
+    </div>
+    
+    <div class="terms-section" id="service-description">
+      <h3>3. Service Description</h3>
+      <p>Cornhole Kings provides a fantasy sports platform focused on competitive cornhole. Our Service allows users to:</p>
+      <ul>
+        <li>Create fantasy teams by drafting real-world cornhole players</li>
+        <li>Participate in tournaments with other users</li>
+        <li>Earn points based on the real-world performance of selected players</li>
+        <li>Compete for prizes and recognition</li>
+        <li>View statistics and rankings</li>
+      </ul>
+      <p>We reserve the right to modify, suspend, or discontinue any aspect of the Service at any time, with or without notice.</p>
+    </div>
+    
+    <div class="terms-section" id="user-conduct">
+      <h3>4. User Conduct</h3>
+      <p>By using our Service, you agree not to:</p>
+      <ul>
+        <li>Use the Service for any illegal purpose or in violation of any local, state, national, or international law</li>
+        <li>Interfere with or disrupt the Service or servers or networks connected to the Service</li>
+        <li>Attempt to gain unauthorized access to any part of the Service, other accounts, or computer systems</li>
+        <li>Engage in any form of cheating, collusion, or manipulation of draft selections or tournament results</li>
+        <li>Create multiple accounts to gain unfair advantages</li>
+        <li>Harass, abuse, or harm another person or user</li>
+        <li>Submit false or misleading information</li>
+        <li>Impersonate another person or entity</li>
+        <li>Use automated means or scripts to access the Service</li>
+        <li>Sell, trade, or transfer your account or any virtual items, points, or currencies associated with your account</li>
+        <li>Post or transmit any content that is unlawful, fraudulent, threatening, abusive, libelous, defamatory, obscene, or otherwise objectionable</li>
+      </ul>
+      <p>We have the right, but not the obligation, to monitor user conduct and content submitted to the Service. We reserve the right to remove any content that violates these Terms or that we find objectionable for any reason.</p>
+    </div>
+    
+    <div class="terms-section" id="payments">
+      <h3>5. Payments and Fees</h3>
+      <p>Cornhole Kings may offer both free and paid membership options. By selecting a paid membership option, you agree to pay all fees in accordance with the fees, charges, and billing terms in effect at the time.</p>
+      <p>You are responsible for all charges incurred under your account. All payments are non-refundable unless explicitly stated otherwise.</p>
+      <p>We reserve the right to change our pricing at any time. If we change pricing for a subscription service, we will provide notice of the change in advance via email or through the Service.</p>
+    </div>
+    
+    <div class="terms-section" id="intellectual-property">
+      <h3>6. Intellectual Property Rights</h3>
+      <p>The Service, including all content, features, and functionality, is owned by Cornhole Kings and its licensors and is protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.</p>
+      <p>These Terms do not grant you any right, title, or interest in the Service or any content, features, or functionality of the Service. You may not copy, modify, distribute, sell, or lease any part of the Service without our prior written consent.</p>
+      <p>The Cornhole Kings name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of Cornhole Kings or its affiliates or licensors. You may not use such marks without our prior written consent.</p>
+    </div>
+    
+    <div class="terms-section" id="disclaimer">
+      <h3>7. Disclaimer of Warranties</h3>
+      <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.</p>
+      <p>WE DO NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED OR ERROR-FREE, THAT DEFECTS WILL BE CORRECTED, OR THAT THE SERVICE OR THE SERVERS THAT MAKE IT AVAILABLE ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.</p>
+      <p>WE MAKE NO WARRANTIES OR REPRESENTATIONS ABOUT THE ACCURACY OR COMPLETENESS OF THE CONTENT ON THE SERVICE.</p>
+    </div>
+    
+    <div class="terms-section" id="limitation">
+      <h3>8. Limitation of Liability</h3>
+      <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL CORNHOLE KINGS, ITS AFFILIATES, DIRECTORS, EMPLOYEES, AGENTS, OR LICENSORS BE LIABLE FOR ANY INDIRECT, PUNITIVE, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR EXEMPLARY DAMAGES, INCLUDING WITHOUT LIMITATION DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR RELATING TO YOUR USE OF, OR INABILITY TO USE, THE SERVICE.</p>
+      <p>IN NO EVENT SHALL OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATING TO THE USE OF, OR INABILITY TO USE, THE SERVICE EXCEED THE AMOUNTS PAID BY YOU TO CORNHOLE KINGS DURING THE 12 MONTHS PRECEDING THE CLAIM.</p>
+    </div>
+    
+    <div class="terms-section" id="indemnification">
+      <h3>9. Indemnification</h3>
+      <p>You agree to defend, indemnify, and hold harmless Cornhole Kings, its affiliates, licensors, and service providers, and its and their respective officers, directors, employees, contractors, agents, licensors, suppliers, successors, and assigns from and against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or relating to your violation of these Terms or your use of the Service.</p>
+    </div>
+    
+    <div class="terms-section" id="termination">
+      <h3>10. Term and Termination</h3>
+      <p>These Terms will remain in full force and effect while you use the Service. We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason, including if you breach these Terms.</p>
+      <p>Upon termination, your right to use the Service will immediately cease. If your account is terminated, you may lose access to all content, virtual items, points, or other data associated with your account.</p>
+      <p>All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity, and limitations of liability.</p>
+    </div>
+    
+    <div class="terms-section" id="governing-law">
+      <h3>11. Governing Law</h3>
+      <p>These Terms shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions.</p>
+      <p>Any dispute arising from or relating to the subject matter of these Terms shall be finally settled in San Francisco County, California, in accordance with the rules of the American Arbitration Association by one commercial arbitrator with substantial experience in resolving intellectual property and commercial contract disputes.</p>
+    </div>
+    
+    <div class="terms-section" id="changes">
+      <h3>12. Changes to Terms and Conditions</h3>
+      <p>We may revise these Terms from time to time at our sole discretion. The most current version will always be posted on our website. If a revision, in our sole discretion, is material, we will notify you via email or through the Service.</p>
+      <p>By continuing to access or use our Service after any revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, you are no longer authorized to use the Service.</p>
+    </div>
+    
+    <div class="terms-section" id="contact">
+      <h3>13. Contact Us</h3>
+      <p>If you have any questions about these Terms, please contact us at:</p>
+      <p>Cornhole Kings<br>
+      Email: legal@cornholekings.com<br>
+      Phone: +1-555-CORNHOLE<br>
+      Address: 123 Fantasy Lane, Suite 456, Cornville, CA 98765</p>
+    </div>
+  </div>
+  
+  <div class="footer-links">
+    <a href="privacy-policy.html">Privacy Policy</a> • 
+    <a href="terms-and-conditions.html">Terms & Conditions</a> • 
+    <a href="contact-us.html">Contact Us</a>
+    <p>© 2025 Cornhole Kings. All rights reserved.</p>
+  </div>
+  
+  <!-- Toast notification -->
+  <div id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is authenticated
+      getCurrentUser().then(user => {
+        if (user) {
+          // Update user section when logged in
+          updateUserSection(user.email);
+        }
+      });
+    });
+    
+    // Helper function to update user section
+    function updateUserSection(email) {
+      try {
+        const userSection = document.querySelector('.user-section');
+        userSection.innerHTML = `
+          <span class="user-email">${email}</span>
+          <button id="logoutBtn" class="logout-btn">Logout</button>
+        `;
+        
+        // Add logout event listener
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+          try {
+            const { error } = await logoutUser();
+            if (!error) {
+              window.location.reload();
+            } else {
+              showToast('Error logging out: ' + error.message, 'error');
+            }
+          } catch (err) {
+            showToast('Error during logout', 'error');
+          }
+        });
+      } catch (err) {
+        // Non-critical error, continue execution
+        console.error('Error updating user section:', err);
+      }
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      
+      // Set color based on message type
+      if (type === 'success') {
+        toast.style.backgroundColor = 'rgba(46, 204, 113, 0.9)';
+      } else if (type === 'error') {
+        toast.style.backgroundColor = 'rgba(231, 76, 60, 0.9)';
+      } else if (type === 'info') {
+        toast.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
+      }
+      
+      toast.style.display = 'block';
+      
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
