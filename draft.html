@@ -1585,44 +1585,86 @@ function switchToViewOnlyMode(selectedPlayers) {
       setupLazyLoading();
     }
     
-    // Function to load existing team data
-    function loadExistingTeam(players) {
-      // Clear the empty message if it exists
-      const emptyMessage = document.getElementById('emptyTeamMessage');
-      if (emptyMessage) emptyMessage.remove();
-      
-      const teamList = document.getElementById('selectedPlayers');
-      
-      // Add each player to the team list
-      players.forEach(player => {
-        const teamPlayer = document.createElement('div');
-        teamPlayer.className = 'team-player';
-        teamPlayer.dataset.playerId = player.id;
-        teamPlayer.dataset.potentialPoints = player.potentialPoints;
-        
-        // Create player info with avatar
-        const playerInfo = document.createElement('div');
-        playerInfo.className = 'team-player-info';
-        
-        // Add avatar
-        const avatar = createPlayerAvatar(player, 'small');
-        playerInfo.appendChild(avatar);
-        
-        // Add name and points
-        const namePoints = document.createElement('div');
-        namePoints.innerHTML = `
-          <strong>${player.name}</strong>
-          <div class="potential-points">${player.potentialPoints} pts</div>
-        `;
-        playerInfo.appendChild(namePoints);
-        
-        teamPlayer.appendChild(playerInfo);
-        teamList.appendChild(teamPlayer);
-      });
-      
-      // Update the team summary
-      updateTeamSummary();
+// Function to load existing team data
+function loadExistingTeam(players) {
+  // Clear the empty message if it exists
+  const emptyMessage = document.getElementById('emptyTeamMessage');
+  if (emptyMessage) emptyMessage.remove();
+  
+  const teamList = document.getElementById('selectedPlayers');
+  
+  // Create CSS for team bracket labels if it doesn't exist
+  if (!document.getElementById('team-bracket-label-style')) {
+    const style = document.createElement('style');
+    style.id = 'team-bracket-label-style';
+    style.textContent = `
+      .team-bracket-label {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+      .team-player {
+        position: relative;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  
+  // Add each player to the team list
+  players.forEach(player => {
+    const teamPlayer = document.createElement('div');
+    teamPlayer.className = 'team-player';
+    teamPlayer.dataset.playerId = player.id;
+    teamPlayer.dataset.potentialPoints = player.potentialPoints;
+    
+    // Add bracket label if available
+    // Note: For existing teams, we need to find the player in the available players
+    // list to get their bracket
+    const playerCard = document.querySelector(`.player-card[data-player-id="${player.id}"]`);
+    const bracketLabel = playerCard ? playerCard.querySelector('.bracket-label') : null;
+    const bracketText = bracketLabel ? bracketLabel.textContent.trim() : '';
+    
+    if (bracketText) {
+      const teamBracketLabel = document.createElement('div');
+      teamBracketLabel.className = 'team-bracket-label';
+      teamBracketLabel.textContent = bracketText;
+      teamPlayer.appendChild(teamBracketLabel);
+    } else if (player.bracket) {
+      // If we have bracket info stored directly on the player object
+      const teamBracketLabel = document.createElement('div');
+      teamBracketLabel.className = 'team-bracket-label';
+      teamBracketLabel.textContent = `Bracket: ${player.bracket}`;
+      teamPlayer.appendChild(teamBracketLabel);
     }
+    
+    // Create player info with avatar
+    const playerInfo = document.createElement('div');
+    playerInfo.className = 'team-player-info';
+    
+    // Add avatar
+    const avatar = createPlayerAvatar(player, 'small');
+    playerInfo.appendChild(avatar);
+    
+    // Add name and points
+    const namePoints = document.createElement('div');
+    namePoints.innerHTML = `
+      <strong>${player.name}</strong>
+      <div class="potential-points">${player.potentialPoints} pts</div>
+    `;
+    playerInfo.appendChild(namePoints);
+    
+    teamPlayer.appendChild(playerInfo);
+    teamList.appendChild(teamPlayer);
+  });
+  
+  // Update the team summary
+  updateTeamSummary();
+}
     
     async function submitTeam(userId, tournamentId, players) {
   try {
@@ -1837,91 +1879,102 @@ function switchToViewOnlyMode(selectedPlayers) {
       }
     }
 
-    // Check if user already has a team for this tournament
-    async function checkExistingTeam(tournamentId, user) {
-      try {
-        // First check if the user has a team for this tournament
-        const { data: teamData, error: teamCheckError } = await supabase
-          .from('teams')
-          .select('id')
-          .eq('user_id', user.id)
-          .eq('tournament_id', tournamentId);
+// Check if user already has a team for this tournament
+async function checkExistingTeam(tournamentId, user) {
+  try {
+    // First check if the user has a team for this tournament
+    const { data: teamData, error: teamCheckError } = await supabase
+      .from('teams')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('tournament_id', tournamentId);
+      
+    if (teamCheckError) {
+      showToast('Error checking existing team', 'error');
+      return;
+    }
+    
+    // If team exists, then get all the details including players
+    if (teamData && teamData.length > 0) {
+      const teamId = teamData[0].id;
+      
+      // Get team details
+      const { data: teamDetails, error: teamDetailsError } = await supabase
+        .from('teams')
+        .select('id, team_points')
+        .eq('id', teamId)
+        .single();
+        
+      if (teamDetailsError) {
+        showToast('Error loading team details', 'error');
+        return;
+      }
+      
+      // Get team players
+      const { data: teamPlayers, error: playersError } = await supabase
+        .from('team_players')
+        .select('player_id, potential_points')
+        .eq('team_id', teamId);
+        
+      if (playersError) {
+        showToast('Error loading team players', 'error');
+        return;
+      }
+      
+      // If we have players, get their details
+      if (teamPlayers && teamPlayers.length > 0) {
+        // Get player IDs
+        const playerIds = teamPlayers.map(tp => tp.player_id);
+        
+        // Get player details with bracket info
+        const { data: playerDetails, error: playerDetailsError } = await supabase
+          .from('tournament_players')
+          .select(`
+            player_id,
+            potential_points,
+            bracket_id,
+            brackets (name),
+            players (*)
+          `)
+          .eq('tournament_id', tournamentId)
+          .in('player_id', playerIds);
           
-        if (teamCheckError) {
-          showToast('Error checking existing team', 'error');
+        if (playerDetailsError) {
+          showToast('Error loading player details', 'error');
           return;
         }
         
-        // If team exists, then get all the details including players
-        if (teamData && teamData.length > 0) {
-          const teamId = teamData[0].id;
+        // Combine player details with team players
+        const selectedPlayers = teamPlayers.map(tp => {
+          // Find this player in the tournament_players results
+          const tpDetails = playerDetails.find(pd => pd.player_id === tp.player_id);
+          const player = tpDetails ? tpDetails.players : null;
           
-          // Get team details
-          const { data: teamDetails, error: teamDetailsError } = await supabase
-            .from('teams')
-            .select('id, team_points')
-            .eq('id', teamId)
-            .single();
-            
-          if (teamDetailsError) {
-            showToast('Error loading team details', 'error');
-            return;
-          }
-          
-          // Get team players
-          const { data: teamPlayers, error: playersError } = await supabase
-            .from('team_players')
-            .select('player_id, potential_points')
-            .eq('team_id', teamId);
-            
-          if (playersError) {
-            showToast('Error loading team players', 'error');
-            return;
-          }
-          
-          // If we have players, get their details
-          if (teamPlayers && teamPlayers.length > 0) {
-            // Get player IDs
-            const playerIds = teamPlayers.map(tp => tp.player_id);
-            
-            // Get player details
-            const { data: playerDetails, error: playerDetailsError } = await supabase
-              .from('players')
-              .select('id, name, profile_picture, rank, potential_points')
-              .in('id', playerIds);
-              
-            if (playerDetailsError) {
-              showToast('Error loading player details', 'error');
-              return;
-            }
-            
-            // Combine player details with team players
-            const selectedPlayers = teamPlayers.map(tp => {
-              const player = playerDetails.find(p => p.id === tp.player_id);
-              return {
-                id: tp.player_id,
-                potentialPoints: tp.potential_points || (player ? player.potential_points : 0),
-                name: player ? player.name : 'Unknown Player',
-                profile_picture: player ? player.profile_picture : null
-              };
-            });
-            
-            // Show toast message and load existing team
-            showToast('Loading your submitted team', 'info');
-            
-            // Load the players into the UI
-            loadExistingTeam(selectedPlayers);
-            
-            // Then switch to view-only mode
-            setTimeout(() => {
-              switchToViewOnlyMode(selectedPlayers);
-            }, 500);
-          }
-        }
-      } catch (err) {
-        showToast('Error checking team status. Starting with empty team.', 'error');
+          return {
+            id: tp.player_id,
+            potentialPoints: tp.potential_points || (player ? player.potential_points : 0),
+            name: player ? player.name : 'Unknown Player',
+            profile_picture: player ? player.profile_picture : null,
+            bracket: tpDetails && tpDetails.brackets ? tpDetails.brackets.name : null
+          };
+        });
+        
+        // Show toast message and load existing team
+        showToast('Loading your submitted team', 'info');
+        
+        // Load the players into the UI
+        loadExistingTeam(selectedPlayers);
+        
+        // Then switch to view-only mode
+        setTimeout(() => {
+          switchToViewOnlyMode(selectedPlayers);
+        }, 500);
       }
     }
+  } catch (err) {
+    showToast('Error checking team status. Starting with empty team.', 'error');
+  }
+}
 
     // Function to load available players from the database
     async function loadAvailablePlayers(tournamentId) {
@@ -2242,108 +2295,143 @@ function setupTeamSubmission(tournamentId, user) {
       });
     }
     
-    // Add player to team
-    function addPlayerToTeam(playerId, playerName, potentialPoints, profilePicture) {
-      const teamList = document.getElementById('selectedPlayers');
-      const teamCount = document.querySelectorAll('.team-player').length;
-      
-      // Use the team size from tournament settings
-      const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
-      
-      // Check if team is full before adding
-      if (teamCount >= MAX_TEAM_SIZE) {
-        showToast(`Your team is full! Maximum team size is ${MAX_TEAM_SIZE}.`, 'error');
-        
-        // Re-enable the draft button that was just clicked
-        const playerCard = document.querySelector(`.player-card[data-player-id="${playerId}"]`);
-        if (playerCard) {
-          const draftButton = playerCard.querySelector('.draft-btn');
-          if (draftButton) {
-            draftButton.disabled = false;
-            playerCard.style.opacity = '1';
-          }
-        }
-        
-        return;
+// Add player to team
+function addPlayerToTeam(playerId, playerName, potentialPoints, profilePicture) {
+  const teamList = document.getElementById('selectedPlayers');
+  const teamCount = document.querySelectorAll('.team-player').length;
+  
+  // Use the team size from tournament settings
+  const MAX_TEAM_SIZE = window.TEAM_SIZE || 4; // Fall back to 4 if not set
+  
+  // Check if team is full before adding
+  if (teamCount >= MAX_TEAM_SIZE) {
+    showToast(`Your team is full! Maximum team size is ${MAX_TEAM_SIZE}.`, 'error');
+    
+    // Re-enable the draft button that was just clicked
+    const playerCard = document.querySelector(`.player-card[data-player-id="${playerId}"]`);
+    if (playerCard) {
+      const draftButton = playerCard.querySelector('.draft-btn');
+      if (draftButton) {
+        draftButton.disabled = false;
+        playerCard.style.opacity = '1';
       }
-      
-      // Remove empty state message if first player
-      if (teamCount === 0) {
-        const emptyMessage = document.getElementById('emptyTeamMessage');
-        if (emptyMessage) emptyMessage.remove();
-      }
-      
-      // Create team player element
-      const teamPlayer = document.createElement('div');
-      teamPlayer.className = 'team-player';
-      teamPlayer.dataset.playerId = playerId;
-      teamPlayer.dataset.potentialPoints = potentialPoints;
-      
-      // Create player info with avatar
-      const playerInfo = document.createElement('div');
-      playerInfo.className = 'team-player-info';
-      
-      // Create avatar (either image or fallback with initials)
-      const defaultImageUrl = 'https://mysqlvm.blob.core.windows.net/pro-players/acl-pro-logo-default.svg';
-      const imageUrl = profilePicture || defaultImageUrl;
-      const initials = getInitials(playerName);
-      
-      const avatar = document.createElement('img');
-      avatar.src = imageUrl;
-      avatar.alt = playerName;
-      avatar.className = 'team-player-avatar';
-      avatar.onerror = function() {
-        // Replace with fallback div showing initials
-        const fallback = document.createElement('div');
-        fallback.className = 'team-player-avatar-fallback';
-        fallback.textContent = initials;
-        this.parentNode.replaceChild(fallback, this);
-      };
-      
-      playerInfo.appendChild(avatar);
-      
-      // Add name and points
-      const namePoints = document.createElement('div');
-      namePoints.innerHTML = `
-        <strong>${playerName}</strong>
-        <div class="potential-points">${potentialPoints} pts</div>
-      `;
-      playerInfo.appendChild(namePoints);
-      
-      // Add remove button
-      const removeButton = document.createElement('button');
-      removeButton.className = 'remove-player';
-      removeButton.textContent = '×';
-      
-      // Add remove functionality
-      removeButton.addEventListener('click', function() {
-        teamPlayer.remove();
-        
-        // Re-enable the draft button
-        const playerCard = document.querySelector(`.player-card[data-player-id="${playerId}"]`);
-        if (playerCard) {
-          playerCard.querySelector('.draft-btn').disabled = false;
-          playerCard.style.opacity = '1';
-        }
-        
-        updateTeamSummary();
-        
-        // Show empty state if no players
-        if (document.querySelectorAll('.team-player').length === 0) {
-          const emptyMessage = document.createElement('p');
-          emptyMessage.id = 'emptyTeamMessage';
-          emptyMessage.style.textAlign = 'center';
-          emptyMessage.style.color = 'rgba(255,255,255,0.5)';
-          emptyMessage.textContent = 'Select players from the available pool to build your team';
-          teamList.appendChild(emptyMessage);
-        }
-      });
-      
-      teamPlayer.appendChild(playerInfo);
-      teamPlayer.appendChild(removeButton);
-      teamList.appendChild(teamPlayer);
-      updateTeamSummary();
     }
+    
+    return;
+  }
+  
+  // Remove empty state message if first player
+  if (teamCount === 0) {
+    const emptyMessage = document.getElementById('emptyTeamMessage');
+    if (emptyMessage) emptyMessage.remove();
+  }
+  
+  // Get the player card to extract bracket information
+  const playerCard = document.querySelector(`.player-card[data-player-id="${playerId}"]`);
+  const bracketLabel = playerCard ? playerCard.querySelector('.bracket-label') : null;
+  const bracketText = bracketLabel ? bracketLabel.textContent.trim() : '';
+  
+  // Create team player element
+  const teamPlayer = document.createElement('div');
+  teamPlayer.className = 'team-player';
+  teamPlayer.dataset.playerId = playerId;
+  teamPlayer.dataset.potentialPoints = potentialPoints;
+  
+  // Create player info with avatar
+  const playerInfo = document.createElement('div');
+  playerInfo.className = 'team-player-info';
+  
+  // Add bracket label to the team player if available
+  if (bracketText) {
+    const teamBracketLabel = document.createElement('div');
+    teamBracketLabel.className = 'team-bracket-label';
+    teamBracketLabel.textContent = bracketText;
+    teamPlayer.appendChild(teamBracketLabel);
+    
+    // Add CSS for the team bracket label if it doesn't exist
+    if (!document.getElementById('team-bracket-label-style')) {
+      const style = document.createElement('style');
+      style.id = 'team-bracket-label-style';
+      style.textContent = `
+        .team-bracket-label {
+          position: absolute;
+          top: 4px;
+          right: 4px;
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 0.9rem;
+          font-weight: bold;
+        }
+        .team-player {
+          position: relative;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  // Create avatar (either image or fallback with initials)
+  const defaultImageUrl = 'https://mysqlvm.blob.core.windows.net/pro-players/acl-pro-logo-default.svg';
+  const imageUrl = profilePicture || defaultImageUrl;
+  const initials = getInitials(playerName);
+  
+  const avatar = document.createElement('img');
+  avatar.src = imageUrl;
+  avatar.alt = playerName;
+  avatar.className = 'team-player-avatar';
+  avatar.onerror = function() {
+    // Replace with fallback div showing initials
+    const fallback = document.createElement('div');
+    fallback.className = 'team-player-avatar-fallback';
+    fallback.textContent = initials;
+    this.parentNode.replaceChild(fallback, this);
+  };
+  
+  playerInfo.appendChild(avatar);
+  
+  // Add name and points
+  const namePoints = document.createElement('div');
+  namePoints.innerHTML = `
+    <strong>${playerName}</strong>
+    <div class="potential-points">${potentialPoints} pts</div>
+  `;
+  playerInfo.appendChild(namePoints);
+  
+  // Add remove button
+  const removeButton = document.createElement('button');
+  removeButton.className = 'remove-player';
+  removeButton.textContent = '×';
+  
+  // Add remove functionality
+  removeButton.addEventListener('click', function() {
+    teamPlayer.remove();
+    
+    // Re-enable the draft button
+    const playerCard = document.querySelector(`.player-card[data-player-id="${playerId}"]`);
+    if (playerCard) {
+      playerCard.querySelector('.draft-btn').disabled = false;
+      playerCard.style.opacity = '1';
+    }
+    
+    updateTeamSummary();
+    
+    // Show empty state if no players
+    if (document.querySelectorAll('.team-player').length === 0) {
+      const emptyMessage = document.createElement('p');
+      emptyMessage.id = 'emptyTeamMessage';
+      emptyMessage.style.textAlign = 'center';
+      emptyMessage.style.color = 'rgba(255,255,255,0.5)';
+      emptyMessage.textContent = 'Select players from the available pool to build your team';
+      teamList.appendChild(emptyMessage);
+    }
+  });
+  
+  teamPlayer.appendChild(playerInfo);
+  teamPlayer.appendChild(removeButton);
+  teamList.appendChild(teamPlayer);
+  updateTeamSummary();
+}
     
     // Update team summary
     function updateTeamSummary() {
