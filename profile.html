@@ -962,6 +962,21 @@ async function loadUserTeams(user) {
             console.error(`Error fetching player points for tournament ${team.tournament_id}:`, pointsError);
           }
           
+          // Get tournament player information including bracket data
+          const { data: tournamentPlayers, error: tournamentPlayersError } = await supabase
+            .from('tournament_players')
+            .select(`
+              player_id,
+              bracket_id,
+              brackets (name)
+            `)
+            .eq('tournament_id', team.tournament_id)
+            .in('player_id', playerIds);
+          
+          if (tournamentPlayersError) {
+            console.error(`Error fetching tournament players for tournament ${team.tournament_id}:`, tournamentPlayersError);
+          }
+          
           // Calculate total potential points from team_players data
           totalPotentialPoints = teamPlayers.reduce((sum, tp) => 
             sum + (tp.potential_points || 0), 0);
@@ -971,6 +986,10 @@ async function loadUserTeams(user) {
             const player = playerDetails?.find(p => p.id === tp.player_id) || { 
               name: 'Unknown Player'
             };
+            
+            // Get bracket data for this player
+            const tournamentPlayer = tournamentPlayers?.find(tp => tp.player_id === player.id);
+            const bracketName = tournamentPlayer?.brackets?.name || '';
             
             // Use potential_points from team_players
             const potentialPoints = tp.potential_points || 0;
@@ -986,11 +1005,13 @@ async function loadUserTeams(user) {
             return {
               ...tp,
               potential_points: potentialPoints,
+              bracket: bracketName,
               player_details: {
                 ...player,
                 hasPlaced,
                 pointsEarned,
-                placement: playerResult?.placement
+                placement: playerResult?.placement,
+                bracket: bracketName
               }
             };
           });
@@ -1021,7 +1042,6 @@ async function loadUserTeams(user) {
     showToast('Error loading teams', 'error');
   }
 }
-
 function renderTeams(teams, container) {
   try {
     // Clear loading message
@@ -1109,7 +1129,58 @@ function renderTeams(teams, container) {
           // Player info section
           const playerInfo = document.createElement('div');
           playerInfo.className = 'team-player-info';
-          playerInfo.textContent = player.player_details.name;
+          
+          // Create a wrapper for the player name and bracket info
+          const playerInfoContent = document.createElement('div');
+          playerInfoContent.className = 'player-info-content';
+          
+          // Player name
+          const playerName = document.createElement('div');
+          playerName.textContent = player.player_details.name;
+          playerInfoContent.appendChild(playerName);
+          
+          // Add bracket link - using the player's bracket info
+          // Get the bracket from player data
+          let bracketLetter = 'Unknown';
+          let bracketId = '';
+          
+          // Check if there's bracket information in player metadata or attributes
+          // We'll extract this from the dataset or player details
+          if (player.bracket) {
+            bracketLetter = player.bracket;
+          } else if (player.player_details.bracket) {
+            bracketLetter = player.player_details.bracket;
+          }
+          
+          // Determine the bracket ID based on the bracket letter
+          // These should match your ACL bracket IDs from the first file
+          switch(bracketLetter.toUpperCase()) {
+            case 'A':
+              bracketId = '201498';
+              break;
+            case 'B':
+              bracketId = '201499';
+              break;
+            case 'C':
+              bracketId = '201500';
+              break;
+            case 'D':
+              bracketId = '201501';
+              break;
+            default:
+              // If we don't have a valid bracket, we'll still show something
+              bracketId = '201498'; // Default to Bracket A if unknown
+          }
+          
+          // Create bracket link element
+          const bracketLink = document.createElement('a');
+          bracketLink.href = `https://app.iplayacl.com/bracket-stack-viewer/${bracketId}`;
+          bracketLink.className = 'player-bracket-link';
+          bracketLink.textContent = `Bracket ${bracketLetter}`;
+          bracketLink.target = '_blank'; // Open in new tab
+          playerInfoContent.appendChild(bracketLink);
+          
+          playerInfo.appendChild(playerInfoContent);
           
           // Add a medal icon ONLY for players who placed
           if (player.player_details.hasPlaced) {
@@ -1192,6 +1263,32 @@ function renderTeams(teams, container) {
       
       container.appendChild(teamElement);
     });
+    
+    // Add CSS for the bracket links if it doesn't exist already
+    if (!document.getElementById('bracket-link-style')) {
+      const style = document.createElement('style');
+      style.id = 'bracket-link-style';
+      style.textContent = `
+        .player-info-content {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .player-bracket-link {
+          color: var(--text-muted);
+          font-size: 0.8rem;
+          text-decoration: underline;
+          margin-top: 2px;
+          display: inline-block;
+          transition: color 0.2s ease;
+        }
+        
+        .player-bracket-link:hover {
+          color: var(--secondary);
+        }
+      `;
+      document.head.appendChild(style);
+    }
     
   } catch (err) {
     console.error('Error rendering teams:', err);
