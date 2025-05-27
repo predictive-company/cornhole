@@ -1,8 +1,5 @@
-// Initialize Supabase client
-const supabaseUrl = 'https://ungxxrxwfbftlcsrmexl.supabase.co'; // Your Supabase URL
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZ3h4cnh3ZmJmdGxjc3JtZXhsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA3NTQ2MjAsImV4cCI6MjA1NjMzMDYyMH0.mpZepE3mgF4EMNIoe2k5_7LhNLWqAwv7se1amsHLYiA'; // Your Supabase key
-// Create the client properly
-const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+// Authentication functions for Cornhole Kings
+// Depends on supabase.js being loaded first
 
 // Sign up a new user and create a profile
 async function signupUser(email, password, metadata = {}) {

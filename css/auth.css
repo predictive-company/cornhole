@@ -1,103 +1,148 @@
+/* Auth page specific styles */
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: var(--primary);
-  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
-  background-size: cover;
-  background-position: center;
+  width: 100%;
+  max-width: 350px;
+  padding: 1rem;
+  margin: 0 auto;
 }
 
 .auth-card {
-  background-color: rgba(44, 62, 80, 0.9);
-  border-radius: 8px;
+  background: #1a1b26;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
   padding: 2rem;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  text-align: center;
   width: 100%;
-  max-width: 400px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .auth-card .logo {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-bottom: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
-.auth-card h1 {
-  margin: 0 0 0 1rem;
+.auth-card .logo a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: white;
+}
+
+.auth-card .logo img {
+  width: 50px;
+  height: 50px;
+}
+
+.auth-card .logo h1 {
+  margin: 0;
   font-size: 1.8rem;
+  color: white;
 }
 
 .auth-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: var(--light);
+  color: white;
+  font-size: 1.75rem;
 }
 
 .auth-field {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
+  text-align: left;
 }
 
 .auth-field label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--light);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .auth-field input {
   width: 100%;
   padding: 0.75rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: white;
   font-size: 1rem;
+  box-sizing: border-box;
+  transition: all 0.2s;
 }
 
-.auth-field small {
-  display: block;
-  margin-top: 0.25rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.8rem;
+.auth-field input:focus {
+  outline: none;
+  border-color: #4ade80;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 
 .auth-button {
   width: 100%;
-  padding: 0.75rem;
-  background-color: var(--accent);
-  color: var(--dark);
+  padding: 0.8rem 0;
+  background-color: #4ade80;
+  color: #080a14;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-weight: 600;
   font-size: 1rem;
-  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
-  margin-top: 1rem;
+  transition: all 0.2s;
 }
 
 .auth-button:hover {
-  background-color: #f39c12;
+  background-color: #22c55e;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-links a {
+  color: #4ade80;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.auth-links a:hover {
+  color: #22c55e;
+  text-decoration: underline;
 }
 
 .auth-footer {
   text-align: center;
   margin-top: 1.5rem;
-  color: var(--light);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
 }
 
 .auth-footer a {
-  color: var(--accent);
+  color: #4ade80;
   text-decoration: none;
+  transition: color 0.2s;
+  font-weight: bold;
 }
 
 .auth-footer a:hover {
+  color: #22c55e;
   text-decoration: underline;
 }
 
-.error-message {
-  color: var(--secondary);
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
+#forgotPassword {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
 }
