@@ -766,13 +766,18 @@ document.addEventListener('DOMContentLoaded', async function() {
               `<a href="draft.html?tournamentId=${tournament.id}" class="action-button">Draft Now</a>` : 
               `<div class="action-button disabled">Draft Closed</div>`}
             
-            <div class="participants-count">
-              Registered Teams: <span class="count">${registeredTeams}</span>
-            </div>
+
+
           </div>
         </div>
       `;
       
+            /*Temporarily disabled registered teams - move up 5 lines to re-enable
+            <div class="participants-count">
+            Registered Teams: <span class="count">${registeredTeams}</span>
+            </div>
+            */
+
       tournamentsContainer.appendChild(tournamentElement);
     }
   } catch (err) {
